@@ -6,7 +6,28 @@ CubePay یک API ساده برای ساخت و تایید تراکنش‌های 
 
 ---
 
-## 🚀 شروع سریع
+## ⚡️ سریع‌ترین راه شروع — بدون نیاز به فهمیدن API
+
+اگه نمی‌خواید API رو دستی صدا بزنید، فایل آماده‌ی `CubePayClient.php` رو بردارید — فقط توکن و دامنه رو پر کنید:
+
+```php
+require 'CubePayClient.php';
+$cubepay = new CubePayClient('YOUR_API_TOKEN', 'https://YOUR-CUBEPAY-DOMAIN/smspay');
+
+$result = $cubepay->createPayment(200000, 'ORDER123', 'https://yourbot.example.com/callback.php');
+if ($result['success']) {
+    echo $result['payment_link'];
+}
+```
+
+نمونه‌ی کامل ساخت فاکتور: [`examples/create-payment-example.php`](examples/create-payment-example.php)
+نمونه‌ی کامل دریافت کال‌بک: [`examples/callback.php`](examples/callback.php)
+
+همین کافیه — نیازی به Composer، کتابخونه‌ی اضافه، یا خوندن بقیه‌ی این صفحه نیست. بقیه‌ی داکیومنت برای کسانیه که می‌خوان مستقیم با API کار کنن (مثلاً با Python/Node) یا جزئیات بیشتری بخوان.
+
+---
+
+## 🚀 شروع سریع (تماس مستقیم با API)
 
 برای استفاده از API نیاز به یک **توکن دسترسی (API Token)** دارید. این توکن رو از ربات مدیریت فروشندگان (`@cubepy_bot`) بعد از ثبت‌نام و تایید حساب دریافت می‌کنید.
 
