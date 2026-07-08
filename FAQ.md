@@ -1,3 +1,5 @@
+<div align="center"><img src="cubepay-logo.png" alt="CubePay" width="220"></div>
+
 # ❓ سوالات متداول (FAQ)
 
 ## عمومی
