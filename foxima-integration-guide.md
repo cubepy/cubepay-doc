@@ -9,8 +9,8 @@
 ## قبل از شروع، این ۳ تا رو از ربات CubePay (پنل من) داشته باشید:
 
 1. 🔑 **API Token** (از دکمه‌ی «🔗 پنل من»)
-2. 🌐 **آدرس create-payment** (چیزی شبیه: `https://cubevps.ir/smspay/api/create-payment.php`)
-3. 🌐 **آدرس verify-payment** (چیزی شبیه: `https://cubevps.ir/smspay/api/verify-payment.php`)
+2. 🌐 **آدرس create-payment** (چیزی شبیه: `https://YOUR-CUBEPAY-DOMAIN/smspay/api/create-payment.php`)
+3. 🌐 **آدرس verify-payment** (چیزی شبیه: `https://YOUR-CUBEPAY-DOMAIN/smspay/api/verify-payment.php`)
 
 ---
 
@@ -43,7 +43,7 @@ $ch = curl_init('https://zarinpay.me/api/verify-payment');
 ```
 **تغییر بدید به:**
 ```php
-$ch = curl_init('https://cubevps.ir/smspay/api/verify-payment.php');
+$ch = curl_init('https://YOUR-CUBEPAY-DOMAIN/smspay/api/verify-payment.php');
 ```
 
 بعدش، چند خط پایین‌تر، دنبال این تیکه بگردید و **کامل حذفش کنید** (یا با `//` کامنتش کنید):
