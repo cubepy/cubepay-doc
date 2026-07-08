@@ -1,3 +1,5 @@
+<div align="center"><img src="cubepay-logo.png" alt="CubePay" width="220"></div>
+
 # 📋 Changelog
 
 تمام تغییرات مهم این پروژه اینجا ثبت می‌شه.
