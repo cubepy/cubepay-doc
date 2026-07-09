@@ -6,7 +6,7 @@
 
 ---
 
-## ۱) ربات من Foxima ـه (یا فورکی از اون)
+## ۱) ربات من Faoxima ـه (یا فورکی از اون)
 
 دو راه دارید:
 
@@ -18,7 +18,7 @@
 
 ---
 
-## ۲) یه ربات/سایت دیگه دارم (نه Foxima) و بلدم PHP بنویسم
+## ۲) یه ربات/سایت دیگه دارم (نه Faoxima) و بلدم PHP بنویسم
 
 📄 [`generic-integration-guide.md`](generic-integration-guide.md)
 
