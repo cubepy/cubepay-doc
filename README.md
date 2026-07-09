@@ -78,7 +78,7 @@ if ($result['success']) {
 
 | وضعیت شما | برید سراغ |
 |---|---|
-| ربات من Foxima ـه | [`foxima-ready-files/`](foxima-ready-files/foxima-ready-files-guide.md) یا [`foxima-integration-guide.md`](foxima-integration-guide.md) |
+| ربات من Faoxima ـه | [`foxima-ready-files/`](foxima-ready-files/foxima-ready-files-guide.md) یا [`foxima-integration-guide.md`](foxima-integration-guide.md) |
 | ربات/سایت دیگه‌ای دارم، PHP بلدم | [`generic-integration-guide.md`](generic-integration-guide.md) |
 | می‌خوام جزئیات کامل API رو ببینم | [`API-REFERENCE.md`](API-REFERENCE.md) |
 | نمی‌دونم دقیقاً چی می‌خوام | [`START-HERE.md`](START-HERE.md) |
