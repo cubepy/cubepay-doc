@@ -102,4 +102,4 @@ if ($result['success']) {
 🤖 ربات مدیریت فروشندگان: [@cubepy_bot](https://t.me/cubepy_bot)
 📞 پشتیبانی: [@cube_sup](https://t.me/cube_sup)
 
-📄 [مجوز استفاده](LICENSE)
+📄 [مجوز استفاده](LICENSE.md)
