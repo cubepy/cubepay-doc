@@ -1,6 +1,6 @@
 <div align="center">
 
-# 💳 CubePay
+<img src="./assets/logo.png" alt="CubePay Logo" width="360"/>
 
 **پرداخت کارت‌به‌کارت با تایید خودکار پیامکی**
 
