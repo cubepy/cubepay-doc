@@ -9,6 +9,7 @@
 ![Status](https://img.shields.io/badge/status-active-brightgreen)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![API](https://img.shields.io/badge/API-v1-orange)
+[![Try in Swagger Editor](https://img.shields.io/badge/API%20Docs-Swagger%20Editor-85EA2D?logo=swagger)](https://editor.swagger.io/?url=https://raw.githubusercontent.com/cubepy/cubepay-doc/main/openapi.yaml)
 
 </div>
 
@@ -312,6 +313,8 @@ curl -X POST https://cubevps.ir/smspay/api/create-payment.php \
 ## 🔗 لینک‌ها
 
 🤖 ربات مدیریت فروشندگان: [@cubepy_bot](https://t.me/cubepy_bot)
+
+📘 مستندات تعاملی API: [باز کردن در Swagger Editor](https://editor.swagger.io/?url=https://raw.githubusercontent.com/cubepy/cubepay-doc/main/openapi.yaml)
 
 ---
 
