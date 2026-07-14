@@ -32,7 +32,7 @@ CubePay یک API
 
 | روش | مناسب برای | فایل |
 |---|---|---|
-| 📁 فایل آماده (بدون ویرایش دستی) | سریع‌تر، بی‌خطاتر | [`foxima-ready-files/`](./foxima-ready-files/) + [راهنما](./foxima-ready-files-guide.md) |
+| 📁 فایل آماده (بدون ویرایش دستی) | سریع‌تر، بی‌خطاتر | [`foxima-ready-files/`](./foxima-ready-files/) + [راهنما](./foxima-ready-files/foxima-ready-files-guide.md) |
 | 📄 ویرایش دستی (فقط ۲ خط) | کسایی که می‌خوان خودشون کد رو ببینن/کنترل کنن | [`foxima-integration-guide.md`](./foxima-integration-guide.md) |
 
 ### ۲) یه ربات/سایت دیگه دارم (نه Faoxima) و PHP بلدم
