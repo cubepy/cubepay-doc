@@ -1,73 +1,75 @@
-# ⚙️ راهنمای اتصال عمومی (هر پلتفرم/زبان)
+<div align="center"><img src="../cubepay-logo.png" alt="CubePay" width="220"></div>
 
-این راهنما برای کسانیه که ربات یا سایت‌شون رو با کد اختصاصی خودشون ساختن و پلتفرم آماده‌ای (مثل Foxima یا وردپرس) استفاده نمی‌کنن.
+# 🔌 راهنمای اتصال CubePay به ربات/سایت خودتون (بدون نیاز به Foxima)
 
-## مراحل اتصال
+این راهنما برای کسانیه که ربات یا سایت خودشون رو دارن (هر چیزی، نه لزوماً Foxima) و می‌خوان درگاه CubePay رو بهش وصل کنن. تمام کاری که لازمه، فقط **۲ تیکه کد** هست.
 
-### ۱. دریافت توکن API
+⏱ زمان تخمینی: کمتر از ۱ ساعت
 
-از [@cubepy_bot](https://t.me/cubepy_bot)، بعد از ثبت‌نام و تایید حساب، توکن API رو از بخش «🔗 پنل من» بردارید.
+---
 
-### ۲. ذخیره‌ی سفارش قبل از پرداخت
+## قبل از شروع، این ۲ تا رو از ربات مدیریت (`@cubepy_bot`) بردارید:
 
-قبل از تماس با API، یک رکورد برای سفارش با وضعیت `pending` در دیتابیس خودتون بسازید (هر دیتابیسی — SQLite, MySQL, PostgreSQL و غیره کاملاً قابل قبوله):
+1. 🔑 **توکن API** — از «🔗 پنل من»
+2. 📁 فایل **[`CubePayClient.php`](../docs/examples/CubePayClient.php)** — از همین ریپازیتوری
 
-```
-orders: id, order_id (unique), amount, status, authority (nullable)
-```
+---
 
-### ۳. فراخوانی create-payment
+## قدم ۱ — ساخت فاکتور (وقتی مشتری می‌خواد پرداخت کنه)
 
-```
-POST https://cubevps.ir/smspay/api/create-payment.php
-Authorization: Bearer YOUR_API_TOKEN
-Content-Type: application/json
+```php
+require 'CubePayClient.php';
+$cubepay = new CubePayClient('توکن_شما', 'https://cubevps.ir/smspay');
 
-{
-  "amount": 200000,
-  "order_id": "ORD123",
-  "callback_url": "https://yoursite.com/cubepay/callback",
-  "type": "card"
+$result = $cubepay->createPayment(
+    200000,                                  // مبلغ به ریال (تومان × ۱۰)
+    'order-' . time(),                       // شناسه‌ی یکتای سفارش شما
+    'https://yoursite.com/callback.php'      // آدرس فایل قدم ۲
+);
+
+if ($result['success']) {
+    // این لینک رو به مشتری بدید (نه فقط مبلغ رو نمایش بدید، چون آفست داره)
+    echo $result['payment_link'];
+    echo $result['pay_amount_toman']; // مبلغ دقیق قابل‌پرداخت
+} else {
+    echo $result['message'];
 }
 ```
 
-`authority` و `payment_link` دریافتی رو در رکورد سفارش خودتون ذخیره کنید.
+---
 
-### ۴. هدایت کاربر به لینک پرداخت
+## قدم ۲ — دریافت تاییدیه (فایل `callback.php` خودتون)
 
-کاربر رو مستقیم به `payment_link` دریافتی هدایت کنید (ریدایرکت یا نمایش لینک/دکمه).
+```php
+require 'CubePayClient.php';
+$cubepay = new CubePayClient('توکن_شما', 'https://cubevps.ir/smspay');
 
-### ۵. دریافت Callback
+// این تابع خودش authority رو از GET/POST/JSON پیدا می‌کنه و verify می‌زنه
+$result = $cubepay->handleCallback();
 
-روی آدرسی که به‌عنوان `callback_url` دادید، یک Endpoint بسازید که:
-- درخواست POST (یا querystring) شامل `authority`, `order_id`, `status` رو می‌پذیره
-- بلافاصله `verify-payment` رو صدا می‌زنه (مرحله‌ی بعد)
-
-### ۶. فراخوانی verify-payment
-
-```
-POST https://cubevps.ir/smspay/api/verify-payment.php
-Authorization: Bearer YOUR_API_TOKEN
-Content-Type: application/json
-
-{
-  "authority": "bdc9e0497c121d6187750d53798dae81"
+if (!empty($result['success'])) {
+    // ✅ پرداخت واقعاً تایید شد — اینجا سرویس/شارژ رو تحویل بدید
+    $orderId = $result['order_id'];
+    $amount = $result['amount']; // ریال
+    // مثال: chargeUserWallet($orderId, $amount);
+} else {
+    // یعنی یا هنوز تایید نشده، یا قبلاً پردازش شده — کاری نکنید
 }
 ```
 
-اگه `success: true` برگشت، سفارش رو در دیتابیس خودتون به `paid` تغییر بدید و محصول/سرویس رو تحویل بدید.
+📌 **این ۲ فایل کل کاریه که لازمه.** بقیه (تشخیص پیامک، رزرو کارمزد، رزرو کارت) خودکار سمت CubePay انجام می‌شه.
 
-⚠️ چون فقط اولین verify موفق `success: true` می‌ده، قبل از پردازش دوباره چک کنید که سفارش از قبل `paid` نشده باشه (جلوگیری از تحویل دوباره).
+---
 
-## نمونه کد
+## نکات مهم
 
-نمونه‌ی کامل در PHP، Python، Node.js و cURL در پوشه‌ی [`docs/examples/`](../docs/examples/) موجوده.
+- ✔️ مبلغ‌ها همه‌جا **ریال**ن (تومان × ۱۰)
+- ✔️ `handleCallback()` خودش idempotent هست — اگه دوبار صدا زده بشه، دومی خودکار رد می‌شه، نگران تحویل دوباره نباشید
+- ✔️ هیچ‌وقت فقط به رسیدن callback اعتماد نکنید — `handleCallback()` خودش verify واقعی رو انجام می‌ده، پس این نگرانی از قبل حل شده
+- ✔️ کارت مقصد رو از تنظیمات خودتون تو `@cubepy_bot` (بخش «💳 مدیریت کارت‌ها») تعیین می‌کنید، نه تو کد
 
-## چک‌لیست قبل از رفتن به Production
+---
 
-- [ ] `callback_url` روی https و از بیرون در دسترسه
-- [ ] قبل از تحویل، `verify-payment` رو صدا زدید (نه فقط اعتماد به callback)
-- [ ] در برابر verify تکراری (HTTP 409) محافظت دارید
-- [ ] لاگ خطاها رو برای دیباگ ذخیره می‌کنید
+## سوالات بیشتر
 
-سوالی موند؟ [docs/FAQ.md](../docs/FAQ.md) رو ببینید یا با [cube_sup](https://t.me/cube_sup) در ارتباط باشید.
+برای جزئیات کامل‌تر (کدهای خطا، فرمت دقیق پاسخ‌ها، نمونه‌کد Python/Node) به [`docs/API-REFERENCE.md`](../docs/API-REFERENCE.md) مراجعه کنید.

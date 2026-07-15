@@ -1,155 +1,66 @@
-# 🌐 راهنمای اتصال CubePay به وردپرس / ووکامرس
+<div align="center"><img src="../cubepay-logo.png" alt="CubePay" width="220"></div>
 
-این راهنما نحوه‌ی افزودن CubePay به‌عنوان یک روش پرداخت سفارشی در **ووکامرس** رو توضیح می‌ده.
+# 🔌 افزونه‌ی ووکامرس کیوب‌پی (پرداخت کارت‌به‌کارت)
 
-> 📌 اگه به دنبال یک افزونه‌ی نصب‌شونده‌ی آماده (یک فایل zip که فقط Upload می‌کنید) هستید و اون رو ندارید، از همین کد پایین می‌تونید یک افزونه‌ی سفارشی بسازید — کافیه محتوای پایین رو در یک فایل جدید داخل `wp-content/plugins/cubepay-gateway/cubepay-gateway.php` قرار بدید و از پنل وردپرس فعالش کنید.
+اگه فروشگاه شما با **وردپرس + ووکامرس** ساخته شده، به‌جای اتصال دستی به API، می‌تونید از این افزونه‌ی آماده استفاده کنید — نصبش چند دقیقه‌ست و نیازی به کدنویسی ندارید.
 
-## پیش‌نیاز
+---
 
-- وردپرس + ووکامرس نصب و فعال
-- توکن API از [@cubepy_bot](https://t.me/cubepy_bot)
+## ✅ پیش‌نیاز
 
-## ساخت افزونه‌ی گیت‌وی پرداخت سفارشی
+- وردپرس + **ووکامرس** فعال روی سایتتون
+- PHP 8.1 به بالا (اکثر هاست‌های امروزی دارن)
+- حساب فروشندگی‌تون تو ربات مدیریت فروشنده‌ها (`@cubepy_bot`) باید **تایید شده** باشه
 
-فایل `wp-content/plugins/cubepay-gateway/cubepay-gateway.php`:
+---
 
-```php
-<?php
-/**
- * Plugin Name: CubePay Gateway for WooCommerce
- * Description: پرداخت کارت‌به‌کارت با تایید خودکار از طریق CubePay
- * Version: 1.0.0
- */
+## ⬇️ دانلود
 
-add_action('plugins_loaded', 'cubepay_init_gateway_class');
+آخرین نسخه‌ی افزونه رو از اینجا دانلود کنید (فایل zip):
 
-function cubepay_init_gateway_class()
-{
-    class WC_Gateway_CubePay extends WC_Payment_Gateway
-    {
-        public function __construct()
-        {
-            $this->id = 'cubepay';
-            $this->icon = '';
-            $this->has_fields = false;
-            $this->method_title = 'CubePay (کارت به کارت)';
-            $this->method_description = 'پرداخت کارت‌به‌کارت با تایید خودکار پیامکی';
+**[⬇️ دانلود smspay-gateway.zip](https://github.com/cubepy/cubepay-doc/releases/latest/download/smspay-gateway.zip)**
 
-            $this->init_form_fields();
-            $this->init_settings();
+> اگه لینک بالا کار نکرد، از بخش [Releases](https://github.com/cubepy/cubepay-doc/releases) همین ریپازیتوری آخرین نسخه رو بگیرید.
 
-            $this->title = $this->get_option('title');
-            $this->api_token = $this->get_option('api_token');
+---
 
-            add_action('woocommerce_update_options_payment_gateways_' . $this->id, [$this, 'process_admin_options']);
-            add_action('woocommerce_api_wc_gateway_cubepay', [$this, 'handle_callback']);
-        }
+## 🚀 نصب (۳ قدم)
 
-        public function init_form_fields()
-        {
-            $this->form_fields = [
-                'enabled' => [
-                    'title' => 'فعال‌سازی',
-                    'type' => 'checkbox',
-                    'label' => 'فعال کردن CubePay',
-                    'default' => 'yes',
-                ],
-                'title' => [
-                    'title' => 'عنوان نمایشی',
-                    'type' => 'text',
-                    'default' => 'پرداخت کارت به کارت',
-                ],
-                'api_token' => [
-                    'title' => 'توکن API',
-                    'type' => 'password',
-                    'description' => 'توکن دریافتی از ربات @cubepy_bot',
-                ],
-            ];
-        }
+### ۱) بارگذاری افزونه
 
-        public function process_payment($order_id)
-        {
-            $order = wc_get_order($order_id);
+تو پیشخوان وردپرس: **افزونه‌ها ← افزودن افزونه ← بارگذاری افزونه**، فایل zip دانلودشده رو انتخاب و **نصب** کنید، بعد **فعال‌سازی** بزنید.
 
-            $response = wp_remote_post('https://cubevps.ir/smspay/api/create-payment.php', [
-                'headers' => [
-                    'Content-Type' => 'application/json',
-                    'Authorization' => 'Bearer ' . $this->api_token,
-                ],
-                'body' => json_encode([
-                    'amount' => intval($order->get_total()) * 10, // تومان به ریال
-                    'order_id' => (string) $order_id,
-                    'callback_url' => WC()->api_request_url('WC_Gateway_CubePay'),
-                    'type' => 'card',
-                    'description' => 'سفارش #' . $order_id,
-                ]),
-                'timeout' => 15,
-            ]);
+### ۲) گرفتن اطلاعات از ربات تلگرام
 
-            if (is_wp_error($response)) {
-                wc_add_notice('خطا در اتصال به درگاه CubePay.', 'error');
-                return;
-            }
+تو ربات `@cubepy_bot`، از منوی «🔗 پنل من» این دو مورد رو کپی کنید:
+- **آدرس سرور API** (شبیه `https://cubevps.ir/smspay`)
+- **توکن API**
 
-            $body = json_decode(wp_remote_retrieve_body($response), true);
+### ۳) تنظیم افزونه
 
-            if (empty($body['success'])) {
-                wc_add_notice('خطا: ' . ($body['message'] ?? 'نامشخص'), 'error');
-                return;
-            }
+تو وردپرس برید به: **ووکامرس ← تنظیمات ← پرداخت ← «کارت‌به‌کارت (SmsPay)» ← مدیریت**
 
-            $order->update_meta_data('_cubepay_authority', $body['authority']);
-            $order->save();
+- ✅ فعال‌سازی رو بزنید
+- 📋 آدرس سرور و توکن API که از ربات کپی کردید رو پیست کنید
+- 💰 **واحد پول فروشگاه** رو درست انتخاب کنید (تومان یا ریال) — این خیلی مهمه، چون درگاه فقط ریال قبول می‌کنه و اگه اشتباه انتخاب بشه مبلغ ۱۰ برابر یا یک‌دهم می‌شه!
+- ذخیره کنید
 
-            return [
-                'result' => 'success',
-                'redirect' => $body['payment_link'],
-            ];
-        }
+تمام! حالا تو صفحه‌ی پرداخت فروشگاهتون، گزینه‌ی «کارت‌به‌کارت» برای مشتری‌ها نمایش داده می‌شه.
 
-        public function handle_callback()
-        {
-            $authority = sanitize_text_field($_REQUEST['authority'] ?? '');
+---
 
-            $response = wp_remote_post('https://cubevps.ir/smspay/api/verify-payment.php', [
-                'headers' => [
-                    'Content-Type' => 'application/json',
-                    'Authorization' => 'Bearer ' . $this->api_token,
-                ],
-                'body' => json_encode(['authority' => $authority]),
-                'timeout' => 15,
-            ]);
+## 🧪 تست کنید
 
-            $body = json_decode(wp_remote_retrieve_body($response), true);
+یک سفارش آزمایشی با مبلغ کم بسازید و مسیر پرداخت رو کامل تا آخر برید — باید بعد از واریز، خودکار به صفحه‌ی «سفارش شما تکمیل شد» ووکامرس برگردید.
 
-            if (!empty($body['success'])) {
-                $order = wc_get_order($body['order_id']);
-                if ($order && !$order->is_paid()) {
-                    $order->payment_complete();
-                }
-            }
+---
 
-            wp_die('ok', '', ['response' => 200]);
-        }
-    }
-}
+## ❓ مشکل داشتید؟
 
-add_filter('woocommerce_payment_gateways', function ($gateways) {
-    $gateways[] = 'WC_Gateway_CubePay';
-    return $gateways;
-});
-```
+- مطمئن بشید حساب فروشندگی‌تون تو ربات **تایید شده** و **کارت بانکی** ثبت کرده باشید (بدون کارت، درگاه فاکتور نمی‌سازه).
+- اگه پرداخت انجام شد ولی سفارش تو ووکامرس «پرداخت‌شده» نشد، از پشتیبانی کیوب‌پی بخواید لاگ سفارش (Order notes) رو چک کنه.
+- برای هر مشکل دیگه: 🎫 [پشتیبانی کیوب‌پی](https://t.me/cube_sup)
 
-## فعال‌سازی
+---
 
-1. پوشه‌ی `cubepay-gateway` رو در `wp-content/plugins/` قرار بدید.
-2. از پنل وردپرس → افزونه‌ها → **CubePay Gateway for WooCommerce** رو فعال کنید.
-3. برید به **ووکامرس → تنظیمات → پرداخت‌ها → CubePay** و توکن API رو وارد کنید.
-
-## نکات مهم
-
-- مبلغ در ووکامرس معمولاً به **تومان** ذخیره می‌شه؛ کد بالا اون رو ضربدر ۱۰ می‌کنه تا به ریال تبدیل بشه — اگه فروشگاه شما مبلغ رو به ریال ذخیره می‌کنه، این ضرب رو حذف کنید.
-- آدرس Callback به‌صورت خودکار از طریق `WC()->api_request_url()` ساخته می‌شه؛ نیازی به تنظیم دستی نیست.
-- برای جزئیات کامل API، [docs/API-REFERENCE.md](../docs/API-REFERENCE.md) رو ببینید.
-
-سوالی موند؟ [docs/FAQ.md](../docs/FAQ.md) یا [cube_sup](https://t.me/cube_sup).
+📚 مستندات فنی کامل‌تر (برای برنامه‌نویس‌ها / اتصال مستقیم به API بدون وردپرس): [مستندات API](../docs/API-REFERENCE.md)
