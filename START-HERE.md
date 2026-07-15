@@ -1,37 +1,45 @@
-<div align="center"><img src="cubepay-logo.png" alt="CubePay" width="220"></div>
+# 🚦 از اینجا شروع کنید
 
-# 🧭 از کجا شروع کنم؟
+خوش اومدید! این صفحه شما رو در ۴ قدم ساده به سمت درست هدایت می‌کنه.
 
-بسته به این‌که چی دارید، یکی از این ۳ مسیر رو انتخاب کنید:
+## قدم ۱ — ثبت‌نام فروشنده
 
----
+وارد ربات مدیریت فروشندگان بشید:
 
-## ۱) ربات من Faoxima ـه (یا فورکی از اون)
+**[@cubepy_bot](https://t.me/cubepy_bot)**
 
-دو راه دارید:
+بعد از ثبت‌نام، حساب شما توسط ادمین بررسی و تأیید می‌شه.
 
-- **راحت‌تر (فایل آماده، بدون ویرایش دستی):**
-  📁 [`foxima-ready-files/`](foxima-ready-files/foxima-ready-files-guide.md)
+## قدم ۲ — افزودن کارت بانکی و اتصال پیامک
 
-- **دستی (فقط ۲ خط عوض کنید):**
-  📄 [`foxima-integration-guide.md`](foxima-integration-guide.md)
+از داخل ربات:
+- **💳 مدیریت کارت‌ها** → کارت بانکی خودتون رو اضافه کنید.
+- **📲 آموزش اتصال پیامک** → اپلیکیشن Forwarder رو روی گوشی نصب کنید تا پیامک‌های بانکی به سیستم CubePay ارسال بشن.
 
----
+> ⚠️ گوشی متصل به این اپلیکیشن باید همیشه به اینترنت وصل باشه؛ در غیر این صورت تشخیص خودکار پرداخت متوقف می‌شه.
 
-## ۲) یه ربات/سایت دیگه دارم (نه Faoxima) و بلدم PHP بنویسم
+## قدم ۳ — دریافت توکن API
 
-📄 [`generic-integration-guide.md`](generic-integration-guide.md)
+از بخش **«🔗 پنل من»** توکن API خودتون رو بردارید. این توکن رو در تمام درخواست‌ها به این شکل ارسال می‌کنید:
 
-فقط فایل `CubePayClient.php` رو بردارید، توکن‌تون رو بذارید، ۲-۳ خط کد بنویسید — تمام.
+```
+Authorization: Bearer YOUR_API_TOKEN
+```
 
----
+## قدم ۴ — انتخاب مسیر اتصال
 
-## ۳) برنامه‌نویس ندارم / زبان دیگه‌ای غیر از PHP دارم
+بسته به ابزاری که استفاده می‌کنید، یکی از این مسیرها رو دنبال کنید:
 
-📄 [`README.md`](README.md) — مستندات کامل API با نمونه‌کد Python/Node/cURL هم هست.
-یا این فایل رو به برنامه‌نویس خودتون بدید.
-
----
+| اگه از این استفاده می‌کنید... | برید سراغ این راهنما |
+|---|---|
+| ربات فروش ساخته‌شده با **Foxima** (نسخه‌ی تمیز) | [نصب با فایل آماده](./integrations/faoxima-ready-files/faoxima-ready-files-guide.md) |
+| ربات Foxima که قبلاً شخصی‌سازیش کردید | [راهنمای اتصال دستی](./integrations/faoxima-integration-guide.md) |
+| فروشگاه **وردپرس/ووکامرس** | [راهنمای وردپرس](./integrations/wordpress-plugin-guide.md) |
+| سایت یا ربات با کد اختصاصی خودتون | [راهنمای اتصال عمومی](./integrations/generic-integration-guide.md) |
+| فقط می‌خواید API رو تست کنید | [docs/API-REFERENCE.md](./docs/API-REFERENCE.md) و [docs/examples/](./docs/examples/) |
 
 ## سوالی پیش اومد؟
-📄 [`FAQ.md`](FAQ.md) رو چک کنید، یا به پشتیبانی پیام بدید: [@cube_sup](https://t.me/cube_sup)
+
+- سوالات پرتکرار → [docs/FAQ.md](./docs/FAQ.md)
+- مشکل فنی/خطا → بخش Troubleshooting در [docs/FAQ.md](./docs/FAQ.md)
+- پشتیبانی مستقیم → [cube_sup](https://t.me/cube_sup)
