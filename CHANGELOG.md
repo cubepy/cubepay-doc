@@ -4,6 +4,7 @@
 
 ## [Unreleased]
 ### Changed
+- بروزرسانی `integrations/faoxima-ready-files/faoxima-ready-files-guide.md`، `integrations/generic-integration-guide.md` و `integrations/wordpress-plugin-guide.md` با نسخه‌ی نهایی (شامل افزونه‌ی واقعی ووکامرس از طریق GitHub Releases)
 - بروزرسانی `docs/API-REFERENCE.md`، `docs/examples/CubePayClient.php` و `docs/openapi.yaml` با نسخه‌ی نهایی و کامل‌تر (شامل `handleCallback()` در SDK و مثال‌های embedded در OpenAPI)
 - بازسازی کامل ساختار مستندات: تفکیک به پوشه‌های `docs/` و `integrations/`
 - README.md به یک صفحه‌ی فهرست (Hub) کوتاه تبدیل شد
