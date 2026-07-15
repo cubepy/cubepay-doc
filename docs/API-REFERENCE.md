@@ -229,6 +229,11 @@ curl -X POST https://cubevps.ir/smspay/api/create-payment.php \
 
 📎 نمونه کد کامل‌تر (Laravel، کلاینت PHP آماده و…) در [`examples/`](./examples/).
 
+📎 برای اسپک کامل ماشین‌خوان، فایل [`openapi.yaml`](./openapi.yaml) رو ببینید، یا مستقیم امتحانش کنید:
+
+- 🧪 [باز کردن در Swagger Editor](https://editor.swagger.io/?url=https://raw.githubusercontent.com/cubepy/cubepay-doc/main/docs/openapi.yaml)
+- 💻 [مشاهده در VS Code (وب)](https://vscode.dev/github/cubepy/cubepay-doc/blob/main/docs/openapi.yaml)
+
 ---
 
 ## ⚠️ کدها و پیام‌های رایج
