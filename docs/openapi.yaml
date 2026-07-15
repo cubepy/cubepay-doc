@@ -1,0 +1,178 @@
+openapi: 3.0.3
+info:
+  title: CubePay API
+  description: >
+    API ساده برای ساخت و تایید تراکنش‌های کارت‌به‌کارت با تشخیص خودکار
+    پرداخت از روی پیامک بانکی.
+  version: "1.0.0"
+  contact:
+    name: CubePay Support
+    url: https://t.me/cubepy_bot
+
+servers:
+  - url: https://cubevps.ir/smspay/api
+    description: Production server
+
+security:
+  - bearerAuth: []
+
+tags:
+  - name: Payment
+    description: عملیات مربوط به ایجاد و تایید تراکنش
+
+paths:
+  /create-payment.php:
+    post:
+      tags: [Payment]
+      summary: ایجاد تراکنش پرداخت
+      description: یک فاکتور جدید می‌سازد و لینک پرداخت را برمی‌گرداند.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatePaymentRequest"
+            example:
+              amount: 200000
+              order_id: "ORD123"
+              callback_url: "https://yourbot.example.com/callback"
+              type: "card"
+              description: "شارژ کیف پول"
+              customer_user_id: "123456789"
+      responses:
+        "200":
+          description: تراکنش با موفقیت ایجاد شد
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreatePaymentResponse"
+              example:
+                success: true
+                authority: "bdc9e0497c121d6187750d53798dae81"
+                payment_link: "https://cubevps.ir/smspay/pay.php?authority=bdc9e0497c121d6187750d53798dae81"
+                pay_amount: 200720
+                pay_amount_toman: 20072
+        "401":
+          description: توکن ارسال نشده یا نامعتبر است
+        "403":
+          description: حساب فروشندگی هنوز تایید نشده است
+        "422":
+          description: مقادیر ارسالی نامعتبر است (مبلغ، order_id یا callback_url)
+        "402":
+          description: موجودی کیف‌پول کارمزد کافی نیست
+        "503":
+          description: ظرفیت فاکتور همزمان پر است
+
+  /verify-payment.php:
+    post:
+      tags: [Payment]
+      summary: تایید تراکنش پرداخت
+      description: >
+        وضعیت یک تراکنش را بررسی می‌کند. فقط اولین فراخوانی موفق مقدار
+        success: true برمی‌گرداند.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VerifyPaymentRequest"
+            example:
+              authority: "bdc9e0497c121d6187750d53798dae81"
+      responses:
+        "200":
+          description: تراکنش با موفقیت تایید شد (اولین بار)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VerifyPaymentResponse"
+              example:
+                success: true
+                message: "پرداخت تایید شد."
+                order_id: "ORD123"
+                amount: 200000
+                status: "verified"
+        "409":
+          description: این تراکنش قبلاً یک‌بار تایید شده است
+        "402":
+          description: هنوز پرداختی ثبت نشده است (pending)
+        "410":
+          description: مهلت تراکنش تمام شده یا ناموفق بوده است
+        "404":
+          description: چنین تراکنشی یافت نشد
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: توکن دریافتی از ربات @cubepy_bot
+
+  schemas:
+    CreatePaymentRequest:
+      type: object
+      required: [amount, order_id, callback_url, type]
+      properties:
+        amount:
+          type: integer
+          description: مبلغ تراکنش به ریال (حداقل ۱۰۰۰)
+          minimum: 1000
+        order_id:
+          type: string
+          description: شناسه یکتای سفارش
+        callback_url:
+          type: string
+          format: uri
+          description: آدرس دریافت callback بعد از پرداخت موفق (باید https معتبر و غیرداخلی باشد)
+        type:
+          type: string
+          enum: [card]
+          description: نوع تراکنش (فعلاً فقط card)
+        customer_user_id:
+          type: string
+          description: شناسه مشتری (اختیاری)
+        description:
+          type: string
+          description: توضیح سفارش (اختیاری)
+
+    CreatePaymentResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        authority:
+          type: string
+          description: کد یکتای تراکنش
+        payment_link:
+          type: string
+          format: uri
+          description: لینکی که باید مستقیم به مشتری داده شود
+        pay_amount:
+          type: integer
+          description: مبلغ دقیق قابل‌پرداخت به ریال
+        pay_amount_toman:
+          type: integer
+          description: مبلغ دقیق قابل‌پرداخت به تومان (برای نمایش به مشتری)
+
+    VerifyPaymentRequest:
+      type: object
+      required: [authority]
+      properties:
+        authority:
+          type: string
+          description: کد دریافتی از مرحله ایجاد تراکنش
+
+    VerifyPaymentResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        order_id:
+          type: string
+        amount:
+          type: integer
+          description: مبلغ به ریال
+        status:
+          type: string
+          enum: [verified, pending, expired, failed]
