@@ -39,54 +39,7 @@ Depending on the merchant's settings ("⚙️ More Settings → 💳 Payment Met
 }
 ```
 
-The `method` value can be `card`, `crypto`, or `choice`. For `choice`, the `authority` field is absent (since the method isn't decided yet) — you'll learn the final outcome only through `callback_url` or the `check-order-status.php` endpoint below.
-
----
-
-## 🔍 Check Order Status
-
-**Endpoint:**
-```
-GET https://cubevps.ir/pay/check-order-status.php?order_id=YOUR_ORDER_ID
-```
-With header `Authorization: Bearer YOUR_API_TOKEN`.
-
-The only way to poll a single `order_id` regardless of whether the
-customer chose card, crypto, or hasn't decided yet — no webhook
-required. Always works for the **crypto** and **choice** paths.
-
-### ✅ Sample Responses
-
-```json
-{ "success": true, "status": "choosing_method" }
-```
-```json
-{ "success": true, "method": "card", "status": "verified" }
-```
-```json
-{ "success": true, "method": "crypto", "status": "waiting" }
-```
-
-Possible `status` values:
-
-| Path | Possible values |
-|---|---|
-| Card | `verified`, `pending`, `expired`, `failed` |
-| Crypto | `choosing_currency`, `waiting`, `confirming`, `sending`, `finished`, `failed`, `expired` |
-| Choice | `choosing_method` (customer hasn't picked a method yet) |
-
-Only `verified` (card) and `finished` (crypto) mean "definitely paid" —
-treat everything else as pending or failed.
-
-⚠️ **Exception — direct card-only path:** if only card is enabled
-(without crypto), this endpoint returns `success: false`, because that
-path can only be tracked by `authority`, not `order_id`. In that case,
-use [`verify-payment.php`](./API-REFERENCE.md#-verify-payment) with the
-`authority` you got from the `create-order.php` response.
-
-**Simple approach to cover all three cases with one function:** try
-`check-order-status.php` with `order_id` first; if it returns
-`success: false`, fall back to `verify-payment.php` with `authority`.
+The `method` value can be `card`, `crypto`, or `choice`. For `choice`, the `authority` field is absent (since the method isn't decided yet) — you'll learn the final outcome only through `callback_url`.
 
 ---
 
@@ -109,21 +62,9 @@ The customer picks the currency (USDT-BEP20 / TRX / TON) themselves on the retur
 ### Status Check (Polling, Optional)
 
 ```
-GET https://cubevps.ir/crypto/api/check-crypto-payment-status.php?token=XXXX
+GET https://cubevps.ir/crypto/api/check-crypto-payment-status.php?payment_id=XXXX
 ```
-
-| Parameter | Description |
-|---|---|
-| `token` ✅ preferred | The `public_token` found in the crypto `pay_page_url` |
-| `payment_id` (legacy compatibility) | NOWPayments' numeric payment ID |
-| `order_id` (requires `Authorization: Bearer`) | For when a currency hasn't been chosen yet and `payment_id` is unknown |
-
-⚠️ **Why `token` is safer than `payment_id`:** `token` is an
-unguessable random string, but `payment_id` is a plain sequential
-number that can be brute-forced — without `token`, anyone could
-theoretically view the status of other merchants' invoices just by
-trying numbers. Avoid putting `payment_id` in a public URL exposed to
-the customer's browser.
+You get `payment_id` from the callback, or from client-side polling (on the payment page itself).
 
 ---
 
@@ -161,6 +102,12 @@ if (!hash_equals($expectedSig, $sig)) {
 ```
 
 If the signature doesn't match, completely ignore that request and don't mark the order as "paid."
+
+### 🔁 Retries on Failure
+
+If your server is briefly unreachable or responds with a non-2xx code, this callback is retried up to **3 times** with delays in between. Still, networks are unpredictable — for full reliability, we recommend:
+- Respond with a 2xx quickly (no heavy processing) so a retry isn't needed.
+- Besides relying on the callback, also run a periodic check (e.g. every few minutes, for orders still "pending") using [`check-order-status.php`](#-check-order-status). That way, even if all 3 callback attempts fail for some reason (e.g. your server happened to restart at that exact moment), you can still finalize the order yourself.
 
 ---
 
