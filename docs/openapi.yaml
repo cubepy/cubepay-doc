@@ -2,15 +2,17 @@ openapi: 3.0.3
 info:
   title: CubePay API
   description: >
-    API ساده برای ساخت و تایید تراکنش‌های کارت‌به‌کارت با تشخیص خودکار
-    پرداخت از روی پیامک بانکی.
-  version: "1.0.0"
+    API برای ساخت و تایید خودکار تراکنش‌های کارت‌به‌کارت (تشخیص از روی
+    پیامک بانکی) و ارز دیجیتال (تشخیص از روی شبکه‌ی بلاک‌چین)، شامل
+    روتر یکپارچه‌ای که بسته به تنظیمات فروشنده خودکار بین این دو انتخاب
+    می‌کند.
+  version: "1.1.0"
   contact:
     name: CubePay Support
     url: https://t.me/cubepy_bot
 
 servers:
-  - url: https://cubevps.ir/smspay/api
+  - url: https://cubevps.ir
     description: Production server
 
 security:
@@ -18,13 +20,17 @@ security:
 
 tags:
   - name: Payment
-    description: عملیات مربوط به ایجاد و تایید تراکنش
+    description: عملیات مربوط به ایجاد و تایید تراکنش کارت‌به‌کارت
+  - name: Unified
+    description: روتر یکپارچه‌ی کارت + کریپتو (پیشنهادی برای اتصال‌های جدید)
+  - name: Crypto
+    description: endpointهای مستقیمِ پرداخت ارز دیجیتال
 
 paths:
-  /create-payment.php:
+  /smspay/api/create-payment.php:
     post:
       tags: [Payment]
-      summary: ایجاد تراکنش پرداخت
+      summary: ایجاد تراکنش پرداخت کارتی
       description: یک فاکتور جدید می‌سازد و لینک پرداخت را برمی‌گرداند.
       requestBody:
         required: true
@@ -63,10 +69,10 @@ paths:
         "503":
           description: ظرفیت فاکتور همزمان پر است
 
-  /verify-payment.php:
+  /smspay/api/verify-payment.php:
     post:
       tags: [Payment]
-      summary: تایید تراکنش پرداخت
+      summary: تایید تراکنش پرداخت کارتی
       description: >
         وضعیت یک تراکنش را بررسی می‌کند. فقط اولین فراخوانی موفق مقدار
         success: true برمی‌گرداند.
@@ -99,6 +105,163 @@ paths:
           description: مهلت تراکنش تمام شده یا ناموفق بوده است
         "404":
           description: چنین تراکنشی یافت نشد
+
+  /pay/create-order.php:
+    post:
+      tags: [Unified]
+      summary: ساخت سفارش پرداخت یکپارچه (کارت و/یا کریپتو)
+      description: >
+        بسته به تنظیمات «💳 روش‌های پرداخت» فروشنده، مستقیم فاکتور کارتی،
+        مستقیم فاکتور کریپتویی، یا (اگه هر دو فعال باشن) یه صفحه‌ی
+        «کارت یا کریپتو؟» می‌سازه. این endpoint پیشنهادی برای اتصال‌های
+        جدیده — به‌جای صدا زدن مستقیم create-payment.php یا
+        create-crypto-payment.php.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateOrderRequest"
+            example:
+              order_id: "ORD123"
+              price_amount: 25000
+              callback_url: "https://yourbot.example.com/callback"
+      responses:
+        "200":
+          description: سفارش با موفقیت ایجاد شد
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateOrderResponse"
+              examples:
+                card:
+                  summary: مسیر فقط-کارتی
+                  value:
+                    success: true
+                    method: "card"
+                    pay_page_url: "https://cubevps.ir/smspay/pay.php?authority=bdc9e0497c..."
+                    authority: "bdc9e0497c121d6187750d53798dae81"
+                crypto:
+                  summary: مسیر فقط-کریپتویی
+                  value:
+                    success: true
+                    method: "crypto"
+                    pay_page_url: "https://cubevps.ir/crypto/pay.php?token=..."
+                choice:
+                  summary: هر دو روش فعال — صفحه‌ی انتخاب
+                  value:
+                    success: true
+                    method: "choice"
+                    pay_page_url: "https://cubevps.ir/pay/choose.php?token=..."
+        "400":
+          description: order_id یا price_amount ارسال نشده است
+        "401":
+          description: توکن ارسال نشده یا نامعتبر است
+        "422":
+          description: هیچ روش پرداختی برای این فروشنده فعال نیست
+
+  /pay/check-order-status.php:
+    get:
+      tags: [Unified]
+      summary: استعلام وضعیت نهایی سفارش (بر اساس order_id)
+      description: >
+        برای مسیر کریپتو و مسیر «انتخاب» کار می‌کنه. برای مسیر
+        فقط-کارتیِ مستقیم، success: false برمی‌گردونه — برای اون حالت از
+        verify-payment.php با authority استفاده کنید.
+      parameters:
+        - name: order_id
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: وضعیت فعلی سفارش
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CheckOrderStatusResponse"
+              examples:
+                choosing:
+                  value: { success: true, status: "choosing_method" }
+                card_verified:
+                  value: { success: true, method: "card", status: "verified" }
+                crypto_waiting:
+                  value: { success: true, method: "crypto", status: "waiting" }
+        "404":
+          description: سفارشی با این order_id پیدا نشد (احتمالاً مسیر فقط-کارتیِ مستقیم بوده)
+
+  /crypto/api/create-crypto-payment.php:
+    post:
+      tags: [Crypto]
+      summary: ساخت فاکتور پرداخت کریپتویی (مستقیم)
+      description: >
+        اگه نمی‌خواید از روتر یکپارچه استفاده کنید. فوراً یه ارز مشخص
+        نمی‌سازه؛ فقط یه فاکتور «در انتظار انتخاب ارز» می‌سازه — مشتری
+        خودش تو صفحه‌ی برگشتی USDT-BEP20 / TRX / TON رو انتخاب می‌کنه.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCryptoPaymentRequest"
+            example:
+              order_id: "ORD123"
+              price_amount: 25000
+              callback_url: "https://yourbot.example.com/callback"
+      responses:
+        "200":
+          description: فاکتور کریپتویی ساخته شد
+          content:
+            application/json:
+              example:
+                success: true
+                pay_page_url: "https://cubevps.ir/crypto/pay.php?token=..."
+                price_amount_toman: 25000
+                customer_fee_share_toman: 0
+                expires_in_minutes: 60
+        "400":
+          description: order_id یا price_amount ارسال نشده است
+        "403":
+          description: پرداخت کریپتویی برای این فروشنده فعال نیست
+        "422":
+          description: callback_url نامعتبر است
+
+  /crypto/api/check-crypto-payment-status.php:
+    get:
+      tags: [Crypto]
+      summary: استعلام وضعیت پرداخت کریپتویی (Polling)
+      description: >
+        ترجیحاً با `token` استفاده کنید، نه `payment_id` — payment_id
+        یه شناسه‌ی عددیِ قابل‌حدسه و بدون token، تئوری امکان دیدن وضعیت
+        فاکتورهای بقیه‌ی فروشنده‌ها هم هست.
+      parameters:
+        - name: token
+          in: query
+          required: false
+          description: public_token از pay_page_url (پارامتر پیشنهادی)
+          schema:
+            type: string
+        - name: payment_id
+          in: query
+          required: false
+          description: شناسه‌ی عددی NOWPayments (فقط برای سازگاری با قبل)
+          schema:
+            type: string
+        - name: order_id
+          in: query
+          required: false
+          description: "نیازمند هدر Authorization: Bearer — برای وقتی که هنوز ارز انتخاب نشده"
+          schema:
+            type: string
+      responses:
+        "200":
+          description: وضعیت فعلی پرداخت
+          content:
+            application/json:
+              example:
+                success: true
+                status: "waiting"
 
 components:
   securitySchemes:
@@ -176,3 +339,71 @@ components:
         status:
           type: string
           enum: [verified, pending, expired, failed]
+
+    CreateOrderRequest:
+      type: object
+      required: [order_id, price_amount]
+      properties:
+        order_id:
+          type: string
+          description: شناسه یکتای سفارش
+        price_amount:
+          type: number
+          description: مبلغ به تومان (نه ریال)
+        callback_url:
+          type: string
+          format: uri
+          description: اجباری برای مسیر کارتی؛ برای کریپتو/انتخاب هم توصیه می‌شه
+
+    CreateOrderResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        method:
+          type: string
+          enum: [card, crypto, choice]
+        pay_page_url:
+          type: string
+          format: uri
+        authority:
+          type: string
+          description: فقط برای method=card وجود دارد
+        duplicate:
+          type: boolean
+          description: اگر true باشد، یعنی فاکتور قبلی (هنوز معتبر) برگردانده شده، نه یک فاکتور تازه
+
+    CheckOrderStatusResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        method:
+          type: string
+          enum: [card, crypto]
+        status:
+          type: string
+          enum:
+            - choosing_method
+            - verified
+            - pending
+            - expired
+            - failed
+            - choosing_currency
+            - waiting
+            - confirming
+            - sending
+            - finished
+
+    CreateCryptoPaymentRequest:
+      type: object
+      required: [order_id, price_amount]
+      properties:
+        order_id:
+          type: string
+        price_amount:
+          type: number
+          description: مبلغ به تومان
+        callback_url:
+          type: string
+          format: uri
