@@ -62,8 +62,10 @@ cubepay-doc/
     ├── generic-integration-guide.md
     ├── wordpress-plugin-guide.md
     ├── faoxima-integration-guide.md
-    └── faoxima-ready-files/
-        └── faoxima-ready-files-guide.md
+    ├── faoxima-ready-files/
+    │   └── faoxima-ready-files-guide.md
+    └── mirzabot-ready-files/
+        └── mirzabot-ready-files-guide.md
 ```
 
 ---
@@ -76,6 +78,7 @@ cubepay-doc/
 |---|---|---|
 | 🤖 **Foxima** (و فورک‌هاش) | [نصب با فایل آماده](./integrations/faoxima-ready-files/faoxima-ready-files-guide.md) | فقط چند فایل PHP رو جایگزین می‌کنید — سریع‌ترین روش |
 | 🤖 **Foxima** (ویرایش دستی) | [راهنمای اتصال دستی](./integrations/faoxima-integration-guide.md) | اگه فایل‌های ربات‌تون شخصی‌سازی شده و نمی‌خواید کامل جایگزین بشه |
+| 🤖 **Mirzabot** (و فورک‌هاش) | [نصب با فایل آماده](./integrations/mirzabot-ready-files/mirzabot-ready-files-guide.md) | همون الگوی جایگزینی فایل، مخصوص Mirzabot |
 | 🌐 **وردپرس / ووکامرس** | [راهنمای وردپرس](./integrations/wordpress-plugin-guide.md) | نصب CubePay روی فروشگاه وردپرسی |
 | ⚙️ **هر پلتفرم دیگه** | [راهنمای اتصال عمومی](./integrations/generic-integration-guide.md) | اتصال مستقیم به API، مستقل از پلتفرم |
 | 🍎 **دریافت پیامک از آیفون** | [راهنمای iOS Shortcuts](./integrations/ios-shortcuts-sms-forwarding-guide.md) | جایگزین اپ‌های SMS Forwarder اندروید، مخصوص آیفون — بدون نصب اپ اضافه |
