@@ -78,6 +78,7 @@ cubepay-doc/
 | 🤖 **Foxima** (ویرایش دستی) | [راهنمای اتصال دستی](./integrations/faoxima-integration-guide.md) | اگه فایل‌های ربات‌تون شخصی‌سازی شده و نمی‌خواید کامل جایگزین بشه |
 | 🌐 **وردپرس / ووکامرس** | [راهنمای وردپرس](./integrations/wordpress-plugin-guide.md) | نصب CubePay روی فروشگاه وردپرسی |
 | ⚙️ **هر پلتفرم دیگه** | [راهنمای اتصال عمومی](./integrations/generic-integration-guide.md) | اتصال مستقیم به API، مستقل از پلتفرم |
+| 🍎 **دریافت پیامک از آیفون** | [راهنمای iOS Shortcuts](./integrations/ios-shortcuts-sms-forwarding-guide.md) | جایگزین اپ‌های SMS Forwarder اندروید، مخصوص آیفون — بدون نصب اپ اضافه |
 
 ---
 
