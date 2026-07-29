@@ -39,7 +39,55 @@ POST https://cubevps.ir/pay/create-order.php
 }
 ```
 
-مقدار `method` می‌تونه `card`, `crypto`, یا `choice` باشه. برای `choice`، فیلد `authority` وجود نداره (چون هنوز روش مشخص نشده) — نتیجه‌ی نهایی رو فقط از طریق `callback_url` می‌فهمید.
+مقدار `method` می‌تونه `card`, `crypto`, یا `choice` باشه. برای `choice`، فیلد `authority` وجود نداره (چون هنوز روش مشخص نشده) — نتیجه‌ی نهایی رو فقط از طریق `callback_url` یا با `check-order-status.php` زیر می‌فهمید.
+
+---
+
+## 🔍 استعلام وضعیت سفارش (Check Order Status)
+
+**Endpoint:**
+```
+GET https://cubevps.ir/pay/check-order-status.php?order_id=YOUR_ORDER_ID
+```
+با هدر `Authorization: Bearer YOUR_API_TOKEN`.
+
+تنها راهیه که فارغ از این‌که مشتری کارت انتخاب کرده، کریپتو، یا هنوز
+تصمیم نگرفته، با یه فراخوانی و بر پایه‌ی `order_id` خودتون وضعیت رو
+بگیرید — بدون نیاز به webhook. برای مسیر **کریپتو** و مسیر **انتخاب**
+همیشه کار می‌کنه.
+
+### ✅ نمونه پاسخ‌ها
+
+```json
+{ "success": true, "status": "choosing_method" }
+```
+```json
+{ "success": true, "method": "card", "status": "verified" }
+```
+```json
+{ "success": true, "method": "crypto", "status": "waiting" }
+```
+
+مقادیر ممکن برای `status`:
+
+| مسیر | مقادیر ممکن |
+|---|---|
+| کارت | `verified`, `pending`, `expired`, `failed` |
+| کریپتو | `choosing_currency`, `waiting`, `confirming`, `sending`, `finished`, `failed`, `expired` |
+| انتخاب | `choosing_method` (کاربر هنوز روش رو انتخاب نکرده) |
+
+فقط `verified` (کارت) و `finished` (کریپتو) به معنای «پرداخت قطعی»ه —
+بقیه رو در انتظار یا ناموفق در نظر بگیرید.
+
+⚠️ **استثنا — مسیر فقط-کارتیِ مستقیم:** اگه فقط کارت فعال باشه (بدون
+کریپتو)، این endpoint جواب نمی‌ده (`success: false`)، چون اون مسیر فقط
+با `authority` قابل پیگیریه، نه `order_id`. برای اون حالت، از
+[`verify-payment.php`](./API-REFERENCE.md#-تایید-تراکنش-verify-payment)
+با همون `authority` که از پاسخ `create-order.php` گرفتید استفاده کنید.
+
+**راهکار ساده برای پوشش هر سه حالت با یه تابع:** اول `check-order-status.php`
+رو با `order_id` امتحان کنید؛ اگه `success: false` برگردوند، به‌عنوان
+fallback با `authority` سراغ `verify-payment.php` برید.
 
 ---
 
@@ -62,9 +110,21 @@ POST https://cubevps.ir/crypto/api/create-crypto-payment.php
 ### چک وضعیت (Polling، اختیاری)
 
 ```
-GET https://cubevps.ir/crypto/api/check-crypto-payment-status.php?payment_id=XXXX
+GET https://cubevps.ir/crypto/api/check-crypto-payment-status.php?token=XXXX
 ```
-`payment_id` رو از callback یا از polling سمت مشتری (تو همون صفحه‌ی پرداخت) به دست میارید.
+
+| پارامتر | توضیح |
+|---|---|
+| `token` ✅ ترجیحاً همینو استفاده کنید | همون `public_token` که تو `pay_page_url` پرداخت کریپتویی هست |
+| `payment_id` (برای سازگاری با قبل) | شناسه‌ی عددی پرداخت نزد NOWPayments |
+| `order_id` (نیازمند `Authorization: Bearer`) | برای وقتی که هنوز ارز انتخاب نشده و `payment_id` معلوم نیست |
+
+⚠️ **چرا `token` بهتر از `payment_id`ه:** `token` یه رشته‌ی تصادفیِ
+غیرقابل‌حدسه، ولی `payment_id` یه شناسه‌ی عددیِ ساده‌ست که با
+امتحان‌کردن اعداد پشت‌سرهم قابل حدس زدنه — یعنی بدون `token`، تئوری
+هرکسی می‌تونست وضعیتِ فاکتورهای بقیه‌ی فروشنده‌ها رو هم فقط با امتحان
+کردن شماره ببینه. تا حد امکان `payment_id` رو تو URL عمومی (که به
+مرورگر مشتری داده می‌شه) قرار ندید.
 
 ---
 
