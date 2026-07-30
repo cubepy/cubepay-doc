@@ -29,3 +29,14 @@ jobs:
         run: pip install openapi-spec-validator
       - name: Validate spec
         run: openapi-spec-validator docs/openapi.yaml
+
+  php-lint:
+    name: Lint PHP snippets
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.2"
+      - name: Syntax-check every .php file
+        run: find . -name "*.php" -not -path "./.git/*" -print0 | xargs -0 -n1 php -l
