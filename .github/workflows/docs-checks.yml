@@ -1,0 +1,31 @@
+name: Docs checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  link-check:
+    name: Internal links & anchors
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - name: Check relative links and heading anchors
+        run: python3 scripts/check_docs_links.py
+
+  openapi-lint:
+    name: Validate openapi.yaml
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - name: Install openapi-spec-validator
+        run: pip install openapi-spec-validator
+      - name: Validate spec
+        run: openapi-spec-validator docs/openapi.yaml
