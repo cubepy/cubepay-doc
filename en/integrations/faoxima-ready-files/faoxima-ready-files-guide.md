@@ -41,7 +41,44 @@ UPDATE textbot SET text = '🟠 CubePay' WHERE id_text = 'zarinpey';
 
 ---
 
-## ✅ Installation Steps
+## 🤖 Automated Install with `install.php` (Optional, Replaces Steps 2 and 4)
+
+Instead of uploading the files manually and then entering the token from inside the bot,
+you can use `install.php` (in this same folder) — a wizard that runs either from a
+browser (shared hosting/cPanel) or from the command line (`php install.php` — servers
+with SSH/VPS access), and does the following for you:
+
+- Backs up your current files before replacing them
+- Copies the Part 1 files (and Part 2, if selected) to the correct paths
+- Writes the API token, enabled/disabled status, and button text directly to the bot's
+  database (no need to enter them manually from Telegram or run SQL in phpMyAdmin)
+
+### How to use it
+
+1. **Before uploading**, open `install.php` and change the `INSTALL_PASSWORD` value to a
+   password of your choosing — the script refuses to run while it's still the default.
+2. Upload the file next to the other files in this folder (`business_logic_1.php`,
+   `successful.php`, ...) — anywhere on your host, it doesn't need to sit inside the bot's
+   root folder.
+3. **Shared hosting/cPanel**: open the file's URL in your browser and fill out the form
+   (the bot's root path, API token, enabled/disabled, and your bot's own database
+   credentials from `config.php`). **VPS with SSH**: run `php install.php` and answer the
+   interactive prompts.
+4. After the success message, delete `install.php` from the server immediately — there's
+   also a "delete this file automatically" button on the success screen.
+
+⚠️ This script only replaces the files listed above and only writes the known
+`PaySetting.token_zarinpey` / `PaySetting.zarinpeystatus` / `textbot.zarinpey` values to
+the database — it never runs arbitrary queries. Still, since it takes your database
+password directly, make sure to change the install password and delete the file once
+you're done.
+
+If you'd rather do everything manually and step-by-step (or the script doesn't work with
+your fork), use the steps below — they do exactly what `install.php` automates.
+
+---
+
+## ✅ Manual Installation Steps
 
 ### Step 1 — Backup
 Make a copy of your bot's folder.
