@@ -227,9 +227,9 @@ curl -X POST https://cubevps.ir/smspay/api/create-payment.php \
   }'
 ```
 
-📎 More complete samples (Laravel, a ready-made PHP client, etc.) in [`examples/`](./examples/).
+📎 More complete samples (Laravel, a ready-made PHP client, etc.) in [`examples/`](../../docs/examples/).
 
-📎 For the full machine-readable spec, see the [`openapi.yaml`](./openapi.yaml) file, or try it directly:
+📎 For the full machine-readable spec, see the [`openapi.yaml`](../../docs/openapi.yaml) file, or try it directly:
 
 - 🧪 [Open in Swagger Editor](https://editor.swagger.io/?url=https://raw.githubusercontent.com/cubepy/cubepay-doc/main/docs/openapi.yaml)
 - 💻 [View in VS Code (web)](https://vscode.dev/github/cubepy/cubepay-doc/blob/main/docs/openapi.yaml)

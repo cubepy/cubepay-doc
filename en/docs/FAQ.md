@@ -23,7 +23,7 @@ Automatic confirmation is enabled by default on all approved accounts; you just 
 ## Technical / Language Questions
 
 **Is PHP supported?**
-✅ Yes, the API is public and HTTP/JSON based, usable from any language. Sample code in [docs/examples/](./examples/).
+✅ Yes, the API is public and HTTP/JSON based, usable from any language. Sample code in [docs/examples/](../../docs/examples/).
 
 **Is Node.js supported?**
 ✅ Yes, Node.js sample code is also available.
@@ -32,7 +32,7 @@ Automatic confirmation is enabled by default on all approved accounts; you just 
 ✅ Yes, CubePay places no restriction on your own database. You just store `order_id` and `authority`; your choice of database (SQLite, MySQL, PostgreSQL, …) is entirely up to you.
 
 **Do you have an official library (SDK)?**
-Currently a sample PHP client is provided at [`docs/examples/CubePayClient.php`](./examples/CubePayClient.php); for other languages use the plain HTTP samples.
+Currently a sample PHP client is provided at [`docs/examples/CubePayClient.php`](../../docs/examples/CubePayClient.php); for other languages use the plain HTTP samples.
 
 ## Platform-Specific Questions
 

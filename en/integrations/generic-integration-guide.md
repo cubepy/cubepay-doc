@@ -11,7 +11,7 @@ This guide is for anyone with their own bot or site (anything, not just Foxima) 
 ## Before you start, grab these 2 things from the management bot (`@cubepy_bot`):
 
 1. 🔑 **API Token** — from "🔗 My Panel"
-2. 📁 The **[`CubePayClient.php`](../docs/examples/CubePayClient.php)** file — from this same repository
+2. 📁 The **[`CubePayClient.php`](../../docs/examples/CubePayClient.php)** file — from this same repository
 
 ---
 
