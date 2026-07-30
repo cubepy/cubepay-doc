@@ -71,7 +71,7 @@ You get `payment_id` from the callback, or from client-side polling (on the paym
 ## 🔄 Data Sent to `callback_url`
 
 ### For Card Payments
-Exactly like [`API-REFERENCE.md`](./API-REFERENCE.md#-data-sent-to-callback_url) — includes `authority`. Call `verify-payment.php` for final confirmation.
+Exactly like [`API-REFERENCE.md`](../en/docs/API-REFERENCE.md#-data-sent-to-callback_url) — includes `authority`. Call `verify-payment.php` for final confirmation.
 
 ### For Crypto Payments
 ```json
@@ -107,7 +107,7 @@ If the signature doesn't match, completely ignore that request and don't mark th
 
 If your server is briefly unreachable or responds with a non-2xx code, this callback is retried up to **3 times** with delays in between. Still, networks are unpredictable — for full reliability, we recommend:
 - Respond with a 2xx quickly (no heavy processing) so a retry isn't needed.
-- Besides relying on the callback, also run a periodic check (e.g. every few minutes, for orders still "pending") using [`check-order-status.php`](#-check-order-status). That way, even if all 3 callback attempts fail for some reason (e.g. your server happened to restart at that exact moment), you can still finalize the order yourself.
+- Besides relying on the callback, also run a periodic check (e.g. every few minutes, for orders still "pending") using [`check-order-status.php`](#status-check-polling-optional). That way, even if all 3 callback attempts fail for some reason (e.g. your server happened to restart at that exact moment), you can still finalize the order yourself.
 
 ---
 

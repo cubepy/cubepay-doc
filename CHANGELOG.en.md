@@ -1,4 +1,4 @@
-![CubePay](../cubepay-logo.png)
+![CubePay](cubepay-logo.png)
 
 # 📋 Changelog
 
@@ -15,7 +15,7 @@ All notable changes to this project are recorded here, in chronological order.
 
 ### 📌 Recommendation for merchants
 
-Even though this bug is fixed, we still recommend also running a periodic check with [`check-order-status.php`](./docs/CRYPTO-API-REFERENCE.md#-check-order-status) for orders still "pending", in addition to relying on the callback — networks are unpredictable, and this is an extra layer of reliability.
+Even though this bug is fixed, we still recommend also running a periodic check with [`check-order-status.php`](./docs/CRYPTO-API-REFERENCE.md#-استعلام-وضعیت-سفارش-check-order-status) for orders still "pending", in addition to relying on the callback — networks are unpredictable, and this is an extra layer of reliability.
 
 ---
 
