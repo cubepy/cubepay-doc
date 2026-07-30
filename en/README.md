@@ -103,7 +103,7 @@ POST https://cubevps.ir/crypto/api/create-crypto-payment.php   ← crypto only
 
 Complete parameter, response, error-code, and transaction-rule details in 👉 **[docs/API-REFERENCE.md](./docs/API-REFERENCE.md)** (card) and **[docs/CRYPTO-API-REFERENCE.md](./docs/CRYPTO-API-REFERENCE.md)** (crypto / unified)
 
-Code samples in PHP, Python, Node.js, Laravel, and cURL 👉 **[docs/examples/](./docs/examples/)**
+Code samples in PHP, Python, Node.js, Laravel, and cURL 👉 **[docs/examples/](../docs/examples/)**
 
 ---
 
@@ -153,7 +153,7 @@ The most common questions (PHP/Node/SQLite support, enabling Auto Confirmation, 
 - Report a security vulnerability → [SECURITY.md](./SECURITY.md)
 - Version history → [CHANGELOG.md](./CHANGELOG.md)
 - Code of conduct → [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)
-- License → [LICENSE](./LICENSE)
+- License → [LICENSE](../LICENSE)
 
 
 ## 🔗 Links
