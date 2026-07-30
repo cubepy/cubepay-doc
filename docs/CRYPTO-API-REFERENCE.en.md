@@ -1,4 +1,4 @@
-<div align="center"><img src="../../cubepay-logo.png" alt="CubePay" width="220"></div>
+<div align="center"><img src="../cubepay-logo.png" alt="CubePay" width="220"></div>
 
 # 📚 API Reference — Unified Payments & Crypto
 
