@@ -38,7 +38,7 @@ cubepay-doc/
 │   ├── ios-shortcuts-sms-forwarding-guide.md
 │   ├── faoxima-integration-guide.md           ← manual edit guide for the Foxima bot codebase
 │   ├── faoxima-ready-files/                   ← drop-in PHP files that replace Foxima's own files
-│   └── mirzabot-ready-files/                  ← same drop-in-replacement pattern, for Mirzabot
+│   └── mirzabot-ready-files/                  ← CubePay is now merged upstream into Mirzabot's official repo (mahdiMGF2/mirzabot PR #75); this dir just holds a short pointer doc, no more drop-in files
 └── en/                                         ← English mirror (see "Localization" below)
 ```
 
@@ -57,7 +57,7 @@ cubepay-doc/
 - Endpoints are `.php` paths on `cubevps.ir` (legacy per-flow endpoints under `/smspay/api/` and `/crypto/api/`, plus a newer unified entry point `POST /pay/create-order.php` that auto-selects card vs. crypto vs. a chooser page based on what the merchant enabled). Keep new endpoint documentation consistent with this naming style.
 - Docs are written in an informal, emoji-headed Persian tone (`## 🚀 شروع سریع`, `## 📋 پارامترها`, etc.) with liberal use of tables for parameters/responses and fenced code blocks for requests/responses. Match this style rather than switching to plain prose when adding sections.
 - `README.md` contains a Mermaid flowchart of the payment flow — update it if the flow described changes, don't let prose and diagram drift apart.
-- The `integrations/*-ready-files/` guides document a "replace these exact files at these exact paths in a specific third-party bot codebase" pattern (see `integrations/faoxima-ready-files/faoxima-ready-files-guide.md`). Each guide separates **required/functional** files from **cosmetic/optional** ones (button text only) and calls out any accompanying SQL statement needed. Preserve that required-vs-cosmetic split when updating these guides or adding a new platform.
+- The `integrations/faoxima-ready-files/` guide documents a "replace these exact files at these exact paths in a specific third-party bot codebase" pattern. It separates **required/functional** files from **cosmetic/optional** ones (button text only) and calls out any accompanying SQL statement needed. Preserve that required-vs-cosmetic split when updating it or adding a new platform that still needs this pattern. `integrations/mirzabot-ready-files/` used to follow the same pattern but CubePay is now merged upstream into Mirzabot directly (mahdiMGF2/mirzabot PR #75) — that directory is just a short pointer/status doc now, not a file-replacement guide.
 - Cross-doc linking is relative (`../docs/API-REFERENCE.md#anchor`, `./integrations/...`); anchors reference Persian heading text (with emoji) since headings themselves are in Persian — check anchors still match after renaming a Persian heading.
 
 ## Contribution flow (from CONTRIBUTING.md / SECURITY.md)
