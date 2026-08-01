@@ -25,7 +25,7 @@ https://cubevps.ir/smspay/webhook/sms.php?secret=XXXXXXXXXXXXXXXXXXXXXXXX
 
 📥 **[دانلود CubePay SMS Forwarder (APK)](https://cubevps.ir/downloads/cubepay.apk)**
 
-🔒 **SHA-256:** `XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX`
+🔒 **SHA-256:** `452921c465b5e2d3e41d178d9ffa45c1efb4dd0e9066cfa56cb96aed5bc85e18`
 (هش فایل دانلودی رو با این مقدار مقایسه کنید تا مطمئن بشید فایل
 دستکاری نشده — از هر ابزار محاسبه‌ی SHA-256 روی گوشی یا کامپیوترتون
 می‌تونید استفاده کنید.)
