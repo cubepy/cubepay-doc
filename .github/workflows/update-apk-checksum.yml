@@ -1,0 +1,51 @@
+name: Sync Android APK checksum
+
+on:
+  schedule:
+    - cron: "0 3 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  update-checksum:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download current APK
+        run: curl -sSfL -o cubepay.apk https://cubevps.ir/downloads/cubepay.apk
+
+      - name: Sanity-check downloaded file
+        run: |
+          if [ "$(head -c2 cubepay.apk)" != "PK" ]; then
+            echo "Downloaded file doesn't look like a valid APK (missing ZIP/APK signature) — aborting without touching the docs." >&2
+            exit 1
+          fi
+          size=$(stat -c%s cubepay.apk)
+          if [ "$size" -lt 100000 ]; then
+            echo "Downloaded file is suspiciously small ($size bytes) — aborting without touching the docs." >&2
+            exit 1
+          fi
+
+      - name: Compute checksum
+        id: hash
+        run: echo "sha256=$(sha256sum cubepay.apk | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
+
+      - name: Update guide with new checksum
+        run: |
+          sed -i -E "s/(SHA-256:\*\* \`)[0-9a-f]{64}(\`)/\1${{ steps.hash.outputs.sha256 }}\2/" \
+            integrations/android-sms-forwarder-guide.md
+
+      - name: Commit and push if checksum changed
+        run: |
+          if git diff --quiet -- integrations/android-sms-forwarder-guide.md; then
+            echo "Checksum unchanged, nothing to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add integrations/android-sms-forwarder-guide.md
+          git commit -m "chore: sync Android SMS Forwarder APK checksum"
+          git push
