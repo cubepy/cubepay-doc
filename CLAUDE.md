@@ -26,7 +26,6 @@ cubepay-doc/
 ├── docs/
 │   ├── API-REFERENCE.md                       ← card-to-card API (create-payment / verify-payment / callback)
 │   ├── CRYPTO-API-REFERENCE.md                ← crypto + unified router API
-│   ├── CRYPTO-API-REFERENCE.en.md             ← ⚠️ stray English copy at root, see "Known inconsistency" below
 │   ├── FAQ.md
 │   ├── openapi.yaml                           ← OpenAPI 3.0.3 spec covering both APIs
 │   └── examples/                              ← one runnable snippet per language/framework
@@ -36,6 +35,7 @@ cubepay-doc/
 │   ├── generic-integration-guide.md           ← platform-agnostic, direct API integration
 │   ├── wordpress-plugin-guide.md
 │   ├── ios-shortcuts-sms-forwarding-guide.md
+│   ├── android-sms-forwarder-guide.md          ← CubePay's own dedicated Android SMS-forwarding app (APK hosted on cubevps.ir)
 │   ├── faoxima-integration-guide.md           ← manual edit guide for the Foxima bot codebase
 │   ├── faoxima-ready-files/                   ← drop-in PHP files that replace Foxima's own files
 │   └── mirzabot-ready-files/                  ← CubePay is now merged upstream into Mirzabot's official repo (mahdiMGF2/mirzabot PR #75); this dir just holds a short pointer doc, no more drop-in files
@@ -46,10 +46,10 @@ cubepay-doc/
 
 - **Persian (root-level files) is the source of truth.** New features/fixes are written in Persian first.
 - `en/` mirrors most — but not all — root docs (`README.md`, `START-HERE.md`, `CONTRIBUTING.md`, `SECURITY.md`, `CODE_OF_CONDUCT.md`, `CHANGELOG.md`, `docs/API-REFERENCE.md`, `docs/CRYPTO-API-REFERENCE.md`, `docs/FAQ.md`, and the Foxima/generic/WordPress integration guides).
-- `en/` currently has **no** English counterpart for: `docs/openapi.yaml`, `docs/examples/`, `integrations/ios-shortcuts-sms-forwarding-guide.md`, and `integrations/mirzabot-ready-files/`.
+- `en/` currently has **no** English counterpart for: `docs/openapi.yaml`, `docs/examples/`, `integrations/ios-shortcuts-sms-forwarding-guide.md`, `integrations/android-sms-forwarder-guide.md`, and `integrations/mirzabot-ready-files/`.
 - English pages are translations maintained **by hand** and lag behind the Persian originals — e.g. at the time of writing, `CHANGELOG.md` (fa) is at version `2.0.1` while `CHANGELOG.en.md` is at `1.13.1`, and content further back in the two changelogs also diverges in numbering. When translating an update, don't assume version numbers line up 1:1 between the two files — check the actual entry content, not just the version tag.
 - Every doc that has a translation links to its counterpart at the top (`🇮🇷 فارسی · [🇬🇧 English](...)`). When adding a new doc that should be bilingual, add this header to both sides and place the English file at the mirrored path under `en/`.
-- **Known inconsistency to be aware of:** `docs/CRYPTO-API-REFERENCE.en.md` (at repo root, alongside the Persian version) is a *different, stale* English copy from `en/docs/CRYPTO-API-REFERENCE.md` — diffing them shows the root copy is missing the "Retries on Failure" section. Don't edit one assuming it's a symlink or generated copy of the other; check both if asked to update the English crypto reference, and flag/consolidate the duplication if doing a larger cleanup.
+- The English crypto reference lives only at `en/docs/CRYPTO-API-REFERENCE.md` — there used to be a second, stale, unlinked copy at `docs/CRYPTO-API-REFERENCE.en.md` (missing the "Retries on Failure" section); it was removed since nothing linked to it. Don't recreate a root-level `.en.md` copy — keep English translations under `en/` only.
 
 ## Content conventions
 
