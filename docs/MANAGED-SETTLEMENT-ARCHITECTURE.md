@@ -405,4 +405,4 @@ Requested → Processing → Failed → Balance Returned
 
 ---
 
-🔗 مرتبط: [`docs/CRYPTO-API-REFERENCE.md`](./CRYPTO-API-REFERENCE.md) · [`CONTRIBUTING.md`](../CONTRIBUTING.md) · [`SECURITY.md`](../SECURITY.md)
+🔗 مرتبط: [`docs/CUBEPAY-VIP-API-REFERENCE.md`](./CUBEPAY-VIP-API-REFERENCE.md) · [`docs/CRYPTO-API-REFERENCE.md`](./CRYPTO-API-REFERENCE.md) · [`CONTRIBUTING.md`](../CONTRIBUTING.md) · [`SECURITY.md`](../SECURITY.md)
