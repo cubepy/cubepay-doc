@@ -6,6 +6,36 @@ All notable changes to this project are recorded here, in chronological order.
 
 ---
 
+## [2.1.x] — 👑 CubePay VIP: settlement handled by CubePay (no SMS Forwarder needed)
+
+> ⚠️ This English changelog lags behind the Persian one. Entries between `1.13.1` and this one have not been translated yet — see [`CHANGELOG.md`](./CHANGELOG.md) for the full history. This entry consolidates the CubePay VIP releases (`2.1.0`–`2.1.2`).
+
+An entirely **optional, parallel** capability alongside the existing system — it replaces nothing. It is aimed at merchants who cannot install an SMS Forwarder: the money is collected on a CubePay treasury card, the fee is deducted, and the merchant withdraws in crypto whenever they want. A merchant who does not enable it sees no difference at all.
+
+### Added
+
+- **Monthly VIP subscription** — activation happens through a NOWPayments crypto payment link. The account is enabled automatically once payment clears, and a renewal warning is sent 3 days before expiry.
+- **A dedicated VIP token** (`vip_`, plus the `vipsb_` sandbox variant), separate from the normal API token. When the subscription expires, only that token stops working **for creating invoices** — the dashboard, balances and **withdrawals** keep working.
+- **Append-only ledger** — no balance column is ever edited directly; all four balances ("pending", "available", "settling", "settled") are computed with `SUM()` over the ledger.
+- **Automated crypto withdrawals** via NOWPayments, with the conversion rate locked at request time, payouts only to admin-approved addresses, and the amount returned **exactly once** on failure.
+- **Server-side caps** — per invoice (default 1,000,000 toman), daily, and monthly (default 100,000,000 toman). They are enforced on the server, not just in the panel.
+- **Duplicate guard** — detects similar invoices by merchant + amount + customer + time window, not by amount alone.
+- **Mini App panels** — a VIP tab for merchants (dashboard, invoices, wallet, withdrawals, and a **"📖 Fees & limits"** tab showing every critical number in one place) and a full admin panel (merchant approval, caps, fees, subscription, token, ledger, revenue report).
+- **Migrating to VIP takes only a token swap** — the unified router (`POST /pay/create-order.php`) recognises `vip_` tokens and hands the request to the VIP module, so an existing Foxima bot, WooCommerce plugin, or custom integration switches over by changing nothing but the token.
+- **Documentation** — [`en/docs/CUBEPAY-VIP-API-REFERENCE.md`](./en/docs/CUBEPAY-VIP-API-REFERENCE.md).
+
+### Changed
+
+- **Manual invoice creation is impossible in this module** — not from the merchant panel, not from the bot, not from the admin panel. The only way is `create-order.php` with a VIP token.
+- **`order_id` is unique forever** — unlike the existing card path, it cannot be reused even after the invoice is cancelled.
+- Every amount in this module is in **toman** (not rial).
+
+### 🔒 Fully separate from the existing paths
+
+The card-to-card SMS Forwarder path and the normal merchants' 3% crypto path are **unchanged**. The tables, the fee settings and the tokens are entirely separate, and the fee wallet is never checked on the VIP path. The only shared resource is the NOWPayments account, and a reserve guard was added there so that an "withdraw all commission" action cannot sweep up balances belonging to VIP merchants.
+
+---
+
 ## [1.13.1] — Fix: crypto payment callbacks were never actually sent
 
 ### Fixed

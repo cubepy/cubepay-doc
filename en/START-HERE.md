@@ -36,6 +36,7 @@ Depending on what you're using, follow one of these guides:
 | A Foxima bot you've already customized | [Manual integration guide](../integrations/faoxima-integration-guide.md) |
 | A **WordPress/WooCommerce** store | [WordPress guide](../integrations/wordpress-plugin-guide.md) |
 | Your own site or bot with custom code | [Generic integration guide](../integrations/generic-integration-guide.md) |
+| You can't install an SMS Forwarder and want CubePay to collect the money and settle in crypto | [docs/CUBEPAY-VIP-API-REFERENCE.md](./docs/CUBEPAY-VIP-API-REFERENCE.md) |
 | Just want to test the API | [docs/API-REFERENCE.md](../docs/API-REFERENCE.md) and [docs/examples/](../docs/examples/) |
 
 ## Have a question?
