@@ -32,6 +32,8 @@ function cubepay_create_payment($amount_toman, $order_id, $callback_url, $descri
     // بیشتر → 💳 روش‌های پرداخت»)، خودش تصمیم می‌گیره فاکتور کارتی بسازه،
     // کریپتویی بسازه، یا صفحه‌ی «کارت یا کریپتو؟» به مشتری نشون بده.
     // برخلاف endpoint قدیمیِ فقط-کارتی، مبلغ اینجا «تومان»ه، نه ریال.
+    // 👑 اگه اشتراک CubePay VIP دارید: همین کد دست‌نخورده کار می‌کنه،
+    // فقط $token رو با توکن vip_… عوض کنید تا کارت خزانه نشون داده بشه.
     $data = [
         "order_id" => (string) $order_id,
         "price_amount" => $amount_toman,
