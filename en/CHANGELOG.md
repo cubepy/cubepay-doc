@@ -6,6 +6,122 @@ All notable changes to this project are recorded here, in chronological order.
 
 ---
 
+## [2.1.2] — Default monthly cap for VIP merchants
+
+### Added
+
+- **A global default monthly cap** (`default_monthly_limit_toman`) — initially **100,000,000 toman**, changeable live from the admin panel (⚙️ Settings tab). Until now the monthly cap only applied when an admin had set it on that specific merchant; it now applies to everyone, like the daily cap.
+
+### Changed
+
+- **The meaning of `monthly_limit_toman` on a merchant profile is now more precise**, so that "this merchant has no monthly cap" remains expressible:
+  - `NULL` (empty) → follow the global default
+  - `0` → this merchant has no monthly cap
+  - `> 0` → this merchant's own cap
+  - global default `0` → nobody has a monthly cap
+- Because the per-merchant column defaults to `NULL`, the new cap reaches **every existing and future merchant automatically**, and later changes to the default propagate immediately.
+- The documented subscription price was updated to **1,000,000 toman**.
+
+---
+
+## [2.1.1] — Migrating to VIP without code changes: just swap the token
+
+### Added
+
+- **The unified router (`POST /pay/create-order.php`) now recognises VIP tokens** — if the token starts with `vip_` (or `vipsb_` for sandbox), the request is handed to the CubePay VIP module automatically. That means the Foxima bot, WordPress plugin, or custom code you already run switches to VIP **by changing only the token** — no endpoint change, no field renames.
+- **`price_amount` is accepted as an alias for `amount_toman`** in `managed-settlement/api/create-order.php` (both are toman), so the field name doesn't need changing either.
+- The VIP create-order response now also returns `method: "card"`, so code that already branched on `method` keeps working.
+
+### 📌 For normal merchants
+
+Nothing changes. A normal token never starts with `vip_` (the API token is a 64-character hex string and the sandbox token starts with `test_`), so the existing path is untouched.
+
+---
+
+## [2.1.0] — 👑 CubePay VIP: settlement handled by CubePay (no SMS Forwarder needed)
+
+An entirely **optional, parallel** capability alongside the existing system — it replaces nothing. It is aimed at merchants who cannot install an SMS Forwarder: the money is collected on a CubePay treasury card, the fee is deducted, and the merchant withdraws in crypto whenever they want. A merchant who does not enable it sees no difference at all.
+
+### Added
+
+- **Monthly VIP subscription** — activation happens through a NOWPayments crypto payment link. The account is enabled automatically once payment clears, and a renewal warning is sent 3 days before expiry.
+- **A dedicated VIP token** (`vip_`, plus the `vipsb_` sandbox variant), separate from the normal API token. When the subscription expires, only that token stops working **for creating invoices** — the dashboard, balances and **withdrawals** keep working.
+- **Append-only ledger** — no balance column is ever edited directly; all four balances ("pending", "available", "settling", "settled") are computed with `SUM()` over the ledger.
+- **Automated crypto withdrawals** via NOWPayments, with the conversion rate locked at request time, payouts only to admin-approved addresses, and the amount returned **exactly once** on failure.
+- **Server-side caps** — per invoice (default 1,000,000 toman), daily, and monthly. They are enforced on the server, not just in the panel.
+- **Duplicate guard** — detects similar invoices by merchant + amount + customer + time window, not by amount alone.
+- **Mini App panels** — a VIP tab for merchants (dashboard, invoices, wallet, withdrawals, and a **"📖 Fees & limits"** tab showing every critical number in one place) and a full admin panel (merchant approval, caps, fees, subscription, token, ledger, revenue report).
+- **Documentation** — [`docs/CUBEPAY-VIP-API-REFERENCE.md`](./docs/CUBEPAY-VIP-API-REFERENCE.md).
+
+### Changed
+
+- **Manual invoice creation is impossible in this module** — not from the merchant panel, not from the bot, not from the admin panel. The only way is `create-order.php` with a VIP token.
+- **`order_id` is unique forever** — unlike the existing card path, it cannot be reused even after the invoice is cancelled.
+- Every amount in this module is in **toman** (not rial).
+
+### 🔒 Fully separate from the existing paths
+
+The card-to-card SMS Forwarder path and the normal merchants' 3% crypto path are **unchanged**. The tables, the fee settings and the tokens are entirely separate, and the fee wallet is never checked on the VIP path. The only shared resource is the NOWPayments account, and a reserve guard was added there so that a "withdraw all commission" action cannot sweep up balances belonging to VIP merchants.
+
+---
+
+## [2.0.1] — Fix: crypto payment callbacks were never actually sent
+
+### Fixed
+
+- **Crypto callback was never fired** — due to a missing line in the IPN webhook, when a crypto payment reached a final state (`finished`/`failed`/`expired`), the notification to the merchant's `callback_url` never actually happened — even though the function was fully written and the HMAC signature implemented inside it. That meant merchants relying solely on the callback (rather than `check-order-status.php`) were never told automatically that their customer's crypto payment had completed. Now fixed.
+- **No retries and no delivery confirmation** — the callback used to be sent exactly once, and the result (whether it actually reached the merchant's server) was never checked. It now retries up to 3 times with delays, and inspects and logs the merchant server's HTTP response code.
+
+### 📌 Recommendation for merchants
+
+Even though this bug is fixed, we recommend polling [`check-order-status.php`](./docs/CRYPTO-API-REFERENCE.md#status-check-polling-optional) periodically for orders still "pending", in addition to relying on the callback — networks are always unpredictable, and this is one extra layer of certainty.
+
+---
+
+## [2.0.0] — CubePay becomes a Payment OS (long-polling, risk engine, sandbox, developer portal, settlement, queue)
+
+This is the largest update to CubePay so far — it effectively turns the gateway from a "card-to-card confirmer" into a more complete financial backend. Nothing in the existing API contract (`create-payment`, `verify-payment`) changed; everything here is additive, not a replacement.
+
+### Added
+
+- **Long-polling for payment status** — instead of answering immediately, the request stays open for up to 20 seconds and responds the moment the status changes. Real-time confirmation latency dropped from ~4 seconds (the old polling) to ~1 second, with no WebSocket or new infrastructure. The duration is configurable.
+- **A real wallet ledger** — the "Wallet" tab now separates "available balance" from "pending" (fees reserved against open, not-yet-expired invoices), together with the full history of every wallet transaction.
+- **Risk engine (customer phase)** — each invoice gets a 0-100 risk score on the first visit to the payment page (based on repeated IPs, several different merchants from one IP, deviation from the merchant's average amount, suspicious User-Agent). It is only an advisory signal and never blocks a payment.
+- **Risk engine (merchant phase)** — the `🚨 Merchant risk` admin menu lists merchants with a high deposit-mismatch rate, a high failure rate, a high average customer risk, or a sudden jump in volume.
+- **Merchant dashboard (analytics tab)** — 14-day turnover chart, success rate, average transaction amount, busiest hours, and the ratio of automatic to manual confirmations.
+- **Sandbox mode** — every merchant gets a test token (`test_...`) separate from the real one; invoices created with it neither deduct a real fee nor need a real card, and the payment page shows "simulate success/failure" buttons instead of a card number. For testing an integration before going live.
+- **Developer portal** — full documentation plus a live API explorer; you can create and simulate an invoice directly with the test token, without writing any code.
+- **API versioning** — all the main endpoints are now also available under `/api/v1/` (the old paths keep working unchanged), so future updates never break existing merchants.
+- **Settlement engine for the crypto wallet** — on-demand withdrawal requests (not only scheduled ones); VIP merchants get an immediate real settlement, everyone else goes through admin approval.
+- **SMS processing queue optimisation** — the SMS webhook now answers the forwarder app immediately after recording the payment, and performs the slow network work (Telegram, merchant webhook) afterwards — to avoid timeouts and pointless retries under load.
+
+### Fixed
+
+- Multi-payment router bug: on the "both payment methods" path, card invoices were never stored, so card payments always came back as "pending" even after a successful payment. They are now stored and read correctly.
+- The "📚 API documentation" link (both in the bot and in the Mini App), which pointed at an empty/abandoned GitHub repository, now points at the real developer portal.
+
+### Security
+
+- Risk scores and anomaly signals are advisory input for manual review only, and make no automatic decisions (no blocking, no rejecting payments).
+- The sandbox simulation endpoint verifies that the invoice really is a test invoice before doing anything; on a real invoice it always returns 403.
+
+---
+
+## [1.13.1] — Fix: crypto payment callbacks were never actually sent
+
+> ℹ️ Numbering note: this entry and the Persian `2.0.1` describe the same fix. The two changelogs drifted apart in numbering — match entries by content, not by version tag.
+
+### Fixed
+
+- **Crypto callback was never fired** — due to a missing call in the IPN webhook handler, when a crypto payment reached a final state (`finished`/`failed`/`expired`), the notification to the merchant's `callback_url` never actually happened — even though the function that builds and signs (HMAC) the payload was fully implemented. This meant merchants relying solely on the callback (instead of `check-order-status.php`) never learned that their customer's crypto payment had completed. This is now fixed.
+- **No retries, no delivery verification** — callback delivery previously happened only once, and the result (whether it actually reached the merchant's server) was never checked. It now retries up to 3 times with delays, and checks/logs the merchant server's HTTP response code.
+
+### 📌 Recommendation for merchants
+
+Even though this bug is fixed, we still recommend also running a periodic check with [`check-order-status.php`](./docs/CRYPTO-API-REFERENCE.md#status-check-polling-optional) for orders still "pending", in addition to relying on the callback — networks are unpredictable, and this is an extra layer of reliability.
+
+---
+
 ## [1.13.0] — Security, multi-wallet support, and crypto callbacks to the merchant's site
 
 ### Added
