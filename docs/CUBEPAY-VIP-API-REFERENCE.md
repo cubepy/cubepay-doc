@@ -91,14 +91,18 @@ flowchart TD
 |---|---|---|
 | کارمزدِ CubePay روی هر فاکتور | **۱۰٪** | `default_fee_percent` (سراسری) یا `fee_percent` (هر فروشنده) |
 | حداقل/حداکثرِ کارمزدِ هر فاکتور | بدون حد | `fee_min_toman` / `fee_max_toman` |
-| اشتراکِ ماهانه‌ی VIP | **۵۰۰٬۰۰۰ تومان / ۱ ماه** | `subscription_fee_toman` / `subscription_months` |
+| اشتراکِ ماهانه‌ی VIP | **۱٬۰۰۰٬۰۰۰ تومان / ۱ ماه** | `subscription_fee_toman` / `subscription_months` |
 | هشدارِ انقضای اشتراک | **۳ روز قبل** | `subscription_warn_days_before` |
 | سقفِ مبلغِ هر فاکتور | **۱٬۰۰۰٬۰۰۰ تومان** | `default_per_tx_limit_toman` / `per_tx_limit_toman` |
 | سقفِ روزانه | طبقِ تنظیمِ ادمین | `default_daily_limit_toman` / `daily_limit_toman` |
-| سقفِ ماهانه | بدون سقف | `monthly_limit_toman` |
+| سقفِ ماهانه | **۱۰۰٬۰۰۰٬۰۰۰ تومان** | `default_monthly_limit_toman` / `monthly_limit_toman` |
 | حداقلِ مبلغِ هر برداشت | طبقِ تنظیمِ ادمین | `default_min_withdrawal_toman` / `min_withdrawal_toman` |
 | حداکثرِ مبلغِ هر برداشت | بدون سقف | `max_withdrawal_toman` |
 | ضدتکرار | **۳ فاکتورِ مشابه در ۱۵ دقیقه** | `duplicate_guard_max_count` / `duplicate_guard_window_minutes` |
+
+> 📌 **سقفِ روزانه و ماهانه چطور حساب می‌شوند؟** مجموعِ فاکتورهای **پرداخت‌شده‌ی** شما در آن بازه — نه فاکتورهای ساخته‌شده. فاکتورِ منقضی یا لغوشده در سقف حساب نمی‌شود. فاکتورهای Sandbox هم اصلاً شمرده نمی‌شوند. مصرفِ فعلی‌تان در `dashboard.php` زیرِ `today_paid_toman` و `this_month_paid_toman` است.
+>
+> اگر ادمین برای حسابِ شما سقفِ اختصاصی تعیین نکرده باشد، همان پیش‌فرضِ سراسریِ بالا اعمال می‌شود — و اگر ادمین بعداً پیش‌فرض را عوض کند، حسابِ شما هم بلافاصله همان را دنبال می‌کند. مقدارِ `null` در پاسخِ `dashboard.php` یعنی آن سقف برای شما اعمال نمی‌شود.
 
 ### حداقلِ برداشت در سطحِ شبکه
 
@@ -143,8 +147,8 @@ Authorization: Bearer <توکنِ **عادیِ** فروشنده>
 {
   "success": true,
   "invoice_url": "https://nowpayments.io/payment/?iid=1234567890",
-  "amount_toman": 500000,
-  "amount_usd": 5.75,
+  "amount_toman": 1000000,
+  "amount_usd": 11.50,
   "months": 1,
   "message": "برای فعال‌سازی، لینکِ پرداخت را باز کنید. بعد از پرداخت، توکنِ VIP شما خودکار صادر می‌شود."
 }
@@ -375,7 +379,7 @@ GET /managed-settlement/api/dashboard.php
   "limits": {
     "per_tx_limit_toman": 1000000,
     "daily_limit_toman": 10000000,
-    "monthly_limit_toman": null,
+    "monthly_limit_toman": 100000000,
     "min_withdrawal_toman": 500000,
     "max_withdrawal_toman": null
   },

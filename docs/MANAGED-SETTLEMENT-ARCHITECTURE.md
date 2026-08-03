@@ -104,7 +104,7 @@ CREATE TABLE mst_merchant_profile (
     settlement_tier         VARCHAR(30) NOT NULL DEFAULT 'vip',   -- سطح دسترسی؛ 'vip' = برند فعلیِ محصول «CubePay VIP» — بستر برای سطح‌بندیِ آینده هم هست
     per_tx_limit_toman      DECIMAL(20,2) NOT NULL DEFAULT 1000000,
     daily_limit_toman       DECIMAL(20,2) NOT NULL DEFAULT 10000000,
-    monthly_limit_toman     DECIMAL(20,2) NULL,
+    monthly_limit_toman     DECIMAL(20,2) NULL,  -- NULL = پیش‌فرضِ سراسری · 0 = بدون سقف · >0 = سقفِ اختصاصی
     fee_percent             DECIMAL(5,2) NOT NULL DEFAULT 10.00,
     fee_min_toman           DECIMAL(20,2) NULL,
     fee_max_toman           DECIMAL(20,2) NULL,
@@ -409,6 +409,7 @@ Requested → Processing → Failed → Balance Returned
 | **`ipn_callback_url` برای payout** | تصور می‌شد تنظیمِ دشبورد است | **فیلدِ بدنه‌ی درخواست** است — بدون آن هیچ webhookی نمی‌رسد | بدون این، هر برداشت تا ابد `processing` می‌ماند |
 | **نقدینگیِ خزانه** | ❗ باز | شارژِ دستی + کران‌جابِ پایشِ موجودی (`treasury-liquidity-check.php`) | تصمیمِ عملیاتی گرفته شد |
 | **رزروِ موجودیِ VIP** | دیده نشده بود | گاردِ `np_vip_reserved_usd()` روی «برداشتِ کلِ کارمزد» | حسابِ NOWPayments بینِ VIP و مسیرِ ۳٪ مشترک است |
+| **سقفِ ماهانه** | بدونِ پیش‌فرضِ سراسری؛ فقط اگر ادمین برای همان فروشنده ست می‌کرد | پیش‌فرضِ سراسریِ `default_monthly_limit_toman` (اولیه: ۱۰۰ میلیون تومان)، با تفکیکِ `NULL` (پیروی از پیش‌فرض) از `0` (بدونِ سقف) | سقف باید روی همه اعمال شود، نه فقط روی کسی که دستی تنظیم شده |
 
 ### باگ‌هایی که در تستِ واقعی پیدا و رفع شدند
 
