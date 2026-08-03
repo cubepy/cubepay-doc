@@ -49,6 +49,8 @@ cubepay-doc/
 ├── docs/
 │   ├── API-REFERENCE.md          ← مرجع کامل فنی API کارت‌به‌کارت (Endpoints, پارامترها, خطاها)
 │   ├── CRYPTO-API-REFERENCE.md   ← 🆕 مرجع فنی پرداخت ارز دیجیتال و روتر یکپارچه
+│   ├── CUBEPAY-VIP-API-REFERENCE.md          ← 👑 مرجع فنی «CubePay VIP» (تسویه توسط CubePay)
+│   ├── MANAGED-SETTLEMENT-ARCHITECTURE.md    ← معماری و تصمیم‌های طراحیِ CubePay VIP
 │   ├── FAQ.md                    ← سوالات متداول
 │   ├── openapi.yaml              ← اسپک OpenAPI 3.0 (برای Postman/Swagger)
 │   └── examples/                 ← نمونه کد آماده به ازای هر زبان
@@ -106,7 +108,7 @@ POST https://cubevps.ir/smspay/api/verify-payment.php
 POST https://cubevps.ir/crypto/api/create-crypto-payment.php   ← فقط ارز دیجیتال
 ```
 
-جزئیات کامل پارامترها، پاسخ‌ها، کدهای خطا و قوانین تراکنش در 👉 **[docs/API-REFERENCE.md](./docs/API-REFERENCE.md)** (کارت) و **[docs/CRYPTO-API-REFERENCE.md](./docs/CRYPTO-API-REFERENCE.md)** (ارز دیجیتال / یکپارچه)
+جزئیات کامل پارامترها، پاسخ‌ها، کدهای خطا و قوانین تراکنش در 👉 **[docs/API-REFERENCE.md](./docs/API-REFERENCE.md)** (کارت) و **[docs/CRYPTO-API-REFERENCE.md](./docs/CRYPTO-API-REFERENCE.md)** (ارز دیجیتال / یکپارچه) و **[docs/CUBEPAY-VIP-API-REFERENCE.md](./docs/CUBEPAY-VIP-API-REFERENCE.md)** (CubePay VIP — تسویه توسط CubePay)
 
 نمونه کد در PHP، Python، Node.js، Laravel و cURL 👉 **[docs/examples/](./docs/examples/)**
 
