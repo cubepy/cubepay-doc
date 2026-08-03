@@ -63,6 +63,8 @@ cubepay-doc/
     ├── generic-integration-guide.md
     ├── wordpress-plugin-guide.md
     ├── faoxima-integration-guide.md
+    ├── android-sms-forwarder-guide.md      ← CubePay's own Android SMS-forwarding app
+    ├── ios-shortcuts-sms-forwarding-guide.md  ← Bank SMS from an iPhone, no extra app
     └── faoxima-ready-files/
         └── faoxima-ready-files-guide.md
 ```
@@ -104,7 +106,7 @@ POST https://cubevps.ir/crypto/api/create-crypto-payment.php   ← crypto only
 
 Complete parameter, response, error-code, and transaction-rule details in 👉 **[docs/API-REFERENCE.md](./docs/API-REFERENCE.md)** (card) and **[docs/CRYPTO-API-REFERENCE.md](./docs/CRYPTO-API-REFERENCE.md)** (crypto / unified) and **[docs/CUBEPAY-VIP-API-REFERENCE.md](./docs/CUBEPAY-VIP-API-REFERENCE.md)** (CubePay VIP — settlement handled by CubePay)
 
-Code samples in PHP, Python, Node.js, Laravel, and cURL 👉 **[docs/examples/](../docs/examples/)**
+Code samples in PHP, Python, Node.js, Laravel, and cURL 👉 **[docs/examples/](./docs/examples/)**
 
 ---
 

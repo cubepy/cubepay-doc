@@ -1,0 +1,411 @@
+openapi: 3.0.3
+info:
+  title: CubePay API
+  description: >
+    API for creating and automatically confirming card-to-card transactions
+    (detected from the bank's SMS) and crypto transactions (detected on the
+    blockchain), including a unified router that picks between the two
+    automatically based on the merchant's settings.
+  version: "1.1.0"
+  contact:
+    name: CubePay Support
+    url: https://t.me/cubepy_bot
+
+servers:
+  - url: https://cubevps.ir
+    description: Production server
+
+security:
+  - bearerAuth: []
+
+tags:
+  - name: Payment
+    description: Creating and confirming card-to-card transactions
+  - name: Unified
+    description: Unified card + crypto router (recommended for new integrations)
+  - name: Crypto
+    description: Direct crypto payment endpoints
+
+paths:
+  /smspay/api/create-payment.php:
+    post:
+      tags: [Payment]
+      summary: Create a card payment transaction
+      description: Creates a new invoice and returns the payment link.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatePaymentRequest"
+            example:
+              amount: 200000
+              order_id: "ORD123"
+              callback_url: "https://yourbot.example.com/callback"
+              type: "card"
+              description: "Wallet top-up"
+              customer_user_id: "123456789"
+      responses:
+        "200":
+          description: Transaction created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreatePaymentResponse"
+              example:
+                success: true
+                authority: "bdc9e0497c121d6187750d53798dae81"
+                payment_link: "https://cubevps.ir/smspay/pay.php?authority=bdc9e0497c121d6187750d53798dae81"
+                pay_amount: 200720
+                pay_amount_toman: 20072
+        "401":
+          description: Token missing or invalid
+        "403":
+          description: The merchant account has not been approved yet
+        "422":
+          description: Invalid input values (amount, order_id or callback_url)
+        "402":
+          description: Insufficient balance in the fee wallet
+        "503":
+          description: The concurrent-invoice capacity is full
+
+  /smspay/api/verify-payment.php:
+    post:
+      tags: [Payment]
+      summary: Verify a card payment transaction
+      description: >
+        Checks the status of a transaction. Only the first successful call
+        returns success: true.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VerifyPaymentRequest"
+            example:
+              authority: "bdc9e0497c121d6187750d53798dae81"
+      responses:
+        "200":
+          description: Transaction verified successfully (first time)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VerifyPaymentResponse"
+              example:
+                success: true
+                message: "Payment confirmed."
+                order_id: "ORD123"
+                amount: 200000
+                status: "verified"
+        "409":
+          description: This transaction has already been verified once
+        "402":
+          description: No payment recorded yet (pending)
+        "410":
+          description: The transaction expired or failed
+        "404":
+          description: No such transaction found
+
+  /pay/create-order.php:
+    post:
+      tags: [Unified]
+      summary: Create a unified payment order (card and/or crypto)
+      description: >
+        Depending on the merchant's "💳 Payment methods" settings, this
+        creates a card invoice directly, a crypto invoice directly, or (when
+        both are enabled) a "card or crypto?" chooser page. This is the
+        recommended endpoint for new integrations — instead of calling
+        create-payment.php or
+        create-crypto-payment.php.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateOrderRequest"
+            example:
+              order_id: "ORD123"
+              price_amount: 25000
+              callback_url: "https://yourbot.example.com/callback"
+      responses:
+        "200":
+          description: Order created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateOrderResponse"
+              examples:
+                card:
+                  summary: Card-only path
+                  value:
+                    success: true
+                    method: "card"
+                    pay_page_url: "https://cubevps.ir/smspay/pay.php?authority=bdc9e0497c..."
+                    authority: "bdc9e0497c121d6187750d53798dae81"
+                crypto:
+                  summary: Crypto-only path
+                  value:
+                    success: true
+                    method: "crypto"
+                    pay_page_url: "https://cubevps.ir/crypto/pay.php?token=..."
+                choice:
+                  summary: Both methods enabled — chooser page
+                  value:
+                    success: true
+                    method: "choice"
+                    pay_page_url: "https://cubevps.ir/pay/choose.php?token=..."
+        "400":
+          description: order_id or price_amount is missing
+        "401":
+          description: Token missing or invalid
+        "422":
+          description: No payment method is enabled for this merchant
+
+  /pay/check-order-status.php:
+    get:
+      tags: [Unified]
+      summary: Look up the final status of an order (by order_id)
+      description: >
+        Works for the crypto path and the chooser path. For the direct
+        card-only path it returns success: false — use verify-payment.php
+        with the authority for that case instead.
+      parameters:
+        - name: order_id
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Current order status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CheckOrderStatusResponse"
+              examples:
+                choosing:
+                  value: { success: true, status: "choosing_method" }
+                card_verified:
+                  value: { success: true, method: "card", status: "verified" }
+                crypto_waiting:
+                  value: { success: true, method: "crypto", status: "waiting" }
+        "404":
+          description: No order found with this order_id (it was probably the direct card-only path)
+
+  /crypto/api/create-crypto-payment.php:
+    post:
+      tags: [Crypto]
+      summary: Create a crypto payment invoice (direct)
+      description: >
+        For when you don't want to use the unified router. It does not pick
+        a currency immediately; it only creates an invoice "awaiting currency
+        selection" — the customer picks USDT-BEP20 / TRX / TON themselves on
+        the returned page.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCryptoPaymentRequest"
+            example:
+              order_id: "ORD123"
+              price_amount: 25000
+              callback_url: "https://yourbot.example.com/callback"
+      responses:
+        "200":
+          description: Crypto invoice created
+          content:
+            application/json:
+              example:
+                success: true
+                pay_page_url: "https://cubevps.ir/crypto/pay.php?token=..."
+                price_amount_toman: 25000
+                customer_fee_share_toman: 0
+                expires_in_minutes: 60
+        "400":
+          description: order_id or price_amount is missing
+        "403":
+          description: Crypto payments are not enabled for this merchant
+        "422":
+          description: Invalid callback_url
+
+  /crypto/api/check-crypto-payment-status.php:
+    get:
+      tags: [Crypto]
+      summary: Check crypto payment status (polling)
+      description: >
+        Prefer `token` over `payment_id` — payment_id is a guessable numeric
+        identifier, and without the token it is theoretically possible to see
+        the status of other merchants' invoices.
+      parameters:
+        - name: token
+          in: query
+          required: false
+          description: public_token from pay_page_url (the recommended parameter)
+          schema:
+            type: string
+        - name: payment_id
+          in: query
+          required: false
+          description: NOWPayments numeric identifier (kept only for backwards compatibility)
+          schema:
+            type: string
+        - name: order_id
+          in: query
+          required: false
+          description: "Requires the Authorization: Bearer header — for when no currency has been chosen yet"
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Current payment status
+          content:
+            application/json:
+              example:
+                success: true
+                status: "waiting"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: The token you get from the @cubepy_bot bot
+
+  schemas:
+    CreatePaymentRequest:
+      type: object
+      required: [amount, order_id, callback_url, type]
+      properties:
+        amount:
+          type: integer
+          description: Transaction amount in RIAL (minimum 1000)
+          minimum: 1000
+        order_id:
+          type: string
+          description: Unique order identifier
+        callback_url:
+          type: string
+          format: uri
+          description: URL that receives the callback after a successful payment (must be a valid, non-internal https URL)
+        type:
+          type: string
+          enum: [card]
+          description: Transaction type (currently only card)
+        customer_user_id:
+          type: string
+          description: Customer identifier (optional)
+        description:
+          type: string
+          description: Order description (optional)
+
+    CreatePaymentResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        authority:
+          type: string
+          description: Unique transaction code
+        payment_link:
+          type: string
+          format: uri
+          description: The link to hand directly to the customer
+        pay_amount:
+          type: integer
+          description: The exact payable amount in RIAL
+        pay_amount_toman:
+          type: integer
+          description: The exact payable amount in TOMAN (to display to the customer)
+
+    VerifyPaymentRequest:
+      type: object
+      required: [authority]
+      properties:
+        authority:
+          type: string
+          description: The code returned by the create-transaction step
+
+    VerifyPaymentResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        order_id:
+          type: string
+        amount:
+          type: integer
+          description: Amount in RIAL
+        status:
+          type: string
+          enum: [verified, pending, expired, failed]
+
+    CreateOrderRequest:
+      type: object
+      required: [order_id, price_amount]
+      properties:
+        order_id:
+          type: string
+          description: Unique order identifier
+        price_amount:
+          type: number
+          description: Amount in TOMAN (not rial)
+        callback_url:
+          type: string
+          format: uri
+          description: Required for the card path; also recommended for crypto/chooser
+
+    CreateOrderResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        method:
+          type: string
+          enum: [card, crypto, choice]
+        pay_page_url:
+          type: string
+          format: uri
+        authority:
+          type: string
+          description: Present only when method=card
+        duplicate:
+          type: boolean
+          description: If true, an existing (still valid) invoice was returned rather than a new one
+
+    CheckOrderStatusResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        method:
+          type: string
+          enum: [card, crypto]
+        status:
+          type: string
+          enum:
+            - choosing_method
+            - verified
+            - pending
+            - expired
+            - failed
+            - choosing_currency
+            - waiting
+            - confirming
+            - sending
+            - finished
+
+    CreateCryptoPaymentRequest:
+      type: object
+      required: [order_id, price_amount]
+      properties:
+        order_id:
+          type: string
+        price_amount:
+          type: number
+          description: Amount in TOMAN
+        callback_url:
+          type: string
+          format: uri
