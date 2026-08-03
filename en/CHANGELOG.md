@@ -6,6 +6,23 @@ All notable changes to this project are recorded here, in chronological order.
 
 ---
 
+## [2.1.3] — Admin panel bug fix + preventing token exposure
+
+### Fixed
+
+- **The "⚙️ Settings" button in the VIP panel's merchant list did nothing** — it always reported "not found" and the settings modal never opened. The cause was a type-sensitive comparison (`===`): `merchants_list` reads its data with `$db->query()` (not a prepared statement), so `merchant_id` arrived as a **string** in the JSON while the button passed a raw number — and `"631" === 631` is `false` in JavaScript. Both sides are now coerced to numbers.
+
+### Security
+
+- **Tokens are no longer returned by `merchants_list`** — the endpoint returned `m.api_token` explicitly and `vip_api_token` / `vip_sandbox_token` via `SELECT p.*`, meaning every merchant's token sat in the panel's JSON response (and in the browser's Network tab). The panel never used them.
+- **Tokens are no longer written to `mst_audit_log`** — `merchant_update_settings` logged the entire profile row in `before_json`, so every cap or fee change permanently recorded that merchant's VIP token in the database — and the old value stayed there even after the token was regenerated. The filter now lives **inside the logging function itself** (rather than at the call sites), so future code cannot leak a token into the log by accident.
+- Added `cleanup-audit-tokens.sql` to scrub rows that already contained tokens — `JSON_REMOVE` strips only those keys, leaving the rest of the audit history intact.
+- The VIP token is only ever returned in the direct responses of `subscription_grant` and `vip_token_regenerate` — where the admin explicitly asked for it.
+
+> These changes affect only the admin panel (which was already restricted to the bot owner) and change nothing in the merchant-facing API.
+
+---
+
 ## [2.1.2] — Default monthly cap for VIP merchants
 
 ### Added
