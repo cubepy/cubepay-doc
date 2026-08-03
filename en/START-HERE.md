@@ -32,15 +32,17 @@ Depending on what you're using, follow one of these guides:
 
 | If you use... | Go to this guide |
 |---|---|
-| A sales bot built with **Foxima** (clean/unmodified) | [Install with ready-made files](../integrations/faoxima-ready-files/faoxima-ready-files-guide.md) |
-| A Foxima bot you've already customized | [Manual integration guide](../integrations/faoxima-integration-guide.md) |
-| A **WordPress/WooCommerce** store | [WordPress guide](../integrations/wordpress-plugin-guide.md) |
-| Your own site or bot with custom code | [Generic integration guide](../integrations/generic-integration-guide.md) |
+| A sales bot built with **Foxima** (clean/unmodified) | [Install with ready-made files](./integrations/faoxima-ready-files/faoxima-ready-files-guide.md) |
+| A Foxima bot you've already customized | [Manual integration guide](./integrations/faoxima-integration-guide.md) |
+| A **WordPress/WooCommerce** store | [WordPress guide](./integrations/wordpress-plugin-guide.md) |
+| Your own site or bot with custom code | [Generic integration guide](./integrations/generic-integration-guide.md) |
 | You can't install an SMS Forwarder and want CubePay to collect the money and settle in crypto | [docs/CUBEPAY-VIP-API-REFERENCE.md](./docs/CUBEPAY-VIP-API-REFERENCE.md) |
-| Just want to test the API | [docs/API-REFERENCE.md](../docs/API-REFERENCE.md) and [docs/examples/](../docs/examples/) |
+| You receive the bank SMS on an **Android** phone | [Android SMS forwarder guide](./integrations/android-sms-forwarder-guide.md) |
+| You receive the bank SMS on an **iPhone** | [iOS Shortcuts guide](./integrations/ios-shortcuts-sms-forwarding-guide.md) |
+| Just want to test the API | [docs/API-REFERENCE.md](./docs/API-REFERENCE.md) and [docs/examples/](./docs/examples/) |
 
 ## Have a question?
 
-- Frequently asked questions → [docs/FAQ.md](../docs/FAQ.md)
-- Technical issue/error → the Troubleshooting section in [docs/FAQ.md](../docs/FAQ.md)
+- Frequently asked questions → [docs/FAQ.md](./docs/FAQ.md)
+- Technical issue/error → the Troubleshooting section in [docs/FAQ.md](./docs/FAQ.md)
 - Direct support → [cube_sup](https://t.me/cube_sup)
