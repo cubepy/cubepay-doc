@@ -91,6 +91,8 @@ if ($authority) {
 
 Get your API token from [@cubepy_bot](https://t.me/cubepy_bot) → "🔗 My Panel" and put it in place of `YOUR_API_TOKEN` in both files (preferably read it from a central config file, not hardcoded directly).
 
+> 👑 **Have a CubePay VIP subscription?** Use your `vip_…` token instead of the normal one. The customer is then shown the CubePay treasury card and your settlement is paid out in crypto. Details, including how to migrate an existing integration without code changes: [`docs/CUBEPAY-VIP-API-REFERENCE.md`](../docs/CUBEPAY-VIP-API-REFERENCE.md)
+
 ## Step 4 — Final Testing
 
 Do a test payment and make sure:

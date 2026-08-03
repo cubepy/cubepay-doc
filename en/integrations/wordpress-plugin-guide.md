@@ -43,6 +43,7 @@ In WordPress go to: **WooCommerce ← Settings ← Payments ← "CubePay" ← Ma
 
 - ✅ Enable it
 - 📋 Paste the API token and the card-to-card server address
+- 👑 **Have a CubePay VIP subscription?** Paste your `vip_…` token instead of the normal one, and make sure **Unified server address** is filled in. Everything else stays the same — from then on the customer sees the CubePay treasury card and you settle in crypto. Details: [`docs/CUBEPAY-VIP-API-REFERENCE.md`](../docs/CUBEPAY-VIP-API-REFERENCE.md)
 - 🆕 **Unified server address (optional):** if you fill this in, and crypto is also enabled on your merchant account (in the bot, "⚙️ Payment Methods"), the customer will choose between card and crypto at checkout. If left empty, it works exactly as before — card-to-card only.
 - 💰 Choose the **store currency** correctly (Toman or Rial) — this really matters, since the gateway only accepts a specific Rial/Toman format, and choosing wrong will multiply/divide the amount by 10!
 - Save
