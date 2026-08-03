@@ -13,6 +13,8 @@ This guide is for anyone with their own bot or site (anything, not just Foxima) 
 1. 🔑 **API Token** — from "🔗 My Panel"
 2. 📁 The **[`CubePayClient.php`](../../docs/examples/CubePayClient.php)** file — from this same repository
 
+> 👑 **Have a CubePay VIP subscription?** Use your `vip_…` token instead of the normal one. The customer is then shown the CubePay treasury card and your settlement is paid out in crypto. Details, including how to migrate an existing integration without code changes: [`docs/CUBEPAY-VIP-API-REFERENCE.md`](../docs/CUBEPAY-VIP-API-REFERENCE.md)
+
 ---
 
 ## Step 1 — Create an invoice (when a customer wants to pay)
