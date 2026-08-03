@@ -1,3 +1,5 @@
+🇮🇷 فارسی · [🇬🇧 English](../en/integrations/android-sms-forwarder-guide.md)
+
 # 🤖 اتصال پیامک بانکی از اندروید — اپلیکیشن اختصاصی CubePay SMS Forwarder
 
 علاوه بر اپ‌های عمومی «SMS Forwarder» که تو FAQ بهشون اشاره شده، یه

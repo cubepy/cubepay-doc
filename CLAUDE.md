@@ -22,7 +22,7 @@ There is no build, lint, or test suite. The only meaningful verification is manu
 cubepay-doc/
 ├── README.md, START-HERE.md, CONTRIBUTING.md, SECURITY.md,
 │   CODE_OF_CONDUCT.md, CHANGELOG.md          ← Persian (fa) originals — canonical
-├── CHANGELOG.en.md                            ← English changelog (kept separately, see below)
+├── CHANGELOG.en.md                            ← stub only; points at en/CHANGELOG.md (see below)
 ├── docs/
 │   ├── API-REFERENCE.md                       ← card-to-card API (create-payment / verify-payment / callback)
 │   ├── CRYPTO-API-REFERENCE.md                ← crypto + unified router API
@@ -45,11 +45,12 @@ cubepay-doc/
 ## Localization: fa is canonical, en is a partial, hand-maintained mirror
 
 - **Persian (root-level files) is the source of truth.** New features/fixes are written in Persian first.
-- `en/` mirrors most — but not all — root docs (`README.md`, `START-HERE.md`, `CONTRIBUTING.md`, `SECURITY.md`, `CODE_OF_CONDUCT.md`, `CHANGELOG.md`, `docs/API-REFERENCE.md`, `docs/CRYPTO-API-REFERENCE.md`, `docs/FAQ.md`, and the Foxima/generic/WordPress integration guides).
-- `en/` currently has **no** English counterpart for: `docs/openapi.yaml`, `docs/examples/`, `integrations/ios-shortcuts-sms-forwarding-guide.md`, `integrations/android-sms-forwarder-guide.md`, and `integrations/mirzabot-ready-files/`.
-- English pages are translations maintained **by hand** and lag behind the Persian originals — e.g. at the time of writing, `CHANGELOG.md` (fa) is at version `2.0.1` while `CHANGELOG.en.md` is at `1.13.1`, and content further back in the two changelogs also diverges in numbering. When translating an update, don't assume version numbers line up 1:1 between the two files — check the actual entry content, not just the version tag.
+- `en/` mirrors nearly all root docs: `README.md`, `START-HERE.md`, `CONTRIBUTING.md`, `SECURITY.md`, `CODE_OF_CONDUCT.md`, `CHANGELOG.md`, `docs/API-REFERENCE.md`, `docs/CRYPTO-API-REFERENCE.md`, `docs/CUBEPAY-VIP-API-REFERENCE.md`, `docs/FAQ.md`, `docs/openapi.yaml`, `docs/examples/`, and the Foxima/generic/WordPress/Android-SMS/iOS-Shortcuts integration guides.
+- `en/` still has **no** English counterpart for: `docs/MANAGED-SETTLEMENT-ARCHITECTURE.md` (internal design rationale — the English VIP reference links to the Persian original and says so) and `integrations/mirzabot-ready-files/`.
+- **There is exactly one English changelog: `en/CHANGELOG.md`.** Root `CHANGELOG.en.md` used to be a second, diverging copy; it is now a stub pointing at `en/CHANGELOG.md`. Add English changelog entries only to `en/CHANGELOG.md`.
+- English pages are translations maintained **by hand** and can lag behind the Persian originals. The two changelogs also diverge in numbering — the Persian `2.0.1` and the English `1.13.1` describe the same fix, for example. When translating an update, match entries by content, not by version tag.
 - Every doc that has a translation links to its counterpart at the top (`🇮🇷 فارسی · [🇬🇧 English](...)`). When adding a new doc that should be bilingual, add this header to both sides and place the English file at the mirrored path under `en/`.
-- The English crypto reference lives only at `en/docs/CRYPTO-API-REFERENCE.md` — there used to be a second, stale, unlinked copy at `docs/CRYPTO-API-REFERENCE.en.md` (missing the "Retries on Failure" section); it was removed since nothing linked to it. Don't recreate a root-level `.en.md` copy — keep English translations under `en/` only.
+- The English crypto reference lives only at `en/docs/CRYPTO-API-REFERENCE.md` — there used to be a second, stale, unlinked copy at `docs/CRYPTO-API-REFERENCE.en.md` (missing the "Retries on Failure" section); it was removed since nothing linked to it. Don't recreate a root-level `.en.md` copy — keep English translations under `en/` only, and keep `en/`-internal links pointing at `en/` counterparts rather than back at the Persian root files.
 
 ## Content conventions
 
