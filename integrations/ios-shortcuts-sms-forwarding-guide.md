@@ -1,3 +1,5 @@
+🇮🇷 فارسی · [🇬🇧 English](../en/integrations/ios-shortcuts-sms-forwarding-guide.md)
+
 # 📱 اتصال پیامک بانکی از آیفون (iOS Shortcuts) — بدون اپ جانبی
 
 روش «وب‌هوک» برای دریافت خودکار پیامک بانکی، رو اندروید معمولاً با اپ‌های
