@@ -1,3 +1,5 @@
+🇮🇷 فارسی · [🇬🇧 English](../en/docs/CUBEPAY-VIP-API-REFERENCE.md)
+
 <div align="center"><img src="../cubepay-logo.png" alt="CubePay" width="220"></div>
 
 # 👑 مرجع API — CubePay VIP (تسویه توسط CubePay)
@@ -361,7 +363,7 @@ GET /managed-settlement/api/dashboard.php
     "expires_at": "2026-09-03 14:20:00",
     "days_left": 31,
     "is_active": true,
-    "fee_toman": 500000
+    "fee_toman": 1000000
   },
   "vip_api_token": "vip_a4fd1be3944e...",
   "vip_sandbox_token": "vipsb_7c21ee08b1...",

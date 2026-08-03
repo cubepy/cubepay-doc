@@ -49,6 +49,7 @@ cubepay-doc/
 ├── docs/
 │   ├── API-REFERENCE.md          ← Full technical reference for the card API (Endpoints, params, errors)
 │   ├── CRYPTO-API-REFERENCE.md   ← 🆕 Technical reference for crypto payments and the unified router
+│   ├── CUBEPAY-VIP-API-REFERENCE.md  ← 👑 Technical reference for CubePay VIP (settlement by CubePay)
 │   ├── FAQ.md                    ← Frequently asked questions
 │   ├── openapi.yaml              ← OpenAPI 3.0 spec (for Postman/Swagger)
 │   └── examples/                 ← Ready-made code samples per language
@@ -101,7 +102,7 @@ POST https://cubevps.ir/smspay/api/verify-payment.php
 POST https://cubevps.ir/crypto/api/create-crypto-payment.php   ← crypto only
 ```
 
-Complete parameter, response, error-code, and transaction-rule details in 👉 **[docs/API-REFERENCE.md](./docs/API-REFERENCE.md)** (card) and **[docs/CRYPTO-API-REFERENCE.md](./docs/CRYPTO-API-REFERENCE.md)** (crypto / unified)
+Complete parameter, response, error-code, and transaction-rule details in 👉 **[docs/API-REFERENCE.md](./docs/API-REFERENCE.md)** (card) and **[docs/CRYPTO-API-REFERENCE.md](./docs/CRYPTO-API-REFERENCE.md)** (crypto / unified) and **[docs/CUBEPAY-VIP-API-REFERENCE.md](./docs/CUBEPAY-VIP-API-REFERENCE.md)** (CubePay VIP — settlement handled by CubePay)
 
 Code samples in PHP, Python, Node.js, Laravel, and cURL 👉 **[docs/examples/](../docs/examples/)**
 
