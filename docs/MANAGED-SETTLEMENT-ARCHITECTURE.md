@@ -373,6 +373,8 @@ Requested → Processing → Failed → Balance Returned
 | غیرفعال‌سازی موقت / محدودسازی حساب | `mst_merchant_profile.disabled_by_admin` + `disabled_reason` |
 | تاریخچه‌ی کامل تغییرات | `mst_audit_log` |
 
+> 🔒 **توکن‌ها هیچ‌وقت در پاسخِ پنل یا در لاگ ظاهر نمی‌شوند.** کوئری‌هایی مثل `SELECT p.*` ستون‌های `vip_api_token` / `vip_sandbox_token` را هم می‌آورند، پس قبل از هر پاسخ و قبل از هر درجِ `mst_audit_log` از ردیف حذف می‌شوند (`mst_aa_strip_secrets()`، که داخلِ خودِ `mst_aa_audit()` صدا زده می‌شود تا فراخوان‌های آینده هم نتوانند ناخواسته توکن لو بدهند). توکنِ VIP فقط در پاسخِ مستقیمِ `subscription_grant` و `vip_token_regenerate` برمی‌گردد — همان‌جا که ادمین صریحاً درخواستش کرده.
+
 ---
 
 ## ⚖️ نکات حقوقی و ریسک عملیاتی
