@@ -58,7 +58,19 @@ Both. The two tokens are valid at the same time and you can decide per order whi
 
 ### Do I need to change my code to move to VIP?
 
-No. Same `POST /pay/create-order.php`, same fields. Just put the `vip_` token where the old one was. Your Foxima bot, WooCommerce plugin or custom code keeps working unchanged.
+If you already use the unified router (`POST /pay/create-order.php`): no — same address, same fields, just put the `vip_` token where the old one was. Your Foxima bot, WooCommerce plugin or custom code keeps working unchanged.
+
+If you still call the legacy endpoint (`/smspay/api/create-payment.php`), read the next question — VIP tokens are not recognised there.
+
+### My VIP token gets "invalid token" but the normal token works — why?
+
+Your code is calling the **legacy** card-to-card endpoint (`/smspay/api/create-payment.php`), which only knows normal tokens. The `vip_` token only works on the **unified router**:
+
+```
+POST https://cubevps.ir/pay/create-order.php
+```
+
+Change two things: the **URL** to the unified router, and the **amount** to toman in the `price_amount` field (the legacy endpoint took the amount in rial in an `amount` field). The other fields (`order_id`, `callback_url`) stay the same — details in the [VIP reference](./CUBEPAY-VIP-API-REFERENCE.md#-migrating-to-vip-just-swap-the-token).
 
 ### What happens to my money if my subscription expires?
 
@@ -108,4 +120,17 @@ No. In VIP the only way to create an invoice is an API call from your own site o
 - Your Foxima version probably differs from the one these ready-made files were prepared for, or you'd already customized those same files.
 - Use the [Foxima manual guide](../integrations/faoxima-integration-guide.md), which changes only a few specific lines.
 
-Didn't find an answer? Ask via [cube_sup](https://t.me/cube_sup).
+## 🎫 Support tickets
+
+**How do I open a ticket?**
+From inside the bot [@cubepy_bot](https://t.me/cubepy_bot): "📢 News & support → 🎫 Open a ticket". Describe your problem in one message; a numbered ticket is created and **the support reply arrives in the same bot** — nothing else to check.
+
+**Where do I see my ticket's status?**
+Same place, the "📋 My tickets" button — it shows each ticket's state (awaiting reply / answered / closed).
+
+**Can I add a message to my ticket?**
+Yes; as long as your ticket is open, press "🎫 Open a ticket" again — the new message is appended to the same ticket, no second ticket is created.
+
+---
+
+Didn't find an answer? [Open a ticket](https://t.me/cubepy_bot) from inside the bot, or ask via [cube_sup](https://t.me/cube_sup).
