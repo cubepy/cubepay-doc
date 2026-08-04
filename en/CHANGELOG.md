@@ -6,131 +6,112 @@ All notable changes to this project are recorded here, in chronological order.
 
 ---
 
-## [2.1.6] — VIP intake capacity + a guide to running both systems together
+## [2.1.6] — VIP intake capacity + running both systems together
 
 ### Added
 
-- **A cap on the number of VIP merchants** (`vip_capacity_limit`) — because this service involves holding funds in custody, intake is controlled. When capacity is full, `request-activation.php` responds `409` with `capacity_full: true` and **no payment link is created**; the merchant panel hides the purchase button entirely rather than letting people fail on click. Editable from the admin panel (⚙️ Settings), with a "🎟 Intake capacity" card showing live status.
-- **[A guide to running both systems together](./integrations/using-both-systems-guide.md)** — a new document for merchants who have a VIP subscription and also want to keep using the normal path. Both tokens are valid simultaneously and the choice can be made per order.
-- A **👑 CubePay VIP questions** section in `docs/FAQ.md` (and the English version).
+- **[A guide to running both systems together](./integrations/using-both-systems-guide.md)** — if you have a VIP subscription you don't have to choose one. Both tokens are valid at the same time and you can decide **per order** which path it takes: normal for ordinary orders (no fee, money straight to your own card), VIP when the forwarder phone is off or you want the income in crypto.
+- A **👑 CubePay VIP questions** section in [`docs/FAQ.md`](./docs/FAQ.md).
 
-### 📌 The three capacity rules
+### Changed
 
-- **Renewal is never blocked** — the cap applies only to new merchants. Anyone who once had a profile, even with an expired subscription, can always renew. (Reasoning: a long-standing merchant should not lose their place to a newcomer.)
-- **An open payment link reserves a slot for up to 2 hours** — there is a gap between "get link" and "pay"; without the reservation several people could buy the same last remaining slot, leaving us to either refund someone or exceed the cap.
-- **Paid means served** — if a payment is confirmed the service is activated regardless, even if we somehow went over the cap; the admin is merely alerted. Taking money without providing the service is never acceptable.
+- **VIP intake is now capped.** Because this service involves holding funds in custody, the number of merchants is controlled. When capacity is full, activation requests are refused and **no payment link is created** — the purchase button is hidden in the panel rather than letting you fail on click.
 
----
+### 📌 Three rules worth knowing
 
-## [2.1.5] — Multi-source exchange rate with a sanity band
-
-### Added
-
-- **`managed-settlement/rate-provider.php`** — the USD-to-toman rate is no longer single-source. Order: **BrsApi → bonbast → TGJU**, and if all are down, the **last known-good rate** (rather than dropping straight to the hardcoded constant in `crypto-config.php`).
-- **A sanity band** (`rate_sanity_band_percent`, default 15%) — any rate deviating more than this from the last known-good value is rejected and the next source is tried. This guards against the worst case: generic FX APIs return the **official** IRR rate, not the free-market one (measured: 126,567 versus 192,000), which would have paid out roughly 50% too much crypto.
-- **A consensus rule** (`rate_consensus_band_percent`, default 3%) — if every source falls outside the band but two **different source families** agree on a figure, the market genuinely moved and the new rate is accepted. Without this, a real market jump would leave the system running on the older, lower rate — paying out more crypto per toman.
-- **Telegram alerts** when a source is rejected, a jump is accepted, or every source is unreachable — throttled to once an hour.
-- **A "💱 USD rate" card** in the admin panel's treasury tab showing what each source reports, which are reachable, and how old the rate in use is. Both band settings were added to the ⚙️ Settings tab.
-
-### 📌 Design note: sources are grouped into families
-
-In live measurement BrsApi and TGJU returned **exactly the same** figure, meaning BrsApi republishes TGJU's data. Agreement between those two is not independent confirmation, so the consensus rule requires at least **two distinct families** (`brsapi`+`tgju` are one family, `bonbast` another).
-
-> The normal merchants' 3% crypto path is untouched — `crypto/nowpayments-lib.php` still uses its original function.
+- **If you are already a VIP merchant, your renewal is never blocked.** The cap applies only to new merchants — someone who has been a customer for months should not lose their place to a newcomer.
+- **A payment link you receive holds a slot for up to 2 hours.** There is a gap between getting the link and paying; this stops several people buying the same last remaining slot at once.
+- **If your payment is confirmed, the service is activated regardless.** Money is never taken without the service being provided.
 
 ---
 
-## [2.1.4] — Financial fix: a failed withdrawal could be credited twice
+## [2.1.5] — More reliable exchange rate for withdrawals
+
+### Changed
+
+- **The toman-to-crypto rate now comes from several independent sources.** Previously, if the single rate source was unreachable the system silently fell back to a fixed number — and if that number had drifted from the market, withdrawals used the wrong rate with nobody aware. Now if one source is down, the next is tried.
+- **Implausible rates are rejected.** Each new rate is compared against the last known-good one; if it differs by more than the allowed margin it is not accepted. This guards against the worst case: some sources publish the **official** currency rate rather than the free-market one, which is about 35% lower and would have paid out roughly 50% more crypto than you are owed.
+- **A genuine market jump is still recognised.** If every source reports a new rate and two independent sources agree on it, the market really did move and the new rate is accepted — so the system does not get stuck on a stale one.
+
+> The rate is still **locked at the moment you submit a withdrawal request**, so later market movement does not affect it.
+
+---
+
+## [2.1.4] — Fixed an accounting issue in withdrawals
 
 ### Fixed
 
-- 🔴 **A withdrawal closed as `failed` could still be recorded as "settled" afterwards.** When sending to NOWPayments fails, `request-withdrawal.php` returns the amount to the "available" balance with a `settling_reversed` entry and sets the status to `failed` — but all three of the system's guards treated only `completed` and `balance_returned` as terminal, not `failed`. A `settling_to_settled` entry could therefore still be written for the same withdrawal, leaving the merchant with both the crypto and their toman balance (and a negative "settling" bucket). Two paths reached it: an admin pressing "mark completed" on a `failed` withdrawal, or a late NOWPayments webhook.
+- **A withdrawal that had failed could, in rare circumstances, also be recorded as settled.** When sending crypto fails, the amount returns to your available balance immediately; but it was possible for that same withdrawal to later be marked successful too, leaving the ledger inconsistent.
 
-  Fixed with **two independent layers**:
-  1. **A shared idempotency key** — both terminal entries (`settling_to_settled` and `settling_reversed`) now use the same `withdrawal_final:<uid>` key. Since that column is `UNIQUE`, the database itself guarantees **exactly one** terminal entry per withdrawal, even if new code is added later.
-  2. **`failed` is now terminal too** — in `mst_apply_withdrawal_status()` and in both admin manual actions (`withdrawal_mark_completed` / `withdrawal_mark_failed`).
+  Now **every withdrawal has exactly one final outcome** — either successful or returned, never both. That guarantee is enforced at the database level, not only in application logic.
 
-> The bug never actually occurred (the withdrawals table was empty when it was found), so no data migration or correction is needed.
-
-### 📌 Correcting an already-finalised withdrawal
-
-The manual "mark completed / failed" buttons no longer act on a withdrawal that is already terminal, and now return a clear message instead. If the financial state of a finalised withdrawal genuinely needs correcting, that belongs in a manual adjustment entry (`admin_adjustment`) rather than these buttons — only that path records the intent explicitly.
+> This never occurred on any merchant's account; it was found during a routine review. No action is needed from you.
 
 ---
 
-## [2.1.3] — Admin panel bug fix + preventing token exposure
+## [2.1.3] — Admin panel fix
 
 ### Fixed
 
-- **The "⚙️ Settings" button in the VIP panel's merchant list did nothing** — it always reported "not found" and the settings modal never opened. The cause was a type-sensitive comparison (`===`): `merchants_list` reads its data with `$db->query()` (not a prepared statement), so `merchant_id` arrived as a **string** in the JSON while the button passed a raw number — and `"631" === 631` is `false` in JavaScript. Both sides are now coerced to numbers.
+- The settings button in the admin panel's merchant list did not open.
 
 ### Security
 
-- **Tokens are no longer returned by `merchants_list`** — the endpoint returned `m.api_token` explicitly and `vip_api_token` / `vip_sandbox_token` via `SELECT p.*`, meaning every merchant's token sat in the panel's JSON response (and in the browser's Network tab). The panel never used them.
-- **Tokens are no longer written to `mst_audit_log`** — `merchant_update_settings` logged the entire profile row in `before_json`, so every cap or fee change permanently recorded that merchant's VIP token in the database — and the old value stayed there even after the token was regenerated. The filter now lives **inside the logging function itself** (rather than at the call sites), so future code cannot leak a token into the log by accident.
-- Added `cleanup-audit-tokens.sql` to scrub rows that already contained tokens — `JSON_REMOVE` strips only those keys, leaving the rest of the audit history intact.
-- The VIP token is only ever returned in the direct responses of `subscription_grant` and `vip_token_regenerate` — where the admin explicitly asked for it.
+- **Sensitive values are no longer included in admin panel responses or stored in the change history.** Merchant tokens were being surfaced and retained in places that had no need for them. The VIP token is now shown only at the moment it is explicitly requested.
 
 > These changes affect only the admin panel (which was already restricted to the bot owner) and change nothing in the merchant-facing API.
 
 ---
 
-## [2.1.2] — Default monthly cap for VIP merchants
+## [2.1.2] — Monthly cap for VIP merchants
 
 ### Added
 
-- **A global default monthly cap** (`default_monthly_limit_toman`) — initially **100,000,000 toman**, changeable live from the admin panel (⚙️ Settings tab). Until now the monthly cap only applied when an admin had set it on that specific merchant; it now applies to everyone, like the daily cap.
+- **A default monthly cap of 100,000,000 toman.** Until now the monthly cap applied only when an admin had set it for that specific merchant; it now applies to everyone, like the daily cap.
 
-### Changed
+### 📌 Note
 
-- **The meaning of `monthly_limit_toman` on a merchant profile is now more precise**, so that "this merchant has no monthly cap" remains expressible:
-  - `NULL` (empty) → follow the global default
-  - `0` → this merchant has no monthly cap
-  - `> 0` → this merchant's own cap
-  - global default `0` → nobody has a monthly cap
-- Because the per-merchant column defaults to `NULL`, the new cap reaches **every existing and future merchant automatically**, and later changes to the default propagate immediately.
-- The documented subscription price was updated to **1,000,000 toman**.
+Your account's caps are always visible in the panel under **📖 Fees & limits**. If an admin has not set a specific cap for your account, the general default applies — and if that default later changes, your account follows it immediately. For larger businesses, caps can be raised individually.
 
 ---
 
-## [2.1.1] — Migrating to VIP without code changes: just swap the token
+## [2.1.1] — Migrating to VIP without code changes
 
 ### Added
 
-- **The unified router (`POST /pay/create-order.php`) now recognises VIP tokens** — if the token starts with `vip_` (or `vipsb_` for sandbox), the request is handed to the CubePay VIP module automatically. That means the Foxima bot, WordPress plugin, or custom code you already run switches to VIP **by changing only the token** — no endpoint change, no field renames.
-- **`price_amount` is accepted as an alias for `amount_toman`** in `managed-settlement/api/create-order.php` (both are toman), so the field name doesn't need changing either.
-- The VIP create-order response now also returns `method: "card"`, so code that already branched on `method` keeps working.
+- **Now you only need to swap the token.** If you use the unified router (`POST /pay/create-order.php`) — that is, a Foxima bot, the WooCommerce plugin, or your own code — moving to VIP requires **no code changes at all**. Put the `vip_` token where the old one was, and that's it. Same URL, same fields, same response.
+- So that your existing code keeps working exactly as before, the VIP path accepts the same amount field name and returns the same `method` key in its response.
 
 ### 📌 For normal merchants
 
-Nothing changes. A normal token never starts with `vip_` (the API token is a 64-character hex string and the sandbox token starts with `test_`), so the existing path is untouched.
+Nothing changes. A normal token never starts with `vip_`, so the existing path is untouched.
 
 ---
 
 ## [2.1.0] — 👑 CubePay VIP: settlement handled by CubePay (no SMS Forwarder needed)
 
-An entirely **optional, parallel** capability alongside the existing system — it replaces nothing. It is aimed at merchants who cannot install an SMS Forwarder: the money is collected on a CubePay treasury card, the fee is deducted, and the merchant withdraws in crypto whenever they want. A merchant who does not enable it sees no difference at all.
+An entirely **optional, parallel** capability alongside the existing system — it replaces nothing. It is for merchants who cannot install an SMS Forwarder: the money is collected on a CubePay treasury card, the fee is deducted, and the merchant withdraws in crypto whenever they want. A merchant who does not enable it sees no difference at all.
 
 ### Added
 
-- **Monthly VIP subscription** — activation happens through a NOWPayments crypto payment link. The account is enabled automatically once payment clears, and a renewal warning is sent 3 days before expiry.
-- **A dedicated VIP token** (`vip_`, plus the `vipsb_` sandbox variant), separate from the normal API token. When the subscription expires, only that token stops working **for creating invoices** — the dashboard, balances and **withdrawals** keep working.
-- **Append-only ledger** — no balance column is ever edited directly; all four balances ("pending", "available", "settling", "settled") are computed with `SUM()` over the ledger.
-- **Automated crypto withdrawals** via NOWPayments, with the conversion rate locked at request time, payouts only to admin-approved addresses, and the amount returned **exactly once** on failure.
-- **Server-side caps** — per invoice (default 1,000,000 toman), daily, and monthly. They are enforced on the server, not just in the panel.
-- **Duplicate guard** — detects similar invoices by merchant + amount + customer + time window, not by amount alone.
-- **Mini App panels** — a VIP tab for merchants (dashboard, invoices, wallet, withdrawals, and a **"📖 Fees & limits"** tab showing every critical number in one place) and a full admin panel (merchant approval, caps, fees, subscription, token, ledger, revenue report).
+- **A monthly VIP subscription** — activated with a crypto payment link. Once paid, the account is enabled automatically, and a renewal warning is sent 3 days before expiry.
+- **A dedicated VIP token** (plus a sandbox variant), separate from your normal API token. When the subscription expires, only that token stops working **for creating invoices** — the dashboard, your balance and **withdrawals** keep working.
+- **Your balance moves through four stages** — "pending" → "available" → "settling" → "settled". Every toman is traceable and no figure is ever edited by hand.
+- **Automated crypto withdrawals** — the rate is locked when you submit the request, payouts only go to an admin-approved address, and on failure the amount returns **exactly once**.
+- **Caps are enforced on the server** — per invoice, per day and per month; not only in the panel.
+- **Duplicate invoice detection** — based on merchant + amount + customer + time window, not amount alone, so two genuine orders of the same value are not blocked by mistake.
+- **A dedicated panel** — a VIP tab in the merchant panel: dashboard, invoices, wallet, withdrawals, and a **📖 Fees & limits** tab showing every critical number in one place.
 - **Documentation** — [`docs/CUBEPAY-VIP-API-REFERENCE.md`](./docs/CUBEPAY-VIP-API-REFERENCE.md).
 
 ### Changed
 
-- **Manual invoice creation is impossible in this module** — not from the merchant panel, not from the bot, not from the admin panel. The only way is `create-order.php` with a VIP token.
-- **`order_id` is unique forever** — unlike the existing card path, it cannot be reused even after the invoice is cancelled.
-- Every amount in this module is in **toman** (not rial).
+- **Manual invoice creation is impossible in this system** — not from the merchant panel, not from the bot, not even by an admin. The only way is an API call from your own site or bot.
+- **`order_id` is unique forever** — unlike the existing card path, it cannot be reused even after an invoice is cancelled.
+- All amounts in this system are in **toman** (not rial).
 
 ### 🔒 Fully separate from the existing paths
 
-The card-to-card SMS Forwarder path and the normal merchants' 3% crypto path are **unchanged**. The tables, the fee settings and the tokens are entirely separate, and the fee wallet is never checked on the VIP path. The only shared resource is the NOWPayments account, and a reserve guard was added there so that a "withdraw all commission" action cannot sweep up balances belonging to VIP merchants.
+The card-to-card SMS Forwarder path and the normal merchants' 3% crypto gateway are **unchanged**. Accounts, fees and tokens are entirely separate, and the fee wallet is never checked on the VIP path.
 
 ---
 

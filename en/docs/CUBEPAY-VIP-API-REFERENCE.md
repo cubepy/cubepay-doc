@@ -89,18 +89,19 @@ flowchart TD
 
 > This is the same table the merchant panel shows under the **"📖 Fees & limits"** tab. The values below are **defaults**; the exact numbers for your own account always come from `GET api/dashboard.php` (an admin can set them per merchant).
 
-| Item | Default | Where it is controlled |
-|---|---|---|
-| CubePay fee per invoice | **10%** | `default_fee_percent` (global) or `fee_percent` (per merchant) |
-| Min/max fee per invoice | no limit | `fee_min_toman` / `fee_max_toman` |
-| VIP monthly subscription | **1,000,000 toman / 1 month** | `subscription_fee_toman` / `subscription_months` |
-| Subscription expiry warning | **3 days before** | `subscription_warn_days_before` |
-| Max amount per invoice | **1,000,000 toman** | `default_per_tx_limit_toman` / `per_tx_limit_toman` |
-| Daily cap | set by the admin | `default_daily_limit_toman` / `daily_limit_toman` |
-| Monthly cap | **100,000,000 toman** | `default_monthly_limit_toman` / `monthly_limit_toman` |
-| Minimum withdrawal | set by the admin | `default_min_withdrawal_toman` / `min_withdrawal_toman` |
-| Maximum withdrawal | no cap | `max_withdrawal_toman` |
-| Duplicate guard | **3 similar invoices in 15 minutes** | `duplicate_guard_max_count` / `duplicate_guard_window_minutes` |
+| Item | Default |
+|---|---|
+| CubePay fee per invoice | **10%** |
+| VIP monthly subscription | **1,000,000 toman / 1 month** |
+| Subscription expiry warning | **3 days before** |
+| Max amount per invoice | **1,000,000 toman** |
+| Daily cap | **10,000,000 toman** |
+| Monthly cap | **100,000,000 toman** |
+| Minimum withdrawal | **500,000 toman** |
+| Maximum withdrawal | no cap |
+| Duplicate guard | **3 similar invoices in 15 minutes** |
+
+> Every one of these can be configured per merchant. If your business is larger, contact support about raising your caps.
 
 > 📌 **How are the daily and monthly caps counted?** They sum your **paid** invoices in that window — not the invoices you created. An expired or cancelled invoice does not count towards the cap, and Sandbox invoices are never counted at all. Your current usage is in `dashboard.php` under `today_paid_toman` and `this_month_paid_toman`.
 >
@@ -456,11 +457,11 @@ A frequently asked question: normal CubePay merchants already had a crypto withd
 
 | Layer | The 3% path (normal merchants) | CubePay VIP |
 |---|---|---|
-| Database tables | `sp_crypto_payments`, `sp_crypto_settlements` | `mst_*` (8 independent tables) |
-| Fee setting | `platform_fee_percent = 3.0` in `crypto-config.php` | `default_fee_percent` in `mst_global_config` |
+| Accounts and records | fully separate | fully separate |
+| Fee | 3% | 10% (configurable per merchant) |
 | Token | normal API token | `vip_` token |
 | Fee wallet | required | **never checked** |
-| Code | contains no reference to `mst_*` | contains no reference to `sp_crypto_*` |
+| Balance | separate | separate |
 
 The only shared resource is the **NOWPayments account** itself. To stop an admin "withdraw all commission" action from sweeping up balances that belong to VIP merchants, a reserve guard was added: before any bulk withdrawal, the total VIP liability ("pending" + "available" + "settling") is converted to USD, multiplied by a 1.2 safety factor, and withheld from the withdrawable amount.
 
@@ -473,7 +474,7 @@ The only shared resource is the **NOWPayments account** itself. To stop an admin
 - Settlement is **crypto only**; there is currently no rial withdrawal or card/IBAN registration in this module.
 - To test without real effects, use the `vipsb_` token — no real API calls, no ledger entries, and no impact on your real balance or daily cap.
 - **Manual** invoice creation is impossible anywhere — not the merchant panel, not the bot, not the admin panel. The only way is `create-order.php` with a VIP token.
-- Balances are never edited directly; all four numbers are computed with `SUM()` over the **append-only** ledger (`mst_ledger_entries`).
+- Balances are never edited directly; all four numbers are computed from the **append-only** ledger.
 
 ---
 
