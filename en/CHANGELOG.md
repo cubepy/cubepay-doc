@@ -6,6 +6,24 @@ All notable changes to this project are recorded here, in chronological order.
 
 ---
 
+## [2.1.4] — Financial fix: a failed withdrawal could be credited twice
+
+### Fixed
+
+- 🔴 **A withdrawal closed as `failed` could still be recorded as "settled" afterwards.** When sending to NOWPayments fails, `request-withdrawal.php` returns the amount to the "available" balance with a `settling_reversed` entry and sets the status to `failed` — but all three of the system's guards treated only `completed` and `balance_returned` as terminal, not `failed`. A `settling_to_settled` entry could therefore still be written for the same withdrawal, leaving the merchant with both the crypto and their toman balance (and a negative "settling" bucket). Two paths reached it: an admin pressing "mark completed" on a `failed` withdrawal, or a late NOWPayments webhook.
+
+  Fixed with **two independent layers**:
+  1. **A shared idempotency key** — both terminal entries (`settling_to_settled` and `settling_reversed`) now use the same `withdrawal_final:<uid>` key. Since that column is `UNIQUE`, the database itself guarantees **exactly one** terminal entry per withdrawal, even if new code is added later.
+  2. **`failed` is now terminal too** — in `mst_apply_withdrawal_status()` and in both admin manual actions (`withdrawal_mark_completed` / `withdrawal_mark_failed`).
+
+> The bug never actually occurred (the withdrawals table was empty when it was found), so no data migration or correction is needed.
+
+### 📌 Correcting an already-finalised withdrawal
+
+The manual "mark completed / failed" buttons no longer act on a withdrawal that is already terminal, and now return a clear message instead. If the financial state of a finalised withdrawal genuinely needs correcting, that belongs in a manual adjustment entry (`admin_adjustment`) rather than these buttons — only that path records the intent explicitly.
+
+---
+
 ## [2.1.3] — Admin panel bug fix + preventing token exposure
 
 ### Fixed
