@@ -22,6 +22,8 @@ Download the latest version of the plugin here (zip file):
 
 > If the link above doesn't work, grab the latest version from this repository's [Releases](https://github.com/cubepy/cubepay-doc/releases) section.
 
+**What did 1.2.0 add?** A separate "CubePay VIP token" field. If you have VIP and an older version installed, update — earlier versions had nowhere to put the VIP token.
+
 ---
 
 ## 🚀 Installation (3 Steps)
@@ -33,9 +35,10 @@ In your WordPress dashboard: **Plugins ← Add New ← Upload Plugin**, select t
 ### 2) Get your info from the Telegram bot
 
 In the `@cubepy_bot` bot, from the "🔗 My Panel" menu, copy:
-- **API Token**
+- **API Token** — always required (payment verification uses this one)
 - **Card-to-card server address** (like `https://cubevps.ir/smspay`) — always required
 - 🆕 If you want to accept crypto too: **Unified server address** (like `https://cubevps.ir/pay`)
+- 👑 If you have a VIP subscription: your **VIP token** (like `vip_…`) — from the "👑 CubePay VIP" panel
 
 ### 3) Configure the plugin
 
@@ -43,7 +46,11 @@ In WordPress go to: **WooCommerce ← Settings ← Payments ← "CubePay" ← Ma
 
 - ✅ Enable it
 - 📋 Paste the API token and the card-to-card server address
-- 👑 **Have a CubePay VIP subscription?** Paste your `vip_…` token instead of the normal one, and make sure **Unified server address** is filled in. Everything else stays the same — from then on the customer sees the CubePay treasury card and you settle in crypto. Details: [`docs/CUBEPAY-VIP-API-REFERENCE.md`](../docs/CUBEPAY-VIP-API-REFERENCE.md)
+- 👑 **Have a CubePay VIP subscription?** Put your `vip_…` token in the **separate "CubePay VIP token" field** (version 1.2.0 and later), and make sure **Unified server address** is filled in too.
+
+  ⚠️ **Do not remove your normal API token** — it is still required, because payment verification uses it. If you put the VIP token in place of the normal one, invoices get created but payments are never confirmed.
+
+  From then on the customer sees the CubePay treasury card and you settle in crypto. Details: [`docs/CUBEPAY-VIP-API-REFERENCE.md`](../docs/CUBEPAY-VIP-API-REFERENCE.md)
 - 🆕 **Unified server address (optional):** if you fill this in, and crypto is also enabled on your merchant account (in the bot, "⚙️ Payment Methods"), the customer will choose between card and crypto at checkout. If left empty, it works exactly as before — card-to-card only.
 - 💰 Choose the **store currency** correctly (Toman or Rial) — this really matters, since the gateway only accepts a specific Rial/Toman format, and choosing wrong will multiply/divide the amount by 10!
 - Save
