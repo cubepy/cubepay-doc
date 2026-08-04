@@ -37,6 +37,7 @@ Depending on what you're using, follow one of these guides:
 | A **WordPress/WooCommerce** store | [WordPress guide](./integrations/wordpress-plugin-guide.md) |
 | Your own site or bot with custom code | [Generic integration guide](./integrations/generic-integration-guide.md) |
 | You can't install an SMS Forwarder and want CubePay to collect the money and settle in crypto | [docs/CUBEPAY-VIP-API-REFERENCE.md](./docs/CUBEPAY-VIP-API-REFERENCE.md) |
+| You have a VIP subscription and want to keep using the normal system alongside it | [Running both systems together](./integrations/using-both-systems-guide.md) |
 | You receive the bank SMS on an **Android** phone | [Android SMS forwarder guide](./integrations/android-sms-forwarder-guide.md) |
 | You receive the bank SMS on an **iPhone** | [iOS Shortcuts guide](./integrations/ios-shortcuts-sms-forwarding-guide.md) |
 | Just want to test the API | [docs/API-REFERENCE.md](./docs/API-REFERENCE.md) and [docs/examples/](./docs/examples/) |

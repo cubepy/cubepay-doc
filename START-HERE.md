@@ -42,6 +42,7 @@ Authorization: Bearer YOUR_API_TOKEN
 | سایت یا ربات با کد اختصاصی خودتون (کارت‌به‌کارت) | [راهنمای اتصال عمومی](./integrations/generic-integration-guide.md) |
 | می‌خواید ارز دیجیتال یا روتر یکپارچه (کارت+کریپتو) رو تست کنید | [docs/CRYPTO-API-REFERENCE.md](./docs/CRYPTO-API-REFERENCE.md) |
 | نمی‌تونید SMS Forwarder نصب کنید و می‌خواید CubePay پول رو جمع کنه و ارزی تسویه کنه | [docs/CUBEPAY-VIP-API-REFERENCE.md](./docs/CUBEPAY-VIP-API-REFERENCE.md) |
+| اشتراک VIP دارید و می‌خواید هم‌زمان از سیستم عادی هم استفاده کنید | [راهنمای هر دو سیستم با هم](./integrations/using-both-systems-guide.md) |
 | فقط می‌خواید API رو تست کنید | [docs/API-REFERENCE.md](./docs/API-REFERENCE.md) و [docs/examples/](./docs/examples/) |
 
 ## سوالی پیش اومد؟
