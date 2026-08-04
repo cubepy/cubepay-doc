@@ -34,11 +34,49 @@ body{
 ::selection{background:rgba(0,102,255,.4)}
 a{color:inherit;text-decoration:none}
 .en{font-family:var(--en);direction:ltr}
-
-/* ---------- background canvas ---------- */
-#space{
-  position:fixed;inset:0;z-index:0;pointer-events:none;
+@media(hover:hover) and (pointer:fine){
+  body.cursor-on, body.cursor-on a, body.cursor-on button{cursor:none}
 }
+
+/* ---------- preloader ---------- */
+#loader{
+  position:fixed;inset:0;z-index:500;background:#020204;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:30px;
+}
+#loader svg{width:72px;height:72px;overflow:visible}
+#loader svg path{
+  stroke-dasharray:120;stroke-dashoffset:120;
+  animation:drawcube 1.6s ease forwards;
+}
+#loader svg path.inner{animation-delay:.35s}
+@keyframes drawcube{to{stroke-dashoffset:0}}
+.loader-word{font-family:var(--en);font-size:12px;letter-spacing:.5em;color:var(--muted);text-transform:uppercase}
+.loader-bar{width:170px;height:2px;background:rgba(255,255,255,.08);border-radius:2px;overflow:hidden}
+.loader-bar i{display:block;width:0%;height:100%;background:linear-gradient(90deg,var(--blue),var(--purple));box-shadow:0 0 12px var(--blue)}
+
+/* ---------- custom cursor ---------- */
+.cursor-dot,.cursor-ring{
+  position:fixed;top:0;left:0;z-index:400;pointer-events:none;
+  border-radius:50%;opacity:0;
+}
+.cursor-dot{width:6px;height:6px;background:#fff;box-shadow:0 0 10px rgba(255,255,255,.8)}
+.cursor-ring{
+  width:36px;height:36px;border:1px solid rgba(255,255,255,.35);
+  transition:width .25s,height .25s,border-color .25s,background .25s;
+}
+body.cursor-hover .cursor-ring{
+  width:58px;height:58px;border-color:rgba(0,140,255,.9);
+  background:rgba(0,102,255,.08);
+}
+@media(hover:none),(pointer:coarse){.cursor-dot,.cursor-ring{display:none}}
+
+/* ---------- webgl background ---------- */
+#bg3d{position:fixed;inset:0;z-index:0;pointer-events:none;width:100%;height:100%}
+.bg-fallback{position:fixed;inset:0;z-index:0;pointer-events:none;display:none;
+  background:radial-gradient(ellipse at 30% 20%,rgba(0,102,255,.10),transparent 55%),
+             radial-gradient(ellipse at 75% 80%,rgba(124,58,237,.10),transparent 55%),#050505}
+.no-webgl .bg-fallback{display:block}
+.no-webgl #bg3d{display:none}
 .vignette{
   position:fixed;inset:0;z-index:1;pointer-events:none;
   background:radial-gradient(ellipse at 50% 30%,transparent 40%,rgba(5,5,5,.65) 100%);
@@ -67,17 +105,14 @@ nav.scrolled{
 /* ---------- generic section ---------- */
 section{position:relative;z-index:2}
 .wrap{max-width:1180px;margin:0 auto;padding:0 clamp(20px,5vw,48px)}
-
-/* reveal animation */
-.reveal{opacity:0;transform:translateY(42px);transition:opacity .9s cubic-bezier(.16,1,.3,1),transform .9s cubic-bezier(.16,1,.3,1)}
-.reveal.in{opacity:1;transform:none}
-.reveal.d1{transition-delay:.12s}.reveal.d2{transition-delay:.24s}.reveal.d3{transition-delay:.36s}
+html.js .reveal{opacity:0}
+html.js .anim-hide{opacity:0}
 
 /* ---------- hero ---------- */
 #hero{
   min-height:100svh;
   display:flex;align-items:center;
-  padding-top:90px;
+  padding-top:90px;overflow:hidden;
 }
 .hero-grid{
   display:grid;grid-template-columns:1.05fr .95fr;
@@ -131,28 +166,20 @@ h1.hero-title{
 }
 .btn-ghost:hover{color:#fff;border-color:rgba(255,255,255,.3)}
 
-/* ----- hero 3D cube scene ----- */
+/* ----- hero 3D scene ----- */
 .hero-scene{
-  position:relative;width:min(420px,80vw);height:min(420px,80vw);
-  margin-inline:auto;perspective:1100px;
+  position:relative;width:min(460px,86vw);height:min(460px,86vw);
+  margin-inline:auto;
 }
-.cube-wrap{
-  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-}
-.cube{
-  position:relative;width:150px;height:150px;
-  transform-style:preserve-3d;
-  animation:spin 22s linear infinite;
-}
-@keyframes spin{
-  from{transform:rotateX(-18deg) rotateY(0)}
-  to{transform:rotateX(-18deg) rotateY(360deg)}
-}
+#cubeCanvas{position:absolute;inset:0;width:100%;height:100%}
+/* CSS fallback cube (shown only without WebGL) */
+.cube-wrap{position:absolute;inset:0;display:none;align-items:center;justify-content:center;perspective:1100px}
+.no-webgl .cube-wrap{display:flex}
+.cube{position:relative;width:150px;height:150px;transform-style:preserve-3d;animation:spin 22s linear infinite}
+@keyframes spin{from{transform:rotateX(-18deg) rotateY(0)}to{transform:rotateX(-18deg) rotateY(360deg)}}
 .face{
-  position:absolute;inset:0;
-  border:1.5px solid rgba(0,140,255,.8);
-  background:
-    linear-gradient(rgba(0,102,255,.10),rgba(124,58,237,.10)),
+  position:absolute;inset:0;border:1.5px solid rgba(0,140,255,.8);
+  background:linear-gradient(rgba(0,102,255,.10),rgba(124,58,237,.10)),
     repeating-linear-gradient(0deg,transparent 0 24px,rgba(0,140,255,.18) 24px 25px),
     repeating-linear-gradient(90deg,transparent 0 24px,rgba(124,58,237,.18) 24px 25px);
   box-shadow:0 0 24px rgba(0,102,255,.25) inset;
@@ -163,21 +190,8 @@ h1.hero-title{
 .face:nth-child(4){transform:rotateY(-90deg) translateZ(75px)}
 .face:nth-child(5){transform:rotateX(90deg) translateZ(75px)}
 .face:nth-child(6){transform:rotateX(-90deg) translateZ(75px)}
-.cube-glow{
-  position:absolute;left:50%;top:50%;width:340px;height:340px;
-  transform:translate(-50%,-50%);border-radius:50%;
-  background:radial-gradient(circle,rgba(0,102,255,.28),rgba(124,58,237,.12) 45%,transparent 70%);
-  filter:blur(8px);animation:pulse 5s ease-in-out infinite;
-}
-.orbit-ring{
-  position:absolute;left:50%;top:50%;
-  border:1px dashed rgba(255,255,255,.10);border-radius:50%;
-  transform:translate(-50%,-50%) rotateX(68deg);
-}
-.ring-a{width:88%;height:88%}
-.ring-b{width:114%;height:114%;border-color:rgba(124,58,237,.15)}
 .sat{
-  position:absolute;left:50%;top:50%;
+  position:absolute;left:50%;top:50%;z-index:3;
   display:flex;align-items:center;gap:7px;
   font-family:var(--en);font-size:12.5px;font-weight:500;letter-spacing:.04em;
   padding:9px 16px;border-radius:999px;white-space:nowrap;
@@ -258,7 +272,7 @@ h1.hero-title{
 
 /* ---------- product sections ---------- */
 .product{
-  min-height:92svh;display:flex;align-items:center;padding:90px 0;
+  min-height:100svh;display:flex;align-items:center;padding:90px 0;overflow:hidden;
 }
 .prod-grid{
   display:grid;grid-template-columns:1fr 1fr;gap:clamp(36px,6vw,90px);align-items:center;width:100%;
@@ -324,8 +338,8 @@ h1.hero-title{
   display:flex;align-items:flex-end;padding:14px;
   font-family:var(--en);font-size:12px;letter-spacing:.2em;color:rgba(255,255,255,.8);
 }
-.paycard.c1{top:0;left:0;transform:rotate(-7deg);animation:float2 6s ease-in-out infinite}
-.paycard.c2{top:46px;left:20px;transform:rotate(4deg);background:linear-gradient(135deg,rgba(124,58,237,.3),rgba(0,102,255,.2));animation:float1 7s ease-in-out infinite}
+.paycard.c1{top:0;left:0;transform:rotate(-7deg)}
+.paycard.c2{top:46px;left:20px;transform:rotate(4deg);background:linear-gradient(135deg,rgba(124,58,237,.3),rgba(0,102,255,.2))}
 @keyframes cardfloat{0%,100%{translate:0 0}50%{translate:0 -12px}}
 .paycard.c1,.paycard.c2{animation:cardfloat 6s ease-in-out infinite}
 .paycard.c2{animation-delay:1.2s}
@@ -425,7 +439,22 @@ footer{
 </head>
 <body>
 
-<canvas id="space"></canvas>
+<!-- preloader -->
+<div id="loader">
+  <svg viewBox="0 0 24 24" fill="none">
+    <path d="M12 2 21 7v10l-9 5-9-5V7l9-5Z" stroke="#0066FF" stroke-width="1.2"/>
+    <path class="inner" d="M12 2v10m0 0 9-5m-9 5-9-5m9 5v10" stroke="#7C3AED" stroke-width=".9"/>
+  </svg>
+  <div class="loader-word">CUBE ECOSYSTEM</div>
+  <div class="loader-bar"><i id="loaderBar"></i></div>
+</div>
+
+<!-- custom cursor -->
+<div class="cursor-dot" id="curDot"></div>
+<div class="cursor-ring" id="curRing"></div>
+
+<canvas id="bg3d"></canvas>
+<div class="bg-fallback"></div>
 <div class="vignette"></div>
 
 <nav id="nav">
@@ -446,22 +475,20 @@ footer{
 <!-- ═══════════ HERO ═══════════ -->
 <section id="hero">
   <div class="wrap hero-grid">
-    <div class="hero-copy">
+    <div class="hero-copy" id="heroCopy">
       <span class="hero-kicker reveal"><span class="dot"></span> ONE WORLD · FIVE PRODUCTS</span>
-      <h1 class="hero-title en reveal d1">CUBE<br>ECOSYSTEM</h1>
-      <div class="hero-fa reveal d2">فراتر از یک سرویس،<br>یک اکوسیستم دیجیتال.</div>
-      <p class="hero-sub reveal d2">اتصال، پرداخت، سرگرمی، بازار دیجیتال و ساخت آینده.<br>همه در یک جهان.</p>
-      <div class="hero-cta reveal d3">
+      <h1 class="hero-title en reveal">CUBE<br>ECOSYSTEM</h1>
+      <div class="hero-fa reveal">فراتر از یک سرویس،<br>یک اکوسیستم دیجیتال.</div>
+      <p class="hero-sub reveal">اتصال، پرداخت، سرگرمی، بازار دیجیتال و ساخت آینده.<br>همه در یک جهان.</p>
+      <div class="hero-cta reveal">
         <a class="btn-primary en" href="#network">Explore Ecosystem
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 5v14m0 0 6-6m-6 6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
         <a class="btn-ghost" href="#vpn">معرفی محصولات</a>
       </div>
     </div>
-    <div class="hero-scene reveal d1">
-      <div class="cube-glow"></div>
-      <div class="orbit-ring ring-a"></div>
-      <div class="orbit-ring ring-b"></div>
+    <div class="hero-scene reveal" id="heroScene">
+      <canvas id="cubeCanvas"></canvas>
       <div class="cube-wrap">
         <div class="cube">
           <div class="face"></div><div class="face"></div><div class="face"></div>
@@ -481,10 +508,10 @@ footer{
 <section id="network">
   <div class="wrap">
     <div class="section-kicker reveal">THE CUBE NETWORK</div>
-    <h2 class="section-title en reveal d1">One core.<br>Infinite connections.</h2>
-    <p class="section-fa reveal d2">همه‌چیز از یک هسته شروع می‌شود — CUBE قلب اکوسیستم است<br>و پنج جهان دیجیتال به دور آن می‌چرخند.</p>
+    <h2 class="section-title en reveal">One core.<br>Infinite connections.</h2>
+    <p class="section-fa reveal">همه‌چیز از یک هسته شروع می‌شود — CUBE قلب اکوسیستم است<br>و پنج جهان دیجیتال به دور آن می‌چرخند.</p>
 
-    <div class="net-scene reveal d2">
+    <div class="net-scene reveal">
       <svg class="net-lines" width="100%" height="100%" preserveAspectRatio="none" viewBox="0 0 100 100">
         <defs>
           <linearGradient id="lineGrad" x1="0" y1="0" x2="1" y2="1">
@@ -505,7 +532,7 @@ footer{
       <div class="net-node net-br en">CubeSaz</div>
     </div>
 
-    <p class="net-msg reveal d3"><strong>CUBE is the core.</strong><br>Everything connects around it.</p>
+    <p class="net-msg reveal"><strong>CUBE is the core.</strong><br>Everything connects around it.</p>
   </div>
 </section>
 
@@ -513,13 +540,13 @@ footer{
 <section id="vpn" class="product">
   <div class="wrap prod-grid">
     <div class="prod-text">
-      <div class="prod-num en reveal">01</div>
-      <h2 class="prod-name en reveal d1">Cube<span class="accent">VPN</span></h2>
-      <div class="prod-fa reveal d2">اتصال سریع،<br>امن و بدون مرز.</div>
-      <p class="prod-desc reveal d2">زیرساخت اینترنت آزاد برای همه. اتصالی که هیچ مرزی نمی‌شناسد.</p>
-      <a class="prod-link reveal d3" href="https://t.me/Cube_VPNN" target="_blank" rel="noopener">t.me/Cube_VPNN ↗</a>
+      <div class="prod-num en anim">01</div>
+      <h2 class="prod-name en anim">Cube<span class="accent">VPN</span></h2>
+      <div class="prod-fa anim">اتصال سریع،<br>امن و بدون مرز.</div>
+      <p class="prod-desc anim">زیرساخت اینترنت آزاد برای همه. اتصالی که هیچ مرزی نمی‌شناسد.</p>
+      <a class="prod-link anim" href="https://t.me/Cube_VPNN" target="_blank" rel="noopener">t.me/Cube_VPNN ↗</a>
     </div>
-    <div class="prod-visual reveal d1">
+    <div class="prod-visual anim-vis">
       <div class="viz-icon globe">
         <div class="lat"></div><div class="lat"></div><div class="lat"></div>
         <div class="ping g1"></div><div class="ping g2"></div><div class="ping g3"></div>
@@ -532,13 +559,13 @@ footer{
 <section id="pay" class="product alt">
   <div class="wrap prod-grid">
     <div class="prod-text">
-      <div class="prod-num en reveal">02</div>
-      <h2 class="prod-name en reveal d1">Cube<span class="accent">Pay</span></h2>
-      <div class="prod-fa reveal d2">نسل جدید پرداخت‌های دیجیتال.</div>
-      <p class="prod-desc reveal d2">سریع‌تر، هوشمندتر، ساده‌تر. شبکه پرداختی که کارت، کریپتو و هر تراکنشی را در یک تجربه یکپارچه می‌کند.</p>
-      <a class="prod-link reveal d3" href="https://t.me/Cubepy" target="_blank" rel="noopener">t.me/Cubepy ↗</a>
+      <div class="prod-num en anim">02</div>
+      <h2 class="prod-name en anim">Cube<span class="accent">Pay</span></h2>
+      <div class="prod-fa anim">نسل جدید پرداخت‌های دیجیتال.</div>
+      <p class="prod-desc anim">سریع‌تر، هوشمندتر، ساده‌تر. شبکه پرداختی که کارت، کریپتو و هر تراکنشی را در یک تجربه یکپارچه می‌کند.</p>
+      <a class="prod-link anim" href="https://t.me/Cubepy" target="_blank" rel="noopener">t.me/Cubepy ↗</a>
     </div>
-    <div class="prod-visual reveal d1">
+    <div class="prod-visual anim-vis">
       <div class="viz-icon paystack">
         <div class="paycard c1">CUBE&nbsp;PAY&nbsp;····&nbsp;2077</div>
         <div class="paycard c2">USDT&nbsp;·&nbsp;TRX&nbsp;·&nbsp;TON</div>
@@ -551,13 +578,13 @@ footer{
 <section id="gift" class="product">
   <div class="wrap prod-grid">
     <div class="prod-text">
-      <div class="prod-num en reveal">03</div>
-      <h2 class="prod-name en reveal d1">Cube<span class="accent">Gift</span></h2>
-      <div class="prod-fa reveal d2">دنیای گیفت کارت‌ها،<br>در یک تجربه مدرن.</div>
-      <p class="prod-desc reveal d2">گیفت کارت‌های دیجیتال از سراسر دنیا — با تحویل آنی و تجربه‌ای که حس آینده می‌دهد.</p>
-      <a class="prod-link reveal d3" href="https://cubegift.ir/" target="_blank" rel="noopener">cubegift.ir ↗</a>
+      <div class="prod-num en anim">03</div>
+      <h2 class="prod-name en anim">Cube<span class="accent">Gift</span></h2>
+      <div class="prod-fa anim">دنیای گیفت کارت‌ها،<br>در یک تجربه مدرن.</div>
+      <p class="prod-desc anim">گیفت کارت‌های دیجیتال از سراسر دنیا — با تحویل آنی و تجربه‌ای که حس آینده می‌دهد.</p>
+      <a class="prod-link anim" href="https://cubegift.ir/" target="_blank" rel="noopener">cubegift.ir ↗</a>
     </div>
-    <div class="prod-visual reveal d1">
+    <div class="prod-visual anim-vis">
       <div class="viz-icon giftbox"><span class="gift-glow">🎁</span></div>
     </div>
   </div>
@@ -567,13 +594,13 @@ footer{
 <section id="cubely" class="product alt">
   <div class="wrap prod-grid">
     <div class="prod-text">
-      <div class="prod-num en reveal">04</div>
-      <h2 class="prod-name en reveal d1">Cube<span class="accent">ly</span></h2>
-      <div class="prod-fa reveal d2">بازار خدمات دیجیتال.</div>
-      <p class="prod-desc reveal d2">هر چیزی که آنلاین نیاز داری — در یک مارکت دیجیتال مدرن، سریع و قابل اعتماد.</p>
-      <a class="prod-link reveal d3" href="https://cubely.ir/" target="_blank" rel="noopener">cubely.ir ↗</a>
+      <div class="prod-num en anim">04</div>
+      <h2 class="prod-name en anim">Cube<span class="accent">ly</span></h2>
+      <div class="prod-fa anim">بازار خدمات دیجیتال.</div>
+      <p class="prod-desc anim">هر چیزی که آنلاین نیاز داری — در یک مارکت دیجیتال مدرن، سریع و قابل اعتماد.</p>
+      <a class="prod-link anim" href="https://cubely.ir/" target="_blank" rel="noopener">cubely.ir ↗</a>
     </div>
-    <div class="prod-visual reveal d1">
+    <div class="prod-visual anim-vis">
       <div class="viz-icon market">
         <div class="mk">🛰️</div><div class="mk">💎</div><div class="mk">🎮</div>
         <div class="mk">📱</div><div class="mk">⚡</div><div class="mk">🎵</div>
@@ -587,13 +614,13 @@ footer{
 <section id="saz" class="product">
   <div class="wrap prod-grid">
     <div class="prod-text">
-      <div class="prod-num en reveal">05</div>
-      <h2 class="prod-name en reveal d1">Cube<span class="accent">Saz</span></h2>
-      <div class="prod-fa reveal d2">ایده‌ها را تبدیل به محصول کن.</div>
-      <p class="prod-desc reveal d2">ساخت ابزارهای هوشمند آینده — ربات‌ها و ابزارهایی که با هوش مصنوعی، ایده تو را به واقعیت تبدیل می‌کنند.</p>
-      <a class="prod-link reveal d3" href="https://t.me/CubeSaz" target="_blank" rel="noopener">t.me/CubeSaz ↗</a>
+      <div class="prod-num en anim">05</div>
+      <h2 class="prod-name en anim">Cube<span class="accent">Saz</span></h2>
+      <div class="prod-fa anim">ایده‌ها را تبدیل به محصول کن.</div>
+      <p class="prod-desc anim">ساخت ابزارهای هوشمند آینده — ربات‌ها و ابزارهایی که با هوش مصنوعی، ایده تو را به واقعیت تبدیل می‌کنند.</p>
+      <a class="prod-link anim" href="https://t.me/CubeSaz" target="_blank" rel="noopener">t.me/CubeSaz ↗</a>
     </div>
-    <div class="prod-visual reveal d1">
+    <div class="prod-visual anim-vis">
       <div class="viz-icon ai-core">
         <div class="ai-ring"><div class="nodeb"></div></div>
         <div class="ai-ring r2"><div class="nodeb"></div></div>
@@ -607,9 +634,9 @@ footer{
 <section id="worlds">
   <div class="wrap">
     <div class="section-kicker reveal">ORBIT</div>
-    <h2 class="section-title en reveal d1">One Ecosystem.<br>Five Worlds.</h2>
-    <p class="section-fa reveal d2">پنج جهان دیجیتال، در مدار یک هسته.</p>
-    <div class="worlds-stage reveal d2" id="worldsStage">
+    <h2 class="section-title en reveal">One Ecosystem.<br>Five Worlds.</h2>
+    <p class="section-fa reveal">پنج جهان دیجیتال، در مدار یک هسته.</p>
+    <div class="worlds-stage reveal" id="worldsStage">
       <div class="worlds-orbit" id="worldsOrbit">
         <div class="world core-world">
           <div class="sphere core-sphere">
@@ -642,8 +669,8 @@ footer{
   <canvas id="futureCanvas"></canvas>
   <div class="wrap">
     <h2 class="future-title reveal">The ecosystem <span class="grad">keeps growing.</span></h2>
-    <p class="future-sub en reveal d1">Every connection creates a new possibility.</p>
-    <p class="section-fa reveal d2">هزاران مکعب کوچک، هر روز در حال ساخته‌شدن.</p>
+    <p class="future-sub en reveal">Every connection creates a new possibility.</p>
+    <p class="section-fa reveal">هزاران مکعب کوچک، هر روز در حال ساخته‌شدن.</p>
   </div>
 </section>
 
@@ -655,7 +682,7 @@ footer{
       <span class="dim">Powered by innovation.</span><br>
       Designed for the future.
     </div>
-    <p class="trust-fa reveal d1">ساخته‌شده برای تجربه‌های دیجیتال. با نوآوری. برای آینده.</p>
+    <p class="trust-fa reveal">ساخته‌شده برای تجربه‌های دیجیتال. با نوآوری. برای آینده.</p>
   </div>
 </section>
 
@@ -677,60 +704,403 @@ footer{
   <div class="footer-copy">© Cube Ecosystem — Connect. Create. Evolve.</div>
 </footer>
 
+<script src="assets/vendor/three.min.js"></script>
+<script src="assets/vendor/gsap.min.js"></script>
+<script src="assets/vendor/ScrollTrigger.min.js"></script>
 <script>
-/* ───────── starfield + network particles ───────── */
-(function(){
-  const c=document.getElementById('space'),x=c.getContext('2d');
-  let W,H,stars=[],parts=[];
+document.documentElement.classList.add('js');
+const REDUCED=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const FINE=matchMedia('(hover:hover) and (pointer:fine)').matches;
+const mouse={x:0,y:0,nx:0,ny:0};
+addEventListener('mousemove',e=>{
+  mouse.x=e.clientX;mouse.y=e.clientY;
+  mouse.nx=(e.clientX/innerWidth-.5)*2;
+  mouse.ny=(e.clientY/innerHeight-.5)*2;
+},{passive:true});
+
+/* ───────── WebGL support check ───────── */
+const hasWebGL=(()=>{try{const c=document.createElement('canvas');
+  return !!(window.THREE&&window.WebGLRenderingContext&&(c.getContext('webgl')||c.getContext('experimental-webgl')));
+}catch(e){return false}})();
+if(!hasWebGL)document.documentElement.classList.add('no-webgl');
+
+/* ───────── shared env map (fake studio reflections) ───────── */
+function makeEnvMap(renderer){
+  const c=document.createElement('canvas');c.width=512;c.height=256;
+  const g=c.getContext('2d');
+  const grad=g.createLinearGradient(0,0,0,256);
+  grad.addColorStop(0,'#0d1435');grad.addColorStop(.55,'#04040c');grad.addColorStop(1,'#000');
+  g.fillStyle=grad;g.fillRect(0,0,512,256);
+  const blob=(x,y,r,col)=>{const rg=g.createRadialGradient(x,y,0,x,y,r);
+    rg.addColorStop(0,col);rg.addColorStop(1,'rgba(0,0,0,0)');
+    g.fillStyle=rg;g.beginPath();g.arc(x,y,r,0,7);g.fill()};
+  blob(110,70,95,'rgba(40,130,255,.95)');
+  blob(400,55,85,'rgba(150,90,255,.85)');
+  blob(255,190,120,'rgba(0,70,190,.55)');
+  blob(480,200,70,'rgba(90,40,200,.45)');
+  const tex=new THREE.CanvasTexture(c);
+  tex.mapping=THREE.EquirectangularReflectionMapping;
+  const pm=new THREE.PMREMGenerator(renderer);
+  const env=pm.fromEquirectangular(tex).texture;
+  tex.dispose();pm.dispose();
+  return env;
+}
+
+/* ───────── BACKGROUND: shader waves + 3D star particles ───────── */
+if(hasWebGL)(function(){
+  const canvas=document.getElementById('bg3d');
+  const renderer=new THREE.WebGLRenderer({canvas,antialias:false});
+  renderer.setPixelRatio(Math.min(devicePixelRatio,1.6));
+  renderer.autoClear=false;
+
+  /* shader plane */
+  const shaderScene=new THREE.Scene();
+  const orthoCam=new THREE.OrthographicCamera(-1,1,1,-1,0,1);
+  const uni={
+    uTime:{value:0},
+    uRes:{value:new THREE.Vector2(innerWidth,innerHeight)},
+    uMouse:{value:new THREE.Vector2(.5,.5)},
+    uScroll:{value:0}
+  };
+  shaderScene.add(new THREE.Mesh(
+    new THREE.PlaneGeometry(2,2),
+    new THREE.ShaderMaterial({
+      uniforms:uni,
+      depthWrite:false,depthTest:false,
+      vertexShader:'void main(){gl_Position=vec4(position,1.);}',
+      fragmentShader:`
+        precision highp float;
+        uniform float uTime;uniform vec2 uRes;uniform vec2 uMouse;uniform float uScroll;
+        float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+        float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);
+          return mix(mix(hash(i),hash(i+vec2(1.,0.)),f.x),mix(hash(i+vec2(0.,1.)),hash(i+vec2(1.,1.)),f.x),f.y);}
+        float fbm(vec2 p){float v=0.,a=.5;
+          for(int i=0;i<4;i++){v+=a*noise(p);p*=2.05;a*=.5;}return v;}
+        void main(){
+          vec2 uv=gl_FragCoord.xy/uRes.xy;
+          vec2 p=uv*vec2(uRes.x/uRes.y,1.);
+          float t=uTime*.045;
+          float n=fbm(p*2.1+vec2(t,-t*.6)+fbm(p*3.1+t)*.85+uScroll*.4);
+          float n2=fbm(p*1.35-vec2(t*.7,t*.28)+uScroll*.25);
+          vec3 blue=vec3(0.,.4,1.),purple=vec3(.486,.227,.929);
+          vec3 col=vec3(.012,.012,.022);
+          col+=blue*pow(n,3.)*.30;
+          col+=purple*pow(n2,3.2)*.24;
+          float wave=sin(uv.y*6.2+n*4.5+uTime*.32)*.5+.5;
+          col+=mix(blue,purple,uv.x)*wave*pow(n,2.)*.10;
+          float md=distance(uv,uMouse);
+          col+=blue*.07*exp(-md*4.5);
+          float vg=smoothstep(1.25,.35,distance(uv,vec2(.5,.45)));
+          col*=mix(.55,1.,vg);
+          gl_FragColor=vec4(col,1.);
+        }`
+    })
+  ));
+
+  /* star particles (mouse-reactive) */
+  const starScene=new THREE.Scene();
+  const cam=new THREE.PerspectiveCamera(62,innerWidth/innerHeight,.1,60);
+  cam.position.z=10;
+  const N=1100,pos=new Float32Array(N*3),col=new Float32Array(N*3);
+  const cb=new THREE.Color(0x4d94ff),cp=new THREE.Color(0xa273ff),cw=new THREE.Color(0xffffff);
+  for(let i=0;i<N;i++){
+    const r=5+Math.random()*22,th=Math.random()*Math.PI*2,ph=Math.acos(2*Math.random()-1);
+    pos[i*3]=r*Math.sin(ph)*Math.cos(th);
+    pos[i*3+1]=r*Math.sin(ph)*Math.sin(th)*.65;
+    pos[i*3+2]=-Math.random()*28;
+    const c=Math.random()<.6?cw:(Math.random()<.5?cb:cp);
+    col[i*3]=c.r;col[i*3+1]=c.g;col[i*3+2]=c.b;
+  }
+  const geo=new THREE.BufferGeometry();
+  geo.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  geo.setAttribute('color',new THREE.BufferAttribute(col,3));
+  const stars=new THREE.Points(geo,new THREE.PointsMaterial({
+    size:.055,vertexColors:true,transparent:true,opacity:.85,
+    blending:THREE.AdditiveBlending,depthWrite:false,sizeAttenuation:true
+  }));
+  starScene.add(stars);
+
   function resize(){
-    W=c.width=innerWidth;H=c.height=innerHeight;
-    stars=Array.from({length:Math.min(180,W/8)},()=>({
-      x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.2+.2,
-      tw:Math.random()*Math.PI*2,sp:.002+Math.random()*.004
-    }));
-    parts=Array.from({length:Math.min(46,W/28)},()=>({
-      x:Math.random()*W,y:Math.random()*H,
-      vx:(Math.random()-.5)*.35,vy:(Math.random()-.5)*.35,
-      hue:Math.random()<.5?'0,102,255':'124,58,237'
-    }));
+    renderer.setSize(innerWidth,innerHeight);
+    uni.uRes.value.set(renderer.domElement.width,renderer.domElement.height);
+    cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();
   }
   resize();addEventListener('resize',resize);
-  function frame(){
-    x.clearRect(0,0,W,H);
-    for(const s of stars){
-      s.tw+=s.sp*16;
-      x.globalAlpha=.25+Math.abs(Math.sin(s.tw))*.55;
-      x.fillStyle='#fff';
-      x.beginPath();x.arc(s.x,s.y,s.r,0,7);x.fill();
-    }
-    x.globalAlpha=1;
-    for(const p of parts){
-      p.x+=p.vx;p.y+=p.vy;
-      if(p.x<0||p.x>W)p.vx*=-1;
-      if(p.y<0||p.y>H)p.vy*=-1;
-    }
-    for(let i=0;i<parts.length;i++)for(let j=i+1;j<parts.length;j++){
-      const a=parts[i],b=parts[j],dx=a.x-b.x,dy=a.y-b.y,d=dx*dx+dy*dy;
-      if(d<26000){
-        x.strokeStyle='rgba('+a.hue+','+(0.16*(1-d/26000)).toFixed(3)+')';
-        x.lineWidth=1;x.beginPath();x.moveTo(a.x,a.y);x.lineTo(b.x,b.y);x.stroke();
-      }
-    }
-    for(const p of parts){
-      x.fillStyle='rgba('+p.hue+',.8)';
-      x.beginPath();x.arc(p.x,p.y,1.6,0,7);x.fill();
-    }
+
+  let smx=0,smy=0;
+  const clock=new THREE.Clock();
+  (function frame(){
+    const t=clock.getElapsedTime();
+    uni.uTime.value=t;
+    uni.uMouse.value.set(mouse.x/innerWidth,1-mouse.y/innerHeight);
+    uni.uScroll.value=scrollY/Math.max(1,document.body.scrollHeight-innerHeight);
+    smx+=(mouse.nx-smx)*.03;smy+=(mouse.ny-smy)*.03;
+    stars.rotation.y=t*.012+smx*.22;
+    stars.rotation.x=smy*.14;
+    cam.position.y=-uni.uScroll.value*2.2;
+    renderer.clear();
+    renderer.render(shaderScene,orthoCam);
+    renderer.render(starScene,cam);
     requestAnimationFrame(frame);
-  }
-  frame();
+  })();
 })();
 
-/* ───────── scroll reveal ───────── */
+/* ───────── HERO: glass cube, lights, reflections, orbiting particles ───────── */
+if(hasWebGL)(function(){
+  const holder=document.getElementById('heroScene');
+  const canvas=document.getElementById('cubeCanvas');
+  const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
+  renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+  renderer.outputEncoding=THREE.sRGBEncoding;
+  const scene=new THREE.Scene();
+  const cam=new THREE.PerspectiveCamera(42,1,.1,100);
+  cam.position.set(0,0,7.2);
+  const env=makeEnvMap(renderer);
+
+  scene.add(new THREE.AmbientLight(0x223055,.9));
+  const lb=new THREE.PointLight(0x0066FF,3.2,30);lb.position.set(4,3,5);scene.add(lb);
+  const lp=new THREE.PointLight(0x7C3AED,2.8,30);lp.position.set(-4,-2,4);scene.add(lp);
+  const lw=new THREE.PointLight(0xffffff,1.1,20);lw.position.set(0,5,2);scene.add(lw);
+
+  const group=new THREE.Group();scene.add(group);
+
+  /* glass cube */
+  const glass=new THREE.Mesh(
+    new THREE.BoxGeometry(2.5,2.5,2.5),
+    new THREE.MeshPhysicalMaterial({
+      color:0x10224d,metalness:.15,roughness:.08,
+      transmission:.9,thickness:1.6,ior:1.4,
+      envMap:env,envMapIntensity:1.6,
+      clearcoat:1,clearcoatRoughness:.06,
+      transparent:true,opacity:.96
+    })
+  );
+  group.add(glass);
+
+  /* glowing edges */
+  group.add(new THREE.LineSegments(
+    new THREE.EdgesGeometry(glass.geometry),
+    new THREE.LineBasicMaterial({color:0x3d8bff,transparent:true,opacity:.95})
+  ));
+
+  /* inner energy core */
+  const core=new THREE.Mesh(
+    new THREE.OctahedronGeometry(.78,0),
+    new THREE.MeshStandardMaterial({
+      color:0x7C3AED,emissive:0x7C3AED,emissiveIntensity:2.4,
+      metalness:.4,roughness:.25,envMap:env
+    })
+  );
+  group.add(core);
+  const coreLight=new THREE.PointLight(0x8a5cff,2.4,8);group.add(coreLight);
+
+  /* outer wireframe cage, counter-rotating */
+  const cage=new THREE.LineSegments(
+    new THREE.EdgesGeometry(new THREE.BoxGeometry(3.6,3.6,3.6)),
+    new THREE.LineBasicMaterial({color:0x7C3AED,transparent:true,opacity:.16})
+  );
+  scene.add(cage);
+
+  /* orbit rings */
+  const ring1=new THREE.Mesh(
+    new THREE.TorusGeometry(2.75,.012,8,140),
+    new THREE.MeshBasicMaterial({color:0x0066FF,transparent:true,opacity:.5,blending:THREE.AdditiveBlending})
+  );
+  ring1.rotation.x=Math.PI/2.15;scene.add(ring1);
+  const ring2=new THREE.Mesh(
+    new THREE.TorusGeometry(3.25,.010,8,140),
+    new THREE.MeshBasicMaterial({color:0x7C3AED,transparent:true,opacity:.35,blending:THREE.AdditiveBlending})
+  );
+  ring2.rotation.x=Math.PI/1.75;ring2.rotation.y=.5;scene.add(ring2);
+
+  /* 3D particles orbiting the cube */
+  const PN=420,pp=new Float32Array(PN*3),pc=new Float32Array(PN*3),base=[];
+  const cb=new THREE.Color(0x3d8bff),cp=new THREE.Color(0xa273ff);
+  for(let i=0;i<PN;i++){
+    const r=2.5+Math.random()*2.4,th=Math.random()*Math.PI*2,ph=Math.acos(2*Math.random()-1);
+    base.push({r,th,ph,sp:.001+Math.random()*.004});
+    const c=Math.random()<.55?cb:cp;
+    pc[i*3]=c.r;pc[i*3+1]=c.g;pc[i*3+2]=c.b;
+  }
+  const pgeo=new THREE.BufferGeometry();
+  pgeo.setAttribute('position',new THREE.BufferAttribute(pp,3));
+  pgeo.setAttribute('color',new THREE.BufferAttribute(pc,3));
+  const cloud=new THREE.Points(pgeo,new THREE.PointsMaterial({
+    size:.05,vertexColors:true,transparent:true,opacity:.9,
+    blending:THREE.AdditiveBlending,depthWrite:false
+  }));
+  scene.add(cloud);
+
+  function resize(){
+    const w=holder.clientWidth,h=holder.clientHeight;
+    renderer.setSize(w,h,false);
+    cam.aspect=w/h;cam.updateProjectionMatrix();
+  }
+  resize();addEventListener('resize',resize);
+
+  let rx=0,ry=0;
+  const clock=new THREE.Clock();
+  (function frame(){
+    const t=clock.getElapsedTime();
+    /* mouse-reactive rotation */
+    rx+=((mouse.ny*.45)-rx)*.045;
+    ry+=((mouse.nx*.65)-ry)*.045;
+    group.rotation.x=rx-.15;
+    group.rotation.y=t*.28+ry;
+    cage.rotation.x=-t*.12+rx*.5;
+    cage.rotation.y=-t*.18+ry*.5;
+    ring1.rotation.z=t*.25;
+    ring2.rotation.z=-t*.18;
+    core.rotation.y=-t*.9;core.rotation.z=t*.5;
+    const s=1+Math.sin(t*2.1)*.09;core.scale.setScalar(s);
+    coreLight.intensity=2.2+Math.sin(t*2.1)*.9;
+    /* particles: orbit + swell toward mouse */
+    for(let i=0;i<PN;i++){
+      const b=base[i];b.th+=b.sp;
+      const swell=1+mouse.nx*.06*Math.sin(i);
+      pp[i*3]=b.r*swell*Math.sin(b.ph)*Math.cos(b.th);
+      pp[i*3+1]=b.r*Math.cos(b.ph)*.9;
+      pp[i*3+2]=b.r*swell*Math.sin(b.ph)*Math.sin(b.th);
+    }
+    pgeo.attributes.position.needsUpdate=true;
+    cloud.rotation.y=t*.05+ry*.3;
+    renderer.render(scene,cam);
+    requestAnimationFrame(frame);
+  })();
+})();
+
+/* ───────── GSAP: preloader, reveals, Apple-style pinned sections ───────── */
 (function(){
-  const io=new IntersectionObserver(es=>{
-    for(const e of es)if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}
-  },{threshold:.15});
-  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+  if(!window.gsap){document.documentElement.classList.remove('js');
+    document.getElementById('loader').style.display='none';return}
+  gsap.registerPlugin(ScrollTrigger);
+
+  /* preloader */
+  const loader=document.getElementById('loader'),bar=document.getElementById('loaderBar');
+  const barTween=gsap.to(bar,{width:'92%',duration:1.4,ease:'power2.out'});
+  let heroPlayed=false;
+  function heroIntro(){
+    if(heroPlayed)return;heroPlayed=true;
+    gsap.timeline()
+      .fromTo('#heroScene',{opacity:0,scale:.86},{opacity:1,scale:1,duration:1.2,ease:'power3.out'})
+      .fromTo('#heroCopy .reveal',{y:44,opacity:0},{y:0,opacity:1,duration:.9,stagger:.12,ease:'power3.out'},'-=.8')
+      .fromTo('.sat',{opacity:0,scale:.6},{opacity:1,scale:1,duration:.6,stagger:.08,ease:'back.out(1.8)'},'-=.6');
+  }
+  let loaderHidden=false;
+  function hideLoader(){
+    if(loaderHidden)return;loaderHidden=true;
+    barTween.kill();
+    gsap.to(bar,{width:'100%',duration:.25,ease:'power1.in'});
+    gsap.to(loader,{autoAlpha:0,duration:.7,delay:.35,ease:'power2.inOut',
+      onComplete:()=>{loader.remove();heroIntro()}});
+  }
+  if(document.readyState==='complete')setTimeout(hideLoader,900);
+  else addEventListener('load',()=>setTimeout(hideLoader,600));
+  setTimeout(hideLoader,4000); /* hard cap */
+
+  if(REDUCED){
+    gsap.set('.reveal,.anim,.anim-vis,.sat,#heroScene',{clearProps:'all',opacity:1});
+    document.documentElement.classList.remove('js');
+    return;
+  }
+
+  /* generic scroll reveals (non-product sections) */
+  gsap.utils.toArray('section:not(.product) .reveal:not(#heroCopy .reveal)').forEach(el=>{
+    gsap.fromTo(el,{y:48,opacity:0},{
+      y:0,opacity:1,duration:1.05,ease:'power3.out',
+      scrollTrigger:{trigger:el,start:'top 86%'}
+    });
+  });
+
+  /* hero parallax out */
+  gsap.to('#heroCopy',{yPercent:-22,opacity:.05,ease:'none',
+    scrollTrigger:{trigger:'#hero',start:'top top',end:'bottom top',scrub:true}});
+  gsap.to('#heroScene',{yPercent:-10,scale:.88,opacity:.2,ease:'none',
+    scrollTrigger:{trigger:'#hero',start:'top top',end:'bottom top',scrub:true}});
+
+  /* products: pinned, Apple-style on desktop; simple reveals on mobile */
+  ScrollTrigger.matchMedia({
+    '(min-width:861px)':function(){
+      gsap.utils.toArray('.product').forEach(sec=>{
+        const vis=sec.querySelector('.prod-visual');
+        const txt=sec.querySelectorAll('.anim');
+        const tl=gsap.timeline({
+          scrollTrigger:{trigger:sec,start:'top top',end:'+=85%',pin:true,scrub:.65,anticipatePin:1}
+        });
+        tl.fromTo(vis,{scale:.8,opacity:0,y:90},{scale:1,opacity:1,y:0,duration:.4,ease:'none'})
+          .fromTo(txt,{y:80,opacity:0},{y:0,opacity:1,stagger:.06,duration:.4,ease:'none'},'<.08')
+          .to({},{duration:.3});
+      });
+    },
+    '(max-width:860px)':function(){
+      gsap.utils.toArray('.product').forEach(sec=>{
+        gsap.fromTo(sec.querySelectorAll('.anim,.anim-vis'),
+          {y:46,opacity:0},
+          {y:0,opacity:1,duration:.9,stagger:.09,ease:'power3.out',
+           scrollTrigger:{trigger:sec,start:'top 78%'}});
+      });
+    }
+  });
+
+  /* product visuals: gentle parallax after pin release */
+  gsap.utils.toArray('.prod-visual').forEach(v=>{
+    gsap.to(v,{y:-26,ease:'none',
+      scrollTrigger:{trigger:v,start:'top bottom',end:'bottom top',scrub:1.2}});
+  });
+})();
+/* mark elements hidden pre-animation */
+(function(){
+  if(!window.gsap||REDUCED)return;
+  gsap.set('.anim,.anim-vis',{opacity:0});
+})();
+
+/* ───────── custom cursor ───────── */
+(function(){
+  if(!FINE)return;
+  document.body.classList.add('cursor-on');
+  const dot=document.getElementById('curDot'),ring=document.getElementById('curRing');
+  let dx=-100,dy=-100,rx=-100,ry=-100,shown=false;
+  addEventListener('mousemove',e=>{
+    dx=e.clientX;dy=e.clientY;
+    if(!shown){shown=true;dot.style.opacity=1;ring.style.opacity=1}
+  },{passive:true});
+  (function frame(){
+    rx+=(dx-rx)*.16;ry+=(dy-ry)*.16;
+    dot.style.transform='translate('+(dx-3)+'px,'+(dy-3)+'px)';
+    const half=ring.offsetWidth/2;
+    ring.style.transform='translate('+(rx-half)+'px,'+(ry-half)+'px)';
+    requestAnimationFrame(frame);
+  })();
+  const hoverables='a,button,.world,.net-node,.sat';
+  document.querySelectorAll(hoverables).forEach(el=>{
+    el.addEventListener('mouseenter',()=>document.body.classList.add('cursor-hover'));
+    el.addEventListener('mouseleave',()=>document.body.classList.remove('cursor-hover'));
+  });
+})();
+
+/* ───────── subtle hover sound ───────── */
+(function(){
+  if(!FINE||REDUCED)return;
+  let actx=null;
+  document.addEventListener('pointerdown',()=>{
+    if(!actx){try{actx=new (window.AudioContext||window.webkitAudioContext)()}catch(e){}}
+  },{once:true});
+  let last=0;
+  function blip(){
+    if(!actx||actx.state!=='running')return;
+    const now=performance.now();
+    if(now-last<90)return;last=now;
+    const t=actx.currentTime;
+    const o=actx.createOscillator(),g=actx.createGain();
+    o.type='sine';o.frequency.setValueAtTime(1350,t);
+    o.frequency.exponentialRampToValueAtTime(1750,t+.05);
+    g.gain.setValueAtTime(.028,t);
+    g.gain.exponentialRampToValueAtTime(.0001,t+.09);
+    o.connect(g).connect(actx.destination);
+    o.start(t);o.stop(t+.1);
+  }
+  document.querySelectorAll('a,button,.world,.net-node').forEach(el=>
+    el.addEventListener('mouseenter',blip));
 })();
 
 /* ───────── nav on scroll ───────── */
@@ -745,38 +1115,29 @@ footer{
         orbit=document.getElementById('worldsOrbit'),
         worlds=[...orbit.querySelectorAll('.world[data-angle]')],
         core=orbit.querySelector('.core-world');
-  let mx=0,my=0,rot=0;
-  addEventListener('mousemove',e=>{
-    const r=stage.getBoundingClientRect();
-    if(r.bottom<0||r.top>innerHeight)return;
-    mx=(e.clientX/innerWidth-.5)*2;
-    my=(e.clientY/innerHeight-.5)*2;
-  },{passive:true});
-  function frame(){
+  let rot=0;
+  (function frame(){
     rot+=.15;
     const R=Math.min(stage.offsetWidth,560)/2.4;
-    orbit.style.transform='rotateX('+(my*7)+'deg) rotateY('+(mx*10)+'deg)';
+    orbit.style.transform='rotateX('+(mouse.ny*7)+'deg) rotateY('+(mouse.nx*10)+'deg)';
     core.style.transform='translate(-50%,-58%)';
     for(const w of worlds){
       const a=(parseFloat(w.dataset.angle)+rot)*Math.PI/180,
-            X=Math.cos(a)*R, Z=Math.sin(a)*R,
+            X=Math.cos(a)*R,Z=Math.sin(a)*R,
             s=.72+((Z+R)/(2*R))*.42;
       w.style.transform='translate(calc(-50% + '+X.toFixed(1)+'px),-58%) scale('+s.toFixed(3)+')';
       w.style.zIndex=Z>0?3:1;
       w.style.opacity=(.55+((Z+R)/(2*R))*.45).toFixed(2);
     }
     requestAnimationFrame(frame);
-  }
-  frame();
+  })();
 })();
 
-/* ───────── future: growing wireframe cubes ───────── */
+/* ───────── future: growing wireframe cubes (2D canvas overlay) ───────── */
 (function(){
   const c=document.getElementById('futureCanvas'),x=c.getContext('2d');
   let W,H,cubes=[];
-  function resize(){
-    W=c.width=c.offsetWidth;H=c.height=c.offsetHeight;
-  }
+  function resize(){W=c.width=c.offsetWidth;H=c.height=c.offsetHeight}
   resize();addEventListener('resize',resize);
   function spawn(){
     cubes.push({
@@ -802,17 +1163,13 @@ footer{
     x.stroke();x.restore();
   }
   let t=0;
-  function frame(){
+  (function frame(){
     x.clearRect(0,0,W,H);
     if(++t%14===0)spawn();
-    for(const k of cubes){
-      k.y-=k.vy;k.rot+=k.vr;k.life++;
-      drawCube(k);
-    }
+    for(const k of cubes){k.y-=k.vy;k.rot+=k.vr;k.life++;drawCube(k)}
     cubes=cubes.filter(k=>k.y>-40);
     requestAnimationFrame(frame);
-  }
-  frame();
+  })();
 })();
 </script>
 </body>
