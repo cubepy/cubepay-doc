@@ -18,14 +18,18 @@ https://cubevps.ir/smspay/webhook/sms.php?secret=XXXXXXXXXXXXXXXXXXXXXXXX
 
 ## Download and install
 
-📥 **[Download CubePay SMS Forwarder (APK)](https://cubevps.ir/downloads/cubepay.apk)**
+📥 **[Download CubePay SMS Forwarder (APK)](https://github.com/cubepy/cubepay-doc/releases/download/android-latest/CubePay.apk)**
 
-🔒 **SHA-256:** `452921c465b5e2d3e41d178d9ffa45c1efb4dd0e9066cfa56cb96aed5bc85e18`
-(Compare the hash of the downloaded file against this value to be sure it hasn't been tampered with — any SHA-256 tool on your phone or computer will do. This value is synced automatically with the real file on the server every day, so it never needs updating by hand.)
+This link always serves the **latest published build** and never changes — feel free to bookmark it. The file is served straight from GitHub, so whenever a new version ships, the same link gives you that one.
+
+> Older builds and per-version release notes are on the [Releases page of this repository](https://github.com/cubepy/cubepay-doc/releases).
+
+🔒 **SHA-256:** `7a59a6739534d935a8b4d89bf6a5ddb0b09d5f79bb045f7ab17be676c9396b8d`
+(Compare the hash of the downloaded file against this value to be sure it hasn't been tampered with — any SHA-256 tool on your phone or computer will do. This value is synced automatically with the real file every day, so it never needs updating by hand.)
 
 Because this app is not installed from Google Play, Android shows an "unknown source" warning during installation — that is normal:
 
-1. Download the `cubepay.apk` file.
+1. Download the `CubePay.apk` file.
 2. Tap the downloaded file to start the installation; if you see "For your security, your phone is not allowed to install unknown apps", tap **Settings**, allow installs from that browser/file manager, then go back and continue.
 3. After installing, open the app and grant the **SMS read permission** — without it the app cannot see the bank's messages.
 
