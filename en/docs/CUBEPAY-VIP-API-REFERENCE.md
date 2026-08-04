@@ -165,6 +165,30 @@ The toman price is converted to crypto at the live USD rate. Once the payment is
 
 ---
 
+## 🎟 Intake capacity
+
+The number of VIP merchants is **limited**. Because this service involves holding funds in custody, intake is controlled.
+
+When capacity is full, `request-activation.php` responds with `409` and no payment link is created:
+
+```json
+{
+  "success": false,
+  "capacity_full": true,
+  "message": "CubePay VIP intake is currently full. ..."
+}
+```
+
+| Rule | Detail |
+|---|---|
+| **Renewal is never blocked** | The cap applies only to **new** merchants. Once you have a profile — even an expired or suspended one — you can always renew |
+| **An open payment link reserves a slot** | For up to 2 hours. This stops several people buying the same last remaining slot at once |
+| **Paid means served** | If your payment is confirmed, the service is activated regardless. Money is never taken without the service being provided |
+
+> 💡 While capacity is full, the purchase button is hidden in the merchant panel rather than failing on click. A slot frees up when one of the current merchants does not renew.
+
+---
+
 ## 🔁 Subscription lifecycle
 
 | Stage | What happens |
