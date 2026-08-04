@@ -441,9 +441,12 @@ GET /managed-settlement/api/dashboard.php
   "order_id": "ORD123",
   "invoice_uid": "b1a2c3d4-...",
   "amount_toman": 500000,
+  "amount": 500000,
   "sig": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 }
 ```
+
+`amount` دقیقاً همان `amount_toman` است — دو بار می‌آید تا کدی که برای کال‌بکِ کریپتو نوشته شده (که فیلدش `amount` نام دارد) بدون تغییر با VIP هم کار کند.
 
 مثلِ مسیر کریپتوی فعلی، `sig` رو با `api_token` خودتون دوباره بسازید و مقایسه کنید (HMAC-SHA256 روی `order_id|status|amount_toman`) — اگه مطابقت نداشت، نادیده بگیرید:
 

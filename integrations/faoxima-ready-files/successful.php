@@ -40,7 +40,9 @@ $invoiceId = $sessionOrderId ?: $callbackOrderId;
 // به‌جاش order_id + status + amount + امضای HMAC (sig) می‌فرسته.
 $cryptoSig    = $normalizeValue($callbackPayload['sig'] ?? null);
 $cryptoStatus = $normalizeValue($callbackPayload['status'] ?? null);
-$cryptoAmount = $normalizeValue($callbackPayload['amount'] ?? null);
+// «amount» تو کال‌بک کریپتو، «amount_toman» تو کال‌بک VIP — هر دو یک معنی
+// دارن (مبلغ به تومان) و امضا روی همین مقدار ساخته می‌شه؛ هر کدوم بود همونه.
+$cryptoAmount = $normalizeValue($callbackPayload['amount'] ?? $callbackPayload['amount_toman'] ?? null);
 $isCryptoCallback = ($cryptoSig !== null && $invoiceId !== null);
 
 // صفحه‌ی این فایل همیشه یک صفحه‌ی HTML قشنگه — چه کاربر مستقیم از پرداخت
