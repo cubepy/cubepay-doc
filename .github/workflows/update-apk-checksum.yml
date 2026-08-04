@@ -1,5 +1,13 @@
 name: Sync Android APK checksum
 
+# The APK itself is published as a release asset on this repository, under the
+# fixed `android-latest` tag, so merchants always have one stable download URL.
+# This job re-reads that asset every day and keeps the SHA-256 printed in the
+# install guides in sync with it — in both languages.
+#
+# If the download fails, the job fails on purpose: a dead link in the guides is
+# exactly the thing worth being told about.
+
 on:
   schedule:
     - cron: "0 3 * * *"
@@ -8,6 +16,9 @@ on:
 permissions:
   contents: write
 
+env:
+  APK_URL: https://github.com/cubepy/cubepay-doc/releases/download/android-latest/CubePay.apk
+
 jobs:
   update-checksum:
     runs-on: ubuntu-latest
@@ -15,7 +26,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Download current APK
-        run: curl -sSfL -o cubepay.apk https://cubevps.ir/downloads/cubepay.apk
+        run: curl -sSfL -o cubepay.apk "$APK_URL"
 
       - name: Sanity-check downloaded file
         run: |
@@ -33,19 +44,22 @@ jobs:
         id: hash
         run: echo "sha256=$(sha256sum cubepay.apk | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
 
-      - name: Update guide with new checksum
+      - name: Update both guides with the new checksum
         run: |
-          sed -i -E "s/(SHA-256:\*\* \`)[0-9a-f]{64}(\`)/\1${{ steps.hash.outputs.sha256 }}\2/" \
-            integrations/android-sms-forwarder-guide.md
+          for f in integrations/android-sms-forwarder-guide.md \
+                   en/integrations/android-sms-forwarder-guide.md; do
+            sed -i -E "s/(SHA-256:\*\* \`)[0-9a-f]{64}(\`)/\1${{ steps.hash.outputs.sha256 }}\2/" "$f"
+          done
 
       - name: Commit and push if checksum changed
         run: |
-          if git diff --quiet -- integrations/android-sms-forwarder-guide.md; then
+          guides="integrations/android-sms-forwarder-guide.md en/integrations/android-sms-forwarder-guide.md"
+          if git diff --quiet -- $guides; then
             echo "Checksum unchanged, nothing to commit."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add integrations/android-sms-forwarder-guide.md
+          git add $guides
           git commit -m "chore: sync Android SMS Forwarder APK checksum"
           git push
