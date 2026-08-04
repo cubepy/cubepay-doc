@@ -6,7 +6,7 @@
 >
 > این سند مکمل [`CRYPTO-API-REFERENCE.md`](./CRYPTO-API-REFERENCE.md) است، نه جایگزین آن. مسیر فعلیِ SMS Forwarder / تشخیص پیامک بانکی بدون هیچ تغییری، برای همه‌ی فروشنده‌ها، دقیقاً مثل الان باقی می‌مونه.
 >
-> **نام‌گذاری پیشنهادی:** این ماژول قرار نیست چیزی رو جایگزین کنه — یک لایه‌ی اضافه، برای یک زیرمجموعه‌ی خاص از فروشنده‌هاست («فروشنده‌های ویژه»). نام پیشنهادیِ محصول/مارکتینگ: **CubePay VIP**. نام دایرکتوری/جداول فنی در ادامه‌ی سند همچنان `managed-settlement` / `mst_` است (خنثی و توصیفیِ فنی)؛ `settlement_tier = 'vip'` همون سطحیه که این قابلیت رو در `mst_merchant_profile` فعال می‌کنه — نگاه کنید به [بخش مدل داده](#-مدل-داده-و-ledger).
+> **نام‌گذاری پیشنهادی:** این ماژول قرار نیست چیزی رو جایگزین کنه — یک لایه‌ی اضافه، برای یک زیرمجموعه‌ی خاص از فروشنده‌هاست («فروشنده‌های ویژه»). نام پیشنهادیِ محصول/مارکتینگ: **CubePay VIP**. نام دایرکتوری/جداول فنی در ادامه‌ی سند همچنان `managed-settlement` / `mst_` است (خنثی و توصیفیِ فنی)؛ سطحِ دسترسیِ `vip` همون چیزیه که این قابلیت رو در پروفایلِ فروشنده فعال می‌کنه — نگاه کنید به [بخش مدل داده](#-مدل-داده-و-ledger).
 
 ---
 
@@ -26,38 +26,26 @@
 - فروشنده‌ای که این قابلیت رو فعال نکرده، هیچ تفاوتی تو رفتار سیستم نمی‌بینه.
 - ماژول جدید (پیشنهاد نام‌گذاری: `managed-settlement/`) به‌صورت یک دایرکتوری هم‌تراز با `smspay/`, `crypto/`, `pay/`, `relay/` اضافه می‌شه — نه داخل هیچ‌کدوم:
 
-```
-cubevps.ir/
-├── smspay/                 ← بدون تغییر (کارت‌به‌کارت + SMS Forwarder)
-├── crypto/                 ← بدون تغییر (پرداخت مستقیم کریپتویی مشتری)
-│   └── nowpayments-lib.php ← بازاستفاده می‌شه (پایین رو ببینید)
-├── pay/                    ← بدون تغییر (روتر یکپارچه کارت/کریپتو)
-└── managed-settlement/     ← 🆕 ماژول جدید، کاملاً مستقل
-    ├── api/
-    │   ├── create-order.php          ← تنها راه ساخت فاکتور (نه دستی)
-    │   ├── check-order-status.php
-    │   └── request-withdrawal.php
-    ├── webhook/
-    │   └── nowpayments-payout-ipn.php
-    ├── admin/
-    │   └── api.php                   ← تأیید فروشنده، سقف‌ها، کارمزد، تسویه دستی
-    ├── payout/
-    │   └── payout-provider-nowpayments.php  ← adapter، نه وابستگیِ مستقیم
-    ├── jobs/
-    │   ├── release-pending-balance.php      ← کران‌جاب: pending → available
-    │   └── duplicate-guard-sweep.php
-    ├── settlement-config.php
-    └── migrate-managed-settlement.sql
-```
+ماژول از چند لایه‌ی مستقل تشکیل می‌شه که هیچ‌کدام به مسیرهای موجود دست نمی‌زنند:
+
+| لایه | مسئولیت |
+|---|---|
+| **API عمومی** | تنها راهِ ساختِ فاکتور و ثبتِ درخواستِ برداشت — مستند در [مرجعِ API](./CUBEPAY-VIP-API-REFERENCE.md) |
+| **وب‌هوک‌ها** | دریافتِ تأییدِ پرداخت و نتیجه‌ی برداشت، هر دو با اعتبارسنجیِ امضا |
+| **پنلِ ادمین** | تأیید فروشنده، سقف‌ها، کارمزد، اشتراک، و تسویه‌ی دستی |
+| **آداپتورِ ارائه‌دهنده** | تنها نقطه‌ای که واقعاً با NOWPayments حرف می‌زند |
+| **کران‌جاب‌ها** | آزادسازیِ موجودی، انقضای فاکتور، بازبینیِ برداشت‌های گیرکرده، پایشِ نقدینگی |
+
+> پیکربندی و مهاجرت‌ها کنارِ خودِ کد نگه‌داری می‌شوند و در این مخزنِ مستندات نیستند.
 
 ### چرا NOWPayments به‌صورت Adapter، نه وابستگیِ مستقیم؟
 
-کد فعلیِ `crypto/nowpayments-lib.php` (که همین حالا در پروداکشن، تسویهٔ ارزیِ فروشنده‌های مسیر کریپتو رو با معماریِ sub-partner/write-off/payout انجام می‌ده) به `smspay/lib.php` وابسته‌ست (`sp_db()`, `sp_log()`) و منطقش با فرض «موجودی از قبل داخل sub-partner NOWPayments نشسته» نوشته شده — چون تو مسیر کریپتوی فعلی، مشتری مستقیماً کریپتو پرداخت می‌کنه و همون کریپتو داخل NOWPayments می‌شینه.
+کتابخانه‌ی کریپتویِ فعلی (که همین حالا در پروداکشن، تسویهٔ ارزیِ فروشنده‌های مسیر کریپتو رو انجام می‌ده) به هسته‌ی مسیرِ کارتی وابسته‌ست و منطقش با فرض «موجودی از قبل داخل sub-partner NOWPayments نشسته» نوشته شده — چون تو مسیر کریپتوی فعلی، مشتری مستقیماً کریپتو پرداخت می‌کنه و همون کریپتو داخل NOWPayments می‌شینه.
 
-این ماژول جدید با این فرض کار نمی‌کنه (پایین، بخش [نکتهٔ حیاتیِ نقدینگی](#-نکته-حیاتی-که-باید-قبل-از-پیادهسازی-حل-بشه-نقدینگی-ارزی) رو ببینید) پس به‌جای import مستقیمِ `nowpayments-lib.php`، پیشنهاد می‌شه:
+این ماژول جدید با این فرض کار نمی‌کنه (پایین، بخش [نکتهٔ حیاتیِ نقدینگی](#-نکته-حیاتی-که-باید-قبل-از-پیادهسازی-حل-بشه-نقدینگی-ارزی) رو ببینید) پس به‌جای وابستگیِ مستقیم به اون کتابخانه، پیشنهاد می‌شه:
 
 1. یک اینترفیس نازک تعریف بشه: `PayoutProviderInterface` با متدهای `estimate()`, `payout()`, `getPayoutStatus()`, `verifyIpnSignature()`.
-2. `payout-provider-nowpayments.php` این اینترفیس رو با فراخوانیِ توابع عمومیِ موجود در `nowpayments-lib.php` (مثل `np_payout`, `np_estimate`, `np_verify_ipn_signature`) پیاده‌سازی کنه — یعنی از کد فعلی به‌عنوان یک کتابخانه استفاده می‌کنیم، نه این‌که کپی/بازنویسیش کنیم.
+2. یک آداپتور این اینترفیس رو با فراخوانیِ توابعِ موجودِ همون کتابخانه پیاده‌سازی کنه — یعنی از کدِ فعلی به‌عنوان کتابخانه استفاده می‌کنیم، نه اینکه کپی/بازنویسیش کنیم.
 3. بقیهٔ ماژول (ledger، API، پنل ادمین) فقط با `PayoutProviderInterface` کار کنه، نه مستقیم با NOWPayments.
 
 نتیجه: اگه روزی provider عوض بشه (یا یک provider دوم اضافه بشه)، فقط یک adapter جدید نوشته می‌شه؛ منطق مالی و Ledger دست نمی‌خوره.
@@ -91,143 +79,35 @@ flowchart TD
 
 ### اصل اول: موجودی هیچ‌وقت مستقیم UPDATE نمی‌شود
 
-طبق درخواست صریح، هیچ ستونی مثل `balance` که مستقیم `+=`/`-=` بشه وجود نداره. هر تغییر موجودی یک ردیف مستقل و تغییرناپذیر (append-only) تو `mst_ledger_entries` ثبت می‌کنه؛ موجودیِ هر باکت (pending/available/settling/settled) از `SUM()` روی این جدول محاسبه می‌شه (با یک جدول snapshot کش‌شده برای کارایی، که فقط از روی ledger بازسازی می‌شه، هیچ‌وقت منبع حقیقت نیست).
+طبق درخواست صریح، هیچ ستونی مثل `balance` که مستقیم `+=`/`-=` بشه وجود نداره. هر تغییر موجودی یک ردیف مستقل و تغییرناپذیر (append-only) در دفترِ مالی ثبت می‌کنه؛ موجودیِ هر باکت (pending/available/settling/settled) از `SUM()` روی این جدول محاسبه می‌شه (با یک جدول snapshot کش‌شده برای کارایی، که فقط از روی ledger بازسازی می‌شه، هیچ‌وقت منبع حقیقت نیست).
 
-پیشوند جداول این ماژول: `mst_` (Managed SeTtlement) — کاملاً جدا از `sp_` (مسیر فعلی)، فقط با `merchant_id` به `sp_merchants` ارجاع می‌ده (همون هویت فروشنده، قابلیت اضافه‌ست نه جایگزین).
+همه‌ی داده‌های این ماژول در فضای نام‌گذاریِ کاملاً جداگانه‌ای از مسیر فعلی نگه‌داری می‌شن و فقط با شناسه‌ی فروشنده به هویتِ موجود ارجاع می‌دن — قابلیتی اضافه، نه جایگزین.
 
-```sql
--- پروفایل تسویهٔ هر فروشنده در این ماژول (فقط برای فروشنده‌های تأییدشده وجود دارد)
-CREATE TABLE mst_merchant_profile (
-    id                      INT AUTO_INCREMENT PRIMARY KEY,
-    merchant_id             INT NOT NULL UNIQUE,               -- FK -> sp_merchants.id
-    status                  ENUM('pending_review','active','suspended','rejected') NOT NULL DEFAULT 'pending_review',
-    settlement_tier         VARCHAR(30) NOT NULL DEFAULT 'vip',   -- سطح دسترسی؛ 'vip' = برند فعلیِ محصول «CubePay VIP» — بستر برای سطح‌بندیِ آینده هم هست
-    per_tx_limit_toman      DECIMAL(20,2) NOT NULL DEFAULT 1000000,
-    daily_limit_toman       DECIMAL(20,2) NOT NULL DEFAULT 10000000,
-    monthly_limit_toman     DECIMAL(20,2) NULL,  -- NULL = پیش‌فرضِ سراسری · 0 = بدون سقف · >0 = سقفِ اختصاصی
-    fee_percent             DECIMAL(5,2) NOT NULL DEFAULT 10.00,
-    fee_min_toman           DECIMAL(20,2) NULL,
-    fee_max_toman           DECIMAL(20,2) NULL,
-    payout_frequency        ENUM('instant','daily','delayed') NOT NULL DEFAULT 'daily',
-    payout_delay_hours      INT NOT NULL DEFAULT 24,           -- برای حالت delayed
-    min_withdrawal_amount   DECIMAL(20,2) NULL,
-    disabled_by_admin       TINYINT(1) NOT NULL DEFAULT 0,
-    disabled_reason         VARCHAR(255) NULL,
-    created_at              DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at              DATETIME NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+موجودیت‌های این ماژول (همه با پیشوندِ `mst_`) و نقشِ هرکدام:
 
--- آدرس‌های برداشتِ ثبت‌شده و تأییدشدهٔ هر فروشنده (فقط ارزی — طبق تصمیم فعلی، بدون کارت/شبا)
-CREATE TABLE mst_payout_wallets (
-    id                  INT AUTO_INCREMENT PRIMARY KEY,
-    merchant_id         INT NOT NULL,
-    currency            VARCHAR(20) NOT NULL,          -- مثلاً usdttrc20
-    network             VARCHAR(20) NOT NULL,           -- مثلاً TRC20
-    address             VARCHAR(255) NOT NULL,
-    verification_status ENUM('pending','verified','rejected') NOT NULL DEFAULT 'pending',
-    is_active           TINYINT(1) NOT NULL DEFAULT 1,  -- تغییر آدرس = رکورد جدید + غیرفعال‌کردن قبلی، نه ویرایش مستقیم
-    verified_at         DATETIME NULL,
-    created_at          DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    KEY idx_merchant_currency (merchant_id, currency, is_active)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+| موجودیت | نقش | نکته‌ی طراحی |
+|---|---|---|
+| **پروفایلِ تسویه** | یک ردیف به‌ازای هر فروشنده‌ی VIP: وضعیت، سقف‌ها، درصدِ کارمزد، زمان‌بندیِ آزادسازی | سقف‌ها و کارمزد **نال‌پذیر**ند؛ نال یعنی «از پیش‌فرضِ سراسری پیروی کن»، تا تغییرِ پیش‌فرض بلافاصله به همه برسد |
+| **آدرس‌های برداشت** | آدرس‌های ارزیِ ثبت‌شده، هرکدام با وضعیتِ تأیید | تغییرِ آدرس = **ردیفِ جدید + غیرفعال‌کردنِ قبلی**، نه ویرایشِ درجا؛ تا تاریخچه دست‌نخورده بماند |
+| **فاکتورها** | فقط از طریق API ساخته می‌شوند | یکتاییِ `order_id` در سطحِ دیتابیس تضمین می‌شود، نه با چکِ برنامه‌ای. فاکتورِ Sandbox پرچمِ جداگانه دارد و هرگز به دفترِ واقعی نمی‌رسد |
+| **دفترِ مالی** | تنها منبعِ حقیقتِ موجودی، فقط‌افزودنی | هر ردیف یک `entry_type` دارد که جهتِ حرکت را مشخص می‌کند؛ مبلغ همیشه مثبت است. یک ستونِ **کلیدِ یکتا** جلوی ثبتِ دوباره را می‌گیرد |
+| **درخواست‌های برداشت** | نرخِ قفل‌شده، مبلغِ ناخالص/خالص، وضعیت، شناسه‌ی پیگیریِ ارائه‌دهنده | پاسخِ خامِ ارائه‌دهنده نگه داشته می‌شود تا هر اختلافی بعداً قابلِ ردیابی باشد |
+| **ضدتکرار** | اثرانگشتِ ترکیبِ فروشنده + مبلغ + مشتری + بازه‌ی زمانی | عمداً **نه فقط مبلغ** — دو سفارشِ واقعیِ هم‌مبلغ نباید به‌اشتباه مسدود شوند |
+| **تنظیماتِ سراسری** | کلید/مقدار، از پنلِ ادمین در لحظه قابلِ‌تغییر | تا تغییرِ سقف یا کارمزد نیازی به دیپلوی نداشته باشد |
+| **لاگِ حسابرسی** | قبل/بعدِ هر تغییرِ ادمین | توکن‌ها قبل از نوشتن حذف می‌شوند — نگاه کنید به [بخشِ پنلِ ادمین](#-پنل-ادمین-نگاشت-به-مدل-داده) |
 
--- فاکتورها — فقط از طریق API، هرگز دستی
-CREATE TABLE mst_invoices (
-    id                  INT AUTO_INCREMENT PRIMARY KEY,
-    invoice_uid         CHAR(36) NOT NULL UNIQUE,       -- UUID، شناسه‌ی عمومی
-    merchant_id         INT NOT NULL,
-    order_id            VARCHAR(64) NOT NULL,
-    amount_toman        DECIMAL(20,2) NOT NULL,
-    callback_url        VARCHAR(500) NULL,
-    status              ENUM('pending','paid','expired','canceled') NOT NULL DEFAULT 'pending',
-    idempotency_key     VARCHAR(128) NULL,
-    is_sandbox          TINYINT(1) NOT NULL DEFAULT 0,   -- فاکتور Sandbox هرگز روی ledger واقعی اثر نمی‌گذارد
-    created_at          DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    paid_at             DATETIME NULL,
-    UNIQUE KEY uq_merchant_order (merchant_id, order_id),   -- order_id تکراری برای یک فروشنده کاملاً ممنوع
-    KEY idx_merchant_status_created (merchant_id, status, created_at)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+شش نوعِ ردیفِ دفتر، که کلِ چرخه‌ی پول را می‌سازند:
 
--- دفتر تراکنش — تنها منبع حقیقتِ موجودی، append-only
-CREATE TABLE mst_ledger_entries (
-    id                  BIGINT AUTO_INCREMENT PRIMARY KEY,
-    merchant_id         INT NOT NULL,
-    entry_type          ENUM(
-        'invoice_paid_to_pending',      -- +pending  (پرداخت مشتری تأیید شد، کارمزد کسر و ثبت شد)
-        'pending_to_available',         -- pending -> available (رسیدن زمان آزادسازی)
-        'available_to_settling',        -- available -> settling (ثبت درخواست برداشت)
-        'settling_to_settled',          -- settling -> settled (payout موفق نهایی شد)
-        'settling_reversed',            -- settling -> available (payout قطعاً ناموفق شد)
-        'admin_adjustment'              -- فقط با یادداشت اجباری و شناسه‌ی ادمین، برای اصلاح موارد استثنایی
-    ) NOT NULL,
-    amount_toman        DECIMAL(20,2) NOT NULL,          -- همیشه مثبت؛ جهت از entry_type مشخص می‌شود
-    fee_toman           DECIMAL(20,2) NOT NULL DEFAULT 0,
-    reference_type      VARCHAR(30) NOT NULL,             -- 'invoice' | 'withdrawal' | 'admin'
-    reference_id        VARCHAR(64) NOT NULL,             -- invoice_uid یا withdrawal_uid
-    idempotency_key      VARCHAR(128) NOT NULL,
-    created_by           VARCHAR(30) NOT NULL DEFAULT 'system',  -- 'system' یا admin_id
-    note                 TEXT NULL,
-    created_at           DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE KEY uq_idempotency (idempotency_key),   -- کلید اصلیِ جلوگیری از ثبت دوباره
-    KEY idx_merchant_type_created (merchant_id, entry_type, created_at)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+| نوع | حرکت | چه وقت |
+|---|---|---|
+| `invoice_paid_to_pending` | ورود به «در انتظار» | پرداختِ مشتری تأیید شد و کارمزد کسر شد |
+| `pending_to_available` | «در انتظار» ← «قابل‌تسویه» | رسیدنِ زمانِ آزادسازی |
+| `available_to_settling` | «قابل‌تسویه» ← «در حال تسویه» | ثبتِ درخواستِ برداشت |
+| `settling_to_settled` | «در حال تسویه» ← «تسویه‌شده» | برداشت نهایی شد |
+| `settling_reversed` | «در حال تسویه» ← «قابل‌تسویه» | برداشت قطعاً ناموفق شد |
+| `admin_adjustment` | تعدیلِ دستی | فقط با یادداشتِ اجباری و شناسه‌ی ادمین |
 
--- درخواست‌های برداشت ارزی
-CREATE TABLE mst_withdrawals (
-    id                      INT AUTO_INCREMENT PRIMARY KEY,
-    withdrawal_uid          CHAR(36) NOT NULL UNIQUE,
-    merchant_id             INT NOT NULL,
-    wallet_id               INT NOT NULL,               -- FK -> mst_payout_wallets.id (باید verified باشد)
-    amount_toman_requested  DECIMAL(20,2) NOT NULL,
-    rate_locked             DECIMAL(20,8) NOT NULL,      -- نرخ تومان/ارز، لحظه‌ی ثبت درخواست
-    currency                VARCHAR(20) NOT NULL,
-    crypto_amount_gross     DECIMAL(24,8) NOT NULL,
-    cubepay_fee_toman       DECIMAL(20,2) NOT NULL,      -- کارمزد CubePay (از قبل، لحظه‌ی پرداخت محاسبه شده بود؛ اینجا فقط مرجع)
-    network_fee_crypto      DECIMAL(24,8) NULL,
-    crypto_amount_net       DECIMAL(24,8) NULL,
-    status                  ENUM('requested','rate_locked','processing','sent','completed','failed','balance_returned') NOT NULL DEFAULT 'requested',
-    provider_payout_id      VARCHAR(64) NULL,
-    provider_raw_response   TEXT NULL,
-    failure_reason          TEXT NULL,
-    idempotency_key         VARCHAR(128) NOT NULL UNIQUE,
-    created_at              DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at              DATETIME NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- تشخیص فاکتور/تراکنش مشابه (ضدتکرار قابل‌تنظیم)
-CREATE TABLE mst_duplicate_guard (
-    id                  BIGINT AUTO_INCREMENT PRIMARY KEY,
-    merchant_id         INT NOT NULL,
-    fingerprint         CHAR(64) NOT NULL,   -- SHA-256 روی merchant_id+amount+order_id_prefix+customer_ref
-    invoice_uid         CHAR(36) NOT NULL,
-    created_at          DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    KEY idx_fingerprint_created (fingerprint, created_at)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- تنظیمات سراسری، قابل‌تغییر از پنل ادمین
-CREATE TABLE mst_global_config (
-    config_key    VARCHAR(64) PRIMARY KEY,
-    config_value  VARCHAR(255) NOT NULL,
-    updated_by    VARCHAR(30) NULL,
-    updated_at    DATETIME NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
--- ردیف‌های اولیه:
--- ('default_per_tx_limit_toman', '1000000')
--- ('default_fee_percent', '10.00')
--- ('duplicate_guard_max_count', '3')
--- ('duplicate_guard_window_minutes', '15')
-
--- لاگ کامل هر تغییر روی پروفایل/تنظیمات/آدرس ولت — برای «مشاهده‌ی تاریخچه‌ی کامل» در پنل ادمین
-CREATE TABLE mst_audit_log (
-    id             BIGINT AUTO_INCREMENT PRIMARY KEY,
-    merchant_id    INT NULL,
-    actor          VARCHAR(30) NOT NULL,     -- admin_id یا 'system'
-    action         VARCHAR(64) NOT NULL,     -- مثلاً 'wallet_change_requested', 'limit_updated', 'withdrawal_manual_approve'
-    before_json    TEXT NULL,
-    after_json     TEXT NULL,
-    created_at     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-```
+> 📌 این سند عمداً **ساختارِ دقیقِ جدول‌ها را نمی‌آورد** — این‌جا مدلِ مفهومی و «چرا»ی هر تصمیم ثبت می‌شود، نه طرحِ قابلِ‌اجرا. مهاجرت‌های واقعی کنارِ خودِ کد نگه‌داری می‌شوند و بخشی از این مخزنِ مستندات نیستند.
 
 ### چرا موجودی «مشتق‌شده» است نه ذخیره‌شده
 
@@ -240,7 +120,7 @@ CREATE TABLE mst_audit_log (
 | در حال تسویه | `SUM(available_to_settling) − SUM(settling_to_settled) − SUM(settling_reversed)` |
 | تسویه‌شده (تجمعی) | `SUM(settling_to_settled)` |
 
-برای کارایی، یک جدول snapshot (`mst_balance_snapshot`) نگه داشته می‌شه که با هر INSERT روی ledger به‌روز می‌شه، ولی یک job دوره‌ای اون رو با محاسبه‌ی مستقیم از `mst_ledger_entries` تطبیق (reconcile) می‌ده و هر مغایرت رو alert می‌کنه — یعنی snapshot صرفاً کش‌ه، هیچ‌وقت منبع تصمیم مالی نیست.
+برای کارایی، یک جدول snapshot (یک جدولِ خلاصه‌ی کش‌شده) نگه داشته می‌شه که با هر INSERT روی ledger به‌روز می‌شه، ولی یک job دوره‌ای اون رو با محاسبه‌ی مستقیم از دفترِ مالی تطبیق (reconcile) می‌ده و هر مغایرت رو alert می‌کنه — یعنی snapshot صرفاً کش‌ه، هیچ‌وقت منبع تصمیم مالی نیست.
 
 ---
 
@@ -254,13 +134,13 @@ CREATE TABLE mst_audit_log (
 | ثبت درخواست برداشت | فروشنده یک `Idempotency-Key` هدر می‌فرستد؛ سرور هم یک کلید داخلی می‌سازد: `"withdrawal:" + merchant_id + ":" + wallet_id + ":" + hash(amount+timestamp_bucket)` |
 | پردازش IPN payout از NOWPayments | `"payout_ipn:" + provider_payout_id + ":" + status` |
 
-الگو: هر تلاش برای INSERT با `idempotency_key` تکراری روی `mst_ledger_entries` یا `mst_withdrawals` با خطای Unique Constraint مواجه می‌شه؛ کد اپلیکیشن این خطا رو catch می‌کنه و به‌جای شکست، همون نتیجه‌ی قبلی رو برمی‌گردونه (idempotent response) — دقیقاً همون الگویی که در `crypto/webhook/nowpayments-ipn.php` فعلی با چک `rowCount()` (هرچند به‌صورت ساده‌تر) استفاده شده.
+الگو: هر تلاش برای INSERT با `idempotency_key` تکراری روی دفترِ مالی یا جدول‌های داخلی با خطای Unique Constraint مواجه می‌شه؛ کد اپلیکیشن این خطا رو catch می‌کنه و به‌جای شکست، همون نتیجه‌ی قبلی رو برمی‌گردونه (idempotent response) — دقیقاً همون الگویی که در `crypto/webhook/nowpayments-ipn.php` فعلی با چک `rowCount()` (هرچند به‌صورت ساده‌تر) استفاده شده.
 
 ---
 
 ## 🚦 محدودیت مبلغ (سطح بک‌اند، نه فقط پنل)
 
-- سقف پیش‌فرض هر فاکتور/تراکنش: **۱,۰۰۰,۰۰۰ تومان**، از `mst_global_config.default_per_tx_limit_toman` خوانده می‌شود؛ سقف مؤثر برای هر فروشنده از `mst_merchant_profile.per_tx_limit_toman` (که هنگام تأیید فروشنده، از پیش‌فرض سراسری کپی می‌شود و بعد قابل تغییر جداگانه است).
+- سقف پیش‌فرض هر فاکتور/تراکنش: **۱,۰۰۰,۰۰۰ تومان**، از تنظیماتِ سراسری خوانده می‌شود؛ سقف مؤثر برای هر فروشنده از تنظیمِ اختصاصیِ پروفایل (که هنگام تأیید فروشنده، از پیش‌فرض سراسری کپی می‌شود و بعد قابل تغییر جداگانه است).
 - اعتبارسنجی در `managed-settlement/api/create-order.php` **قبل از** هر INSERT انجام می‌شود؛ اگر `amount_toman` بیشتر از سقف مؤثر باشد، پاسخ با کد HTTP مناسب (`422`) و بدون ثبت هیچ رکوردی رد می‌شود. این یک چک UI/پنل نیست — روی مسیر API مستقیم هم اعمال می‌شود.
 - فاکتور بعد از ایجاد **immutable** است: هیچ endpoint برای PATCH/ویرایش مبلغ وجود ندارد. برای تغییر مبلغ: فروشنده باید فاکتور را `cancel` کند (فقط اگر هنوز `pending` است) و فاکتور جدید بسازد.
 
@@ -276,13 +156,13 @@ fingerprint = SHA256(merchant_id + "|" + amount_toman + "|" + order_id_normalize
 
 الگوریتم `create-order.php`:
 1. فینگرپرینت فاکتور جدید را بساز.
-2. تعداد ردیف‌های `mst_duplicate_guard` با همین `fingerprint` را در بازه‌ی `duplicate_guard_window_minutes` (پیش‌فرض ۱۵ دقیقه، از `mst_global_config`) بشمار.
+2. تعداد ردیف‌های جدول‌های داخلی با همین `fingerprint` را در بازه‌ی `duplicate_guard_window_minutes` (پیش‌فرض ۱۵ دقیقه، از جدول‌های داخلی) بشمار.
 3. اگر تعداد ≥ `duplicate_guard_max_count` (پیش‌فرض ۳) بود → فاکتور در وضعیت `held_for_review` ساخته می‌شود (نه رد قطعی) و به ادمین اطلاع داده می‌شود؛ فروشنده پاسخ HTTP با پیام روشن می‌گیرد.
-4. در غیر این صورت، فاکتور عادی ساخته و یک ردیف جدید در `mst_duplicate_guard` ثبت می‌شود.
+4. در غیر این صورت، فاکتور عادی ساخته و یک ردیف جدید در جدول‌های داخلی ثبت می‌شود.
 
-هر دو عدد (`max_count`, `window_minutes`) و رفتار بعد از رسیدن به حد (`hold` یا `block`) از پنل ادمین قابل تغییرند (`mst_global_config`).
+هر دو عدد (`max_count`, `window_minutes`) و رفتار بعد از رسیدن به حد (`hold` یا `block`) از پنل ادمین قابل تغییرند (جدول‌های داخلی).
 
-> این مکانیزم مستقل از `UNIQUE KEY uq_merchant_order (merchant_id, order_id)` روی `mst_invoices` است — تکرار دقیقِ `order_id` برای یک فروشنده در هر شرایطی و بدون استثنا در سطح دیتابیس رد می‌شود؛ duplicate guard برای الگوهای *مشابه* (نه دقیقاً یکسان) طراحی شده.
+> این مکانیزم مستقل از `UNIQUE KEY uq_merchant_order (merchant_id, order_id)` روی جدول‌های داخلی است — تکرار دقیقِ `order_id` برای یک فروشنده در هر شرایطی و بدون استثنا در سطح دیتابیس رد می‌شود؛ duplicate guard برای الگوهای *مشابه* (نه دقیقاً یکسان) طراحی شده.
 
 ---
 
@@ -290,8 +170,8 @@ fingerprint = SHA256(merchant_id + "|" + amount_toman + "|" + order_id_normalize
 
 - هیچ endpoint یا فرم ادمین/پنل/رباتی برای «ساخت فاکتور تأییدشده» یا «افزایش مستقیم موجودی» وجود ندارد؛ تنها راه ورود پول به ledger، مسیر `invoice_paid_to_pending` است که فقط از تأیید *واقعیِ* پرداخت (وب‌هوک بانکی/تشخیص پیامک همان زیرساخت فعلی، یا معادل آن برای این ماژول) تولید می‌شود.
 - فیلدهای اجباری هر فاکتور: `merchant_id`, `order_id`, `amount_toman`, `callback_url` (اختیاری)، به‌علاوه‌ی زمان ایجاد، `invoice_uid`، و وضعیت — دقیقاً هم‌راستا با ساختار فعلی `create-payment`/`create-crypto-payment`.
-- **Sandbox:** فاکتورهای `is_sandbox = 1` (ساخته‌شده با توکن تستی، هم‌الگو با Sandbox Mode که طبق `CHANGELOG.md` نسخه‌ی ۲.۰.۰ همین حالا برای مسیر کارتی وجود دارد) هیچ‌وقت ردیفی در `mst_ledger_entries` واقعی تولید نمی‌کنند — مسیر کدشان از همون ابتدا (در `create-order.php`) جدا می‌شود.
-- `admin_adjustment` در `mst_ledger_entries` تنها راهی است که یک ادمین می‌تواند موجودی را دستی تغییر دهد — و این هم «افزایش از هیچ» نیست، بلکه همیشه باید `note` و `reference` (مثلاً شناسه‌ی تیکت پشتیبانی) داشته باشد و در `mst_audit_log` هم ثبت شود؛ برای اصلاح خطا، نه برای ساخت فاکتور جعلی.
+- **Sandbox:** فاکتورهای `is_sandbox = 1` (ساخته‌شده با توکن تستی، هم‌الگو با Sandbox Mode که طبق `CHANGELOG.md` نسخه‌ی ۲.۰.۰ همین حالا برای مسیر کارتی وجود دارد) هیچ‌وقت ردیفی در دفترِ مالی واقعی تولید نمی‌کنند — مسیر کدشان از همون ابتدا (در `create-order.php`) جدا می‌شود.
+- `admin_adjustment` در دفترِ مالی تنها راهی است که یک ادمین می‌تواند موجودی را دستی تغییر دهد — و این هم «افزایش از هیچ» نیست، بلکه همیشه باید `note` و `reference` (مثلاً شناسه‌ی تیکت پشتیبانی) داشته باشد و در لاگِ حسابرسی هم ثبت شود؛ برای اصلاح خطا، نه برای ساخت فاکتور جعلی.
 
 ---
 
@@ -304,16 +184,16 @@ Requested → Rate Locked → Processing → Sent → Completed
 Requested → Processing → Failed → Balance Returned
 ```
 
-### نکاتی که از کد فعلی (`crypto/nowpayments-lib.php`) قابل بازاستفاده‌اند
+### نکاتی که از کد فعلی (کتابخانه‌ی کریپتویِ فعلی) قابل بازاستفاده‌اند
 
-- **اعتبارسنجی امضای IPN** (`np_verify_ipn_signature`, HMAC-SHA512 با ksort بازگشتی) — دقیقاً همون تابع، بدون تغییر، برای `managed-settlement/webhook/nowpayments-payout-ipn.php` هم استفاده می‌شود.
-- **تأیید خودکار payout با TOTP** (`np_totp_code`, `np_verify_payout`) — همون الگو.
-- **کش JWT و نرخ تبدیل** (`np_get_jwt`, `np_get_usd_toman_rate`) — همون‌ها، چون از یک اکانت NOWPayments مشترک استفاده می‌شود.
-- **الگوی تلاش‌مجدد کال‌بک فروشنده با بررسی نتیجه** (`np_fire_merchant_callback`) — همون الگو برای اطلاع‌رسانی نتیجه‌ی برداشت.
+- **اعتبارسنجی امضای IPN** (HMAC-SHA512 با مرتب‌سازیِ بازگشتی) — دقیقاً همون منطق، بدون تغییر، برای وب‌هوکِ برداشت هم استفاده می‌شود.
+- **تأیید خودکار payout با TOTP** — همون الگو.
+- **کش کردنِ توکنِ احراز و نرخ تبدیل** — همون‌ها، چون از یک اکانت NOWPayments مشترک استفاده می‌شود.
+- **الگوی تلاش‌مجدد کال‌بک فروشنده با بررسی نتیجه** — همون الگو برای اطلاع‌رسانی نتیجه‌ی برداشت.
 
 ### نکته‌ای که *باید* جدا طراحی شود، نه بازاستفاده
 
-تابع فعلی `np_settle_merchant()` فرض می‌کند موجودیِ کریپتوی قابل‌تسویه از قبل داخل **sub-partner balance** خودِ آن فروشنده روی NOWPayments نشسته (چون در مسیر کریپتوی فعلی، مشتری مستقیماً همون کریپتو رو پرداخت کرده و مستقیم به sub-partner واریز شده). در این ماژول جدید، مشتری **تومان** پرداخت کرده، نه کریپتو — یعنی هیچ موجودیِ sub-partner ای برای این فروشنده روی NOWPayments وجود ندارد. پس مسیر برداشت این ماژول باید از **master account** خود CubePay (نه از یک sub-partner) پرداخت کند — همون مسیری که `np_payout()` مستقیم (بدون `np_write_off` قبلش) پیاده‌سازی می‌کند، شبیه به چیزی که `withdraw-commission.php` و `recover-stuck-payout.php` همین الان برای مصارف دیگه استفاده می‌کنن.
+تابع فعلی تابعِ تسویه‌ی مسیرِ کریپتو فرض می‌کند موجودیِ کریپتوی قابل‌تسویه از قبل داخل **sub-partner balance** خودِ آن فروشنده روی NOWPayments نشسته (چون در مسیر کریپتوی فعلی، مشتری مستقیماً همون کریپتو رو پرداخت کرده و مستقیم به sub-partner واریز شده). در این ماژول جدید، مشتری **تومان** پرداخت کرده، نه کریپتو — یعنی هیچ موجودیِ sub-partner ای برای این فروشنده روی NOWPayments وجود ندارد. پس مسیر برداشت این ماژول باید از **master account** خود CubePay (نه از یک sub-partner) پرداخت کند — همون مسیرِ ارسالِ مستقیم که ابزارهای فعلیِ برداشتِ کارمزد هم ازش استفاده می‌کنن.
 
 ### ⚠️ نکتهٔ حیاتی که باید قبل از پیاده‌سازی حل بشه: نقدینگی ارزی
 
@@ -348,14 +228,14 @@ Requested → Processing → Failed → Balance Returned
 > ⚠️ **چرا «خانواده» و نه صرفاً تعدادِ منابع:** در سنجشِ واقعی BrsApi و TGJU عددِ **دقیقاً یکسان** برگرداندند (۱۹۲٬۸۸۰)، یعنی BrsApi همان دادهٔ TGJU را بازنشر می‌کند. توافقِ این دو «تأییدِ مستقل» نیست — اگر آن سرچشمه عددِ خراب بدهد هر دو همان را تکرار می‌کنند. پس منابع به خانواده گروه‌بندی شده‌اند (`brsapi` و `tgju` یک خانواده، `bonbast` خانواده‌ی دیگر) و اجماع حداقل دو خانواده‌ی متمایز می‌خواهد. هر منبعِ جدیدی که اضافه می‌شود باید خانواده‌اش هم مشخص شود.
 
 
-- `rate_locked` روی `mst_withdrawals` لحظه‌ی ثبت درخواست ذخیره می‌شود (نه لحظه‌ی پردازش)، دقیقاً طبق درخواست.
-- `min_withdrawal_amount` هر فروشنده در `mst_merchant_profile` (یا مقدار پیش‌فرض سراسری) چک می‌شود؛ اگر `np_get_min_amount()` (تابع موجود در `nowpayments-lib.php`) عدد بالاتری برگرداند، بزرگ‌تر از این دو به فروشنده نمایش داده می‌شود.
-- مبلغ ارزی نهایی، نرخ تبدیل، کارمزد CubePay، و کارمزد شبکه (`network_fee_crypto`، با `np_get_payout_fee()` موجود) هرکدام ستون جدا در `mst_withdrawals` هستند — یعنی در پنل فروشنده هرکدام به‌صورت شفاف و جدا نمایش داده می‌شوند، نه یک عدد نهاییِ ترکیبی.
-- **آدرس کیف‌پول** پیش از اولین برداشت باید `verification_status = 'verified'` باشد (تأیید دستی ادمین یا واریز آزمایشیِ خیلی کوچک — تصمیم پیاده‌سازی). تغییر آدرس یعنی رکورد جدید در `mst_payout_wallets` با `verification_status = 'pending'`؛ رکورد قبلی `is_active` باقی می‌ماند تا رکورد جدید تأیید شود (فروشنده حین بررسیِ آدرس جدید، از برداشت به آدرس قدیمیِ تأییدشده محروم نمی‌شود مگر ادمین صریحاً غیرش کند).
+- `rate_locked` روی جدول‌های داخلی لحظه‌ی ثبت درخواست ذخیره می‌شود (نه لحظه‌ی پردازش)، دقیقاً طبق درخواست.
+- `min_withdrawal_amount` هر فروشنده در پروفایلِ فروشنده (یا مقدار پیش‌فرض سراسری) چک می‌شود؛ اگر استعلامِ حداقلِ مجازِ شبکه (تابع موجود در کتابخانه‌ی کریپتویِ فعلی) عدد بالاتری برگرداند، بزرگ‌تر از این دو به فروشنده نمایش داده می‌شود.
+- مبلغ ارزی نهایی، نرخ تبدیل، کارمزد CubePay، و کارمزد شبکه (`network_fee_crypto`، با استعلامِ کارمزدِ شبکه موجود) هرکدام ستون جدا در جدول‌های داخلی هستند — یعنی در پنل فروشنده هرکدام به‌صورت شفاف و جدا نمایش داده می‌شوند، نه یک عدد نهاییِ ترکیبی.
+- **آدرس کیف‌پول** پیش از اولین برداشت باید `verification_status = 'verified'` باشد (تأیید دستی ادمین یا واریز آزمایشیِ خیلی کوچک — تصمیم پیاده‌سازی). تغییر آدرس یعنی رکورد جدید در آدرس‌های برداشت با `verification_status = 'pending'`؛ رکورد قبلی `is_active` باقی می‌ماند تا رکورد جدید تأیید شود (فروشنده حین بررسیِ آدرس جدید، از برداشت به آدرس قدیمیِ تأییدشده محروم نمی‌شود مگر ادمین صریحاً غیرش کند).
 
 ### مدیریت شکست
 
-- payout تا وقتی از سمت NOWPayments `Sent`/`Completed` تأیید نشده، `mst_withdrawals.status` هرگز `completed` نمی‌شود.
+- payout تا وقتی از سمت NOWPayments `Sent`/`Completed` تأیید نشده، رکوردِ برداشت هرگز `completed` نمی‌شود.
 - اگر IPN دیر برسد و یک بررسیِ دوره‌ای (polling با `GET /payout/{id}` — شبیه الگوی `check-order-status.php` فعلی) لازم باشد، قبل از هر polling چک می‌شود که این `withdrawal_uid` از قبل `provider_payout_id` دارد؛ اگر ندارد یعنی هنوز اصلاً به provider ارسال نشده — در این حالت یک closed یک بار ارسال دوباره تلاش نمی‌کند، بلکه علامت `stuck` می‌خورد و به‌صورت دستی بررسی می‌شود (نه ارسال دوم خودکار، تا احتمال دوبار پرداخت از بین برود).
 - شکست قطعی → یک ردیف `settling_reversed` در ledger → موجودی دقیقاً یک‌بار به «قابل تسویه» برمی‌گردد.
 
@@ -363,19 +243,19 @@ Requested → Processing → Failed → Balance Returned
 
 سرنوشتِ نهاییِ هر برداشت یا «تسویه‌شده» است یا «برگشتی» — هرگز هر دو. اگر هر دو ثبت شوند، فروشنده هم ارز را دارد و هم موجودیِ تومانی‌اش سرِ جایش می‌ماند (و «در حال تسویه» منفی می‌شود). این ثابت با **دو لایه‌ی مستقل** نگه داشته می‌شود:
 
-1. **کلیدِ idempotency مشترک** — هر دو ردیفِ `settling_to_settled` و `settling_reversed` کلیدِ یکسانِ `withdrawal_final:<withdrawal_uid>` می‌گیرند. چون `mst_ledger_entries.idempotency_key` یکتاست، خودِ **دیتابیس** تضمین می‌کند دومی هرگز درج نشود — این لایه به درست‌بودنِ منطقِ برنامه وابسته نیست و کدِ آینده هم نمی‌تواند دورش بزند.
+1. **کلیدِ idempotency مشترک** — هر دو ردیفِ `settling_to_settled` و `settling_reversed` کلیدِ یکسانِ `withdrawal_final:<withdrawal_uid>` می‌گیرند. چون این کلید در دفترِ مالی یکتاست، خودِ **دیتابیس** تضمین می‌کند دومی هرگز درج نشود — این لایه به درست‌بودنِ منطقِ برنامه وابسته نیست و کدِ آینده هم نمی‌تواند دورش بزند.
 2. **گاردِ وضعیت** — `completed`, `balance_returned` و `failed` هر سه پایانی‌اند و هیچ مسیری (وب‌هوک، کران‌جابِ بازبینی، یا اقدامِ دستیِ ادمین) روی آن‌ها ردیفِ جدید نمی‌نویسد.
 
 > ⚠️ نکته‌ای که در پیاده‌سازیِ اولیه از قلم افتاده بود: مسیرِ شکستِ `request-withdrawal.php` وضعیت را `failed` می‌گذارد (نه `balance_returned`)، در حالی که گاردها فقط دو وضعیتِ دیگر را پایانی می‌دانستند — پس یک برداشتِ `failed` که پولش برگشته بود، هنوز می‌توانست «تسویه‌شده» هم بشود. هر وضعیتِ پایانیِ جدیدی که در آینده اضافه شود باید به **هر سه** گارد اضافه شود؛ لایه‌ی کلیدِ مشترک دقیقاً برای همین فراموش‌شدن‌ها گذاشته شده.
-- خطا و پاسخ خام provider در `mst_withdrawals.provider_raw_response` و لاگ ماژول ذخیره می‌شود؛ فروشنده در پنل خودش وضعیت و `provider_payout_id` را می‌بیند (نه پاسخ خام).
+- خطا و پاسخ خام provider در رکوردِ برداشت و لاگ ماژول ذخیره می‌شود؛ فروشنده در پنل خودش وضعیت و `provider_payout_id` را می‌بیند (نه پاسخ خام).
 
 ---
 
 ## 💰 موتور کارمزد
 
-- کارمزد پیش‌فرض ۱۰٪، از `mst_global_config.default_fee_percent`، قابل override در سطح فروشنده (`mst_merchant_profile.fee_percent`) — دقیقاً هم‌الگو با `np_effective_fee_percent()` موجود در `nowpayments-lib.php`.
+- کارمزد پیش‌فرض ۱۰٪، از تنظیماتِ سراسری، قابل override در سطح هر فروشنده — دقیقاً هم‌الگو با منطقِ کارمزدِ مسیرِ کریپتویِ فعلی.
 - `fee_min_toman` / `fee_max_toman` اختیاری در سطح فروشنده؛ اگر ست شده باشند، کارمزدِ محاسبه‌شده به این بازه clamp می‌شود.
-- کارمزد **در لحظه‌ی تأیید پرداخت** محاسبه و به‌صورت مقدار ثابت (نه فرمول) در همان ردیف `mst_ledger_entries` (`fee_toman`) ذخیره می‌شود — تغییر بعدیِ نرخ در `mst_merchant_profile` یا `mst_global_config` هیچ اثری روی تراکنش‌های قبلی ندارد، چون آن‌ها مقدار محاسبه‌شده را نگه داشته‌اند، نه فرمول را.
+- کارمزد **در لحظه‌ی تأیید پرداخت** محاسبه و به‌صورت مقدار ثابت (نه فرمول) در همان ردیف دفترِ مالی (`fee_toman`) ذخیره می‌شود — تغییر بعدیِ نرخ در پروفایلِ فروشنده یا جدول‌های داخلی هیچ اثری روی تراکنش‌های قبلی ندارد، چون آن‌ها مقدار محاسبه‌شده را نگه داشته‌اند، نه فرمول را.
 
 ---
 
@@ -383,27 +263,27 @@ Requested → Processing → Failed → Balance Returned
 
 | نیاز | منبع داده |
 |---|---|
-| فروش ناخالص | `SUM(amount_toman)` روی `mst_invoices WHERE status='paid'` |
-| مجموع کارمزد CubePay | `SUM(fee_toman)` روی `mst_ledger_entries WHERE entry_type='invoice_paid_to_pending'` |
+| فروش ناخالص | مجموعِ مبلغِ فاکتورهای پرداخت‌شده |
+| مجموع کارمزد CubePay | مجموعِ کارمزدِ ثبت‌شده در دفترِ مالی |
 | موجودی در انتظار / قابل تسویه / در حال تسویه / تسویه‌شده | جدول باکت‌ها در بخش Ledger بالا |
-| لیست پرداخت‌ها | `mst_invoices` |
-| لیست درخواست‌های تسویه + وضعیت هرکدام + شناسه‌ی پیگیری | `mst_withdrawals` (`provider_payout_id` = شماره‌ی پیگیری) |
+| لیست پرداخت‌ها | جدول‌های داخلی |
+| لیست درخواست‌های تسویه + وضعیت هرکدام + شناسه‌ی پیگیری | جدول‌های داخلی (`provider_payout_id` = شماره‌ی پیگیری) |
 
 ## 🛡️ پنل ادمین — نگاشت به مدل داده
 
 | نیاز | منبع داده |
 |---|---|
-| لیست فروشنده‌های فعال، وضعیت | `mst_merchant_profile` |
-| سطح، کارمزد اختصاصی، سقف‌ها | `mst_merchant_profile` (قابل ویرایش با ثبت خودکار در `mst_audit_log`) |
-| زمان آزادسازی موجودی | `mst_merchant_profile.payout_frequency` / `payout_delay_hours` |
-| حداقل/حداکثر مبلغ تسویه | `mst_merchant_profile.min_withdrawal_amount` + سقف global |
-| اطلاعات حساب مقصد | `mst_payout_wallets` |
+| لیست فروشنده‌های فعال، وضعیت | پروفایلِ فروشنده |
+| سطح، کارمزد اختصاصی، سقف‌ها | پروفایلِ فروشنده (قابل ویرایش با ثبت خودکار در لاگِ حسابرسی) |
+| زمان آزادسازی موجودی | تنظیمِ `payout_frequency` در پروفایل / `payout_delay_hours` |
+| حداقل/حداکثر مبلغ تسویه | تنظیمِ `min_withdrawal_amount` در پروفایل + سقف global |
+| اطلاعات حساب مقصد | آدرس‌های برداشت |
 | موجودی فعلی | باکت‌های محاسبه‌شده (بخش Ledger) |
-| تأیید/رد/انجام دستیِ تسویه، ثبت شماره‌ی پیگیری | تغییر `mst_withdrawals.status` + `provider_payout_id`، با ثبت اجباری در `mst_audit_log` |
-| غیرفعال‌سازی موقت / محدودسازی حساب | `mst_merchant_profile.disabled_by_admin` + `disabled_reason` |
-| تاریخچه‌ی کامل تغییرات | `mst_audit_log` |
+| تأیید/رد/انجام دستیِ تسویه، ثبت شماره‌ی پیگیری | تغییر رکوردِ برداشت + `provider_payout_id`، با ثبت اجباری در لاگِ حسابرسی |
+| غیرفعال‌سازی موقت / محدودسازی حساب | تنظیمِ `disabled_by_admin` در پروفایل + `disabled_reason` |
+| تاریخچه‌ی کامل تغییرات | لاگِ حسابرسی |
 
-> 🔒 **توکن‌ها هیچ‌وقت در پاسخِ پنل یا در لاگ ظاهر نمی‌شوند.** کوئری‌هایی مثل `SELECT p.*` ستون‌های `vip_api_token` / `vip_sandbox_token` را هم می‌آورند، پس قبل از هر پاسخ و قبل از هر درجِ `mst_audit_log` از ردیف حذف می‌شوند (`mst_aa_strip_secrets()`، که داخلِ خودِ `mst_aa_audit()` صدا زده می‌شود تا فراخوان‌های آینده هم نتوانند ناخواسته توکن لو بدهند). توکنِ VIP فقط در پاسخِ مستقیمِ `subscription_grant` و `vip_token_regenerate` برمی‌گردد — همان‌جا که ادمین صریحاً درخواستش کرده.
+> 🔒 **توکن‌ها هیچ‌وقت در پاسخِ پنل یا در لاگ ظاهر نمی‌شوند.** کوئری‌هایی مثل `SELECT p.*` ستون‌های `vip_api_token` / `vip_sandbox_token` را هم می‌آورند، پس قبل از هر پاسخ و قبل از هر درجِ لاگِ حسابرسی از ردیف حذف می‌شوند (تابعِ پاک‌سازیِ توکن، که داخلِ خودِ تابعِ ثبتِ لاگِ حسابرسی صدا زده می‌شود تا فراخوان‌های آینده هم نتوانند ناخواسته توکن لو بدهند). توکنِ VIP فقط در پاسخِ مستقیمِ `subscription_grant` و `vip_token_regenerate` برمی‌گردد — همان‌جا که ادمین صریحاً درخواستش کرده.
 
 ---
 
@@ -421,9 +301,9 @@ Requested → Processing → Failed → Balance Returned
 ## 🧪 راه‌اندازی تدریجی
 
 1. **Sandbox کامل اول:** تمام API این ماژول را با `is_sandbox=1` قبل از هر فروشنده‌ی واقعی تست کنید — هیچ اثری روی master account NOWPayments یا ledger واقعی ندارد.
-2. **Feature flag در سطح فروشنده:** فقط فروشنده‌هایی که `mst_merchant_profile.status = 'active'` دارند اجازه‌ی ساخت فاکتور در این ماژول را دارند؛ بقیه همچنان روی مسیر فعلی هستند و اصلاً به این جداول برخورد نمی‌کنند.
+2. **Feature flag در سطح فروشنده:** فقط فروشنده‌هایی که پروفایلشان فعال است اجازه‌ی ساخت فاکتور در این ماژول را دارند؛ بقیه همچنان روی مسیر فعلی هستند و اصلاً به این جداول برخورد نمی‌کنند.
 3. **گروه آزمایشی کوچک:** قبل از باز کردن عمومی، با ۲-۳ فروشنده‌ی داوطلب و سقف‌های پایین‌تر از پیش‌فرض اجرا کنید تا فرآیند نقدینگیِ ارزی (بخش بالا) و duplicate guard در شرایط واقعی سنجیده شود.
-4. **مهاجرت additive-only:** `migrate-managed-settlement.sql` فقط جدول‌های جدید می‌سازد؛ تنها تغییر روی جدول موجود (`sp_merchants`) در صورت نیاز، یک ستون nullable جدید است (مثلاً `sp_merchants.mst_profile_id`) — چیزی از `sp_merchants` حذف یا تغییر نوع داده نمی‌شود.
+4. **مهاجرت additive-only:** مهاجرت فقط ساختارهای جدید می‌سازد؛ تنها تغییر روی داده‌های موجود، در صورت نیاز، یک ستونِ اختیاریِ ارجاع است — چیزی حذف یا تغییرِ نوع داده نمی‌شود.
 
 ---
 
@@ -435,12 +315,12 @@ Requested → Processing → Failed → Balance Returned
 |---|---|---|---|
 | **مدلِ فعال‌سازی** | درخواستِ فروشنده + تأییدِ دستیِ ادمین | **اشتراکِ ماهانه** با پرداختِ ارزیِ NOWPayments؛ تأیید خودکار پس از پرداخت | درآمدِ قابل‌پیش‌بینی و حذفِ گلوگاهِ دستیِ ادمین |
 | **احراز هویت** | همان توکنِ API عادیِ فروشنده | **توکنِ اختصاصیِ VIP** (`vip_` / `vipsb_`) | با انقضای اشتراک باید فقط دسترسیِ VIP قطع شود، نه کلِ حسابِ فروشنده |
-| **گِیتِ کیف‌پولِ کارمزد** | ضمنی (از `sp_auth_merchant()` می‌آمد) | **کاملاً حذف شد** (`mst_auth_merchant_basic()`) | کیف‌پولِ کارمزد فقط مالِ فروشنده‌های عادی است؛ VIP نباید به آن وابسته باشد |
+| **گِیتِ کیف‌پولِ کارمزد** | ضمنی (از تابعِ احرازِ مسیرِ عادی می‌آمد) | **کاملاً حذف شد** (یک تابعِ احرازِ سبکِ اختصاصی) | کیف‌پولِ کارمزد فقط مالِ فروشنده‌های عادی است؛ VIP نباید به آن وابسته باشد |
 | **دقتِ مبلغِ برداشت** | ۸ رقمِ اعشار | **۶ رقم** (`DECIMAL(24,6)` + گِردکردن) | محدودیتِ رسمیِ NOWPayments برای payout |
 | **وضعیت‌های payout** | `sent` / `confirmed` / `expired` | مقادیرِ واقعی: `finished` موفق؛ `failed`/`rejected`/`rejected_not_checked`/`cancelled` ناموفق | مقادیرِ اولیه حدسی بودند و در API واقعی وجود ندارند |
 | **`ipn_callback_url` برای payout** | تصور می‌شد تنظیمِ دشبورد است | **فیلدِ بدنه‌ی درخواست** است — بدون آن هیچ webhookی نمی‌رسد | بدون این، هر برداشت تا ابد `processing` می‌ماند |
 | **نقدینگیِ خزانه** | ❗ باز | شارژِ دستی + کران‌جابِ پایشِ موجودی (`treasury-liquidity-check.php`) | تصمیمِ عملیاتی گرفته شد |
-| **رزروِ موجودیِ VIP** | دیده نشده بود | گاردِ `np_vip_reserved_usd()` روی «برداشتِ کلِ کارمزد» | حسابِ NOWPayments بینِ VIP و مسیرِ ۳٪ مشترک است |
+| **رزروِ موجودیِ VIP** | دیده نشده بود | گاردِ گاردِ رزروِ موجودیِ VIP روی «برداشتِ کلِ کارمزد» | حسابِ NOWPayments بینِ VIP و مسیرِ ۳٪ مشترک است |
 | **سقفِ ماهانه** | بدونِ پیش‌فرضِ سراسری؛ فقط اگر ادمین برای همان فروشنده ست می‌کرد | پیش‌فرضِ سراسریِ `default_monthly_limit_toman` (اولیه: ۱۰۰ میلیون تومان)، با تفکیکِ `NULL` (پیروی از پیش‌فرض) از `0` (بدونِ سقف) | سقف باید روی همه اعمال شود، نه فقط روی کسی که دستی تنظیم شده |
 
 ### باگ‌هایی که در تستِ واقعی پیدا و رفع شدند
@@ -458,7 +338,7 @@ Requested → Processing → Failed → Balance Returned
 |---|---|
 | API ساخت/استعلام فاکتور، Ledger، ضدتکرار، سقف‌ها، پنل ادمین/فروشنده | ✅ پیاده‌سازی‌شده و فعال |
 | اشتراکِ ماهانه + توکنِ اختصاصیِ VIP | ✅ پیاده‌سازی‌شده و فعال |
-| اعتبارسنجی امضای IPN، TOTP، کش JWT/نرخ، الگوی retry کال‌بک | ♻️ بازاستفاده از `crypto/nowpayments-lib.php` از طریق adapter |
+| اعتبارسنجی امضای IPN، TOTP، کش JWT/نرخ، الگوی retry کال‌بک | ♻️ بازاستفاده از کتابخانه‌ی کریپتویِ فعلی از طریق adapter |
 | مسیر SMS Forwarder / کارت‌به‌کارت فعلی | ✅ بدون تغییر |
 | مسیرِ کریپتویِ ۳٪ فروشنده‌های عادی | ✅ بدون تغییر — به‌جز گاردِ رزروِ موجودیِ VIP |
 | تأمین نقدینگیِ خزانه‌ی ارزی برای master account | ✅ شارژِ دستی + پایشِ خودکار |
