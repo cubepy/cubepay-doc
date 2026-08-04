@@ -66,7 +66,7 @@ Small things that do change when you swap the token:
 
 Calling `POST /managed-settlement/api/create-order.php` directly still works and is equally valid for a new integration — the router path exists so that an **existing** integration doesn't have to be touched.
 
-> ⚠️ **If you still use the legacy card-to-card endpoint** (`/smspay/api/create-payment.php`): that path does not recognise VIP tokens and returns an "invalid token" error. For VIP you must change the URL to `POST /pay/create-order.php` and send the amount **in toman** via `price_amount` — the legacy endpoint took the amount in **rial** in an `amount` field, so don't miss that difference.
+> ⚠️ **If you still use the legacy card-to-card endpoint** (`/smspay/api/create-payment.php`): that path does not recognise VIP tokens and returns an "invalid token" error. For VIP you must change the URL to `POST /pay/create-order.php` and send the amount **in toman** via `price_amount` — the legacy endpoint took the amount in **rial** in an `amount` field, so don't miss that difference. Step-by-step guide: [Migrating to the unified router](./ENDPOINT-MIGRATION.md).
 
 ### The full flow
 
