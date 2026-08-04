@@ -66,6 +66,8 @@ Small things that do change when you swap the token:
 
 Calling `POST /managed-settlement/api/create-order.php` directly still works and is equally valid for a new integration — the router path exists so that an **existing** integration doesn't have to be touched.
 
+> ⚠️ **If you still use the legacy card-to-card endpoint** (`/smspay/api/create-payment.php`): that path does not recognise VIP tokens and returns an "invalid token" error. For VIP you must change the URL to `POST /pay/create-order.php` and send the amount **in toman** via `price_amount` — the legacy endpoint took the amount in **rial** in an `amount` field, so don't miss that difference.
+
 ### The full flow
 
 ```mermaid
@@ -305,6 +307,8 @@ POST /managed-settlement/api/register-wallet.php
 
 Every registration (first time or an address change) starts as `verification_status: "pending"` — until an admin approves it (`verified`) it cannot be used for withdrawals. An already-approved address stays untouched until an admin explicitly disables it.
 
+📬 The review outcome (approved or rejected) is sent to you via the Telegram bot ([@cubepy_bot](https://t.me/cubepy_bot)) — no need to keep polling the dashboard.
+
 ---
 
 ## 7️⃣ Request a crypto withdrawal
@@ -358,6 +362,8 @@ rate_locked → failed                          ← never sent, amount returned
 Only the raw NOWPayments status `finished` counts as success; `failed`, `rejected`, `rejected_not_checked` and `cancelled` count as failure, and the rest (`new`, `creating`, `waiting`, `processing`, `sending`) are intermediate and never touch your balance.
 
 The amount is returned **exactly once** — never lost, never doubled. If the webhook never arrives, a ten-minute cron job asks NOWPayments for the status directly and applies the same logic, so a withdrawal never sits in `processing` forever.
+
+📬 The final outcome of every withdrawal (crypto delivered, or amount returned to your balance) is also sent to you via the Telegram bot, in addition to the API.
 
 ---
 
