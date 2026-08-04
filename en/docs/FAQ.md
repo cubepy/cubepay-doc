@@ -70,7 +70,7 @@ Your code is calling the **legacy** card-to-card endpoint (`/smspay/api/create-p
 POST https://cubevps.ir/pay/create-order.php
 ```
 
-Change two things: the **URL** to the unified router, and the **amount** to toman in the `price_amount` field (the legacy endpoint took the amount in rial in an `amount` field). The other fields (`order_id`, `callback_url`) stay the same — details in the [VIP reference](./CUBEPAY-VIP-API-REFERENCE.md#-migrating-to-vip-just-swap-the-token).
+Change two things: the **URL** to the unified router, and the **amount** to toman in the `price_amount` field (the legacy endpoint took the amount in rial in an `amount` field). The other fields (`order_id`, `callback_url`) stay the same — step-by-step with a before/after example: [**Migrating to the unified router**](./ENDPOINT-MIGRATION.md).
 
 ### What happens to my money if my subscription expires?
 
