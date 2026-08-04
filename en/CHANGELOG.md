@@ -6,6 +6,22 @@ All notable changes to this project are recorded here, in chronological order.
 
 ---
 
+## [2.1.6] — VIP intake capacity + a guide to running both systems together
+
+### Added
+
+- **A cap on the number of VIP merchants** (`vip_capacity_limit`) — because this service involves holding funds in custody, intake is controlled. When capacity is full, `request-activation.php` responds `409` with `capacity_full: true` and **no payment link is created**; the merchant panel hides the purchase button entirely rather than letting people fail on click. Editable from the admin panel (⚙️ Settings), with a "🎟 Intake capacity" card showing live status.
+- **[A guide to running both systems together](./integrations/using-both-systems-guide.md)** — a new document for merchants who have a VIP subscription and also want to keep using the normal path. Both tokens are valid simultaneously and the choice can be made per order.
+- A **👑 CubePay VIP questions** section in `docs/FAQ.md` (and the English version).
+
+### 📌 The three capacity rules
+
+- **Renewal is never blocked** — the cap applies only to new merchants. Anyone who once had a profile, even with an expired subscription, can always renew. (Reasoning: a long-standing merchant should not lose their place to a newcomer.)
+- **An open payment link reserves a slot for up to 2 hours** — there is a gap between "get link" and "pay"; without the reservation several people could buy the same last remaining slot, leaving us to either refund someone or exceed the cap.
+- **Paid means served** — if a payment is confirmed the service is activated regardless, even if we somehow went over the cap; the admin is merely alerted. Taking money without providing the service is never acceptable.
+
+---
+
 ## [2.1.5] — Multi-source exchange rate with a sanity band
 
 ### Added

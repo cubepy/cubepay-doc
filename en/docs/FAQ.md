@@ -44,6 +44,42 @@ See the [WordPress guide](../integrations/wordpress-plugin-guide.md).
 
 ---
 
+---
+
+## 👑 CubePay VIP questions
+
+### How is VIP different from the normal system?
+
+On the normal system the money goes straight to **your own** card and CubePay only confirms it — but you need a phone that is always on, running the forwarder app. With VIP the money lands on the **CubePay treasury card**, a 10% fee is deducted, and the rest is added to your internal balance, which you withdraw in crypto. No phone and no app required.
+
+### Do I have to choose one, or can I have both?
+
+Both. The two tokens are valid at the same time and you can decide per order which path it takes — see [Running both systems together](../integrations/using-both-systems-guide.md).
+
+### Do I need to change my code to move to VIP?
+
+No. Same `POST /pay/create-order.php`, same fields. Just put the `vip_` token where the old one was. Your Foxima bot, WooCommerce plugin or custom code keeps working unchanged.
+
+### What happens to my money if my subscription expires?
+
+Nothing. Expiry only blocks creating **new invoices**; the dashboard, your balance and **withdrawals** keep working. What you earned is yours.
+
+### Why can't I sign up — it says capacity is full?
+
+The number of VIP merchants is limited. When it is full, **new** sign-ups close until a slot frees up. If you already have a profile, **your renewal is never blocked**.
+
+### What is the withdrawal fee?
+
+CubePay charges nothing for withdrawals. Only the network's own fee (TON/TRX/USDT) is deducted from the amount.
+
+### How is the toman-to-crypto rate calculated?
+
+Your toman amount divided by the live USD rate, then converted to the destination currency. The rate is **locked at the moment you submit the request**, so later market movement does not affect your withdrawal.
+
+### Can I create an invoice manually from the panel or the bot?
+
+No. In VIP the only way to create an invoice is an API call from your own site or bot — not the merchant panel, not the bot, not even the admin panel.
+
 ## 🛠 Troubleshooting
 
 ### ❌ 401 Unauthorized Error
