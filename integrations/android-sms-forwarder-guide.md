@@ -35,7 +35,7 @@ https://cubevps.ir/smspay/webhook/sms.php?secret=XXXXXXXXXXXXXXXXXXXXXXXX
 > [بخش Releases همین مخزن](https://github.com/cubepy/cubepay-doc/releases)
 > ببینید.
 
-🔒 **SHA-256:** `7a59a6739534d935a8b4d89bf6a5ddb0b09d5f79bb045f7ab17be676c9396b8d`
+🔒 **SHA-256:** `fbf377c51e8d11f33d732b99d4ae1f937c5e6868efd24aec6847d37d1639859f`
 (هش فایل دانلودی رو با این مقدار مقایسه کنید تا مطمئن بشید فایل
 دستکاری نشده — از هر ابزار محاسبه‌ی SHA-256 روی گوشی یا کامپیوترتون
 می‌تونید استفاده کنید. این مقدار هر روز خودکار با فایل واقعی سینک
