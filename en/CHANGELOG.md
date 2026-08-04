@@ -6,6 +6,24 @@ All notable changes to this project are recorded here, in chronological order.
 
 ---
 
+## [2.1.5] — Multi-source exchange rate with a sanity band
+
+### Added
+
+- **`managed-settlement/rate-provider.php`** — the USD-to-toman rate is no longer single-source. Order: **BrsApi → bonbast → TGJU**, and if all are down, the **last known-good rate** (rather than dropping straight to the hardcoded constant in `crypto-config.php`).
+- **A sanity band** (`rate_sanity_band_percent`, default 15%) — any rate deviating more than this from the last known-good value is rejected and the next source is tried. This guards against the worst case: generic FX APIs return the **official** IRR rate, not the free-market one (measured: 126,567 versus 192,000), which would have paid out roughly 50% too much crypto.
+- **A consensus rule** (`rate_consensus_band_percent`, default 3%) — if every source falls outside the band but two **different source families** agree on a figure, the market genuinely moved and the new rate is accepted. Without this, a real market jump would leave the system running on the older, lower rate — paying out more crypto per toman.
+- **Telegram alerts** when a source is rejected, a jump is accepted, or every source is unreachable — throttled to once an hour.
+- **A "💱 USD rate" card** in the admin panel's treasury tab showing what each source reports, which are reachable, and how old the rate in use is. Both band settings were added to the ⚙️ Settings tab.
+
+### 📌 Design note: sources are grouped into families
+
+In live measurement BrsApi and TGJU returned **exactly the same** figure, meaning BrsApi republishes TGJU's data. Agreement between those two is not independent confirmation, so the consensus rule requires at least **two distinct families** (`brsapi`+`tgju` are one family, `bonbast` another).
+
+> The normal merchants' 3% crypto path is untouched — `crypto/nowpayments-lib.php` still uses its original function.
+
+---
+
 ## [2.1.4] — Financial fix: a failed withdrawal could be credited twice
 
 ### Fixed
