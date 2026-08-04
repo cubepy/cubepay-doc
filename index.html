@@ -191,10 +191,12 @@ h1.hero-title{
 .sat2{animation:float2 8s ease-in-out infinite;transform:translate(60%,-380%)}
 .sat3{animation:float3 7.5s ease-in-out infinite;transform:translate(-230%,240%)}
 .sat4{animation:float4 8.5s ease-in-out infinite;transform:translate(70%,420%)}
+.sat5{animation:float5 6.5s ease-in-out infinite;transform:translate(-285%,-90%)}
 @keyframes float1{0%,100%{transform:translate(-160%,-620%)}50%{transform:translate(-160%,-680%)}}
 @keyframes float2{0%,100%{transform:translate(60%,-380%)}50%{transform:translate(60%,-330%)}}
 @keyframes float3{0%,100%{transform:translate(-230%,240%)}50%{transform:translate(-230%,300%)}}
 @keyframes float4{0%,100%{transform:translate(70%,420%)}50%{transform:translate(70%,370%)}}
+@keyframes float5{0%,100%{transform:translate(-285%,-90%)}50%{transform:translate(-285%,-150%)}}
 
 /* ---------- network section ---------- */
 #network{padding:140px 0 120px;text-align:center}
@@ -234,9 +236,10 @@ h1.hero-title{
   50%{box-shadow:0 0 70px rgba(124,58,237,.45),inset 0 0 30px rgba(124,58,237,.10)}
 }
 .net-top{grid-column:2;grid-row:1;margin-bottom:52px}
-.net-bottom{grid-column:2;grid-row:3;margin-top:52px}
 .net-right{grid-column:3;grid-row:2}
 .net-left{grid-column:1;grid-row:2}
+.net-bl{grid-column:1;grid-row:3;margin-top:52px}
+.net-br{grid-column:3;grid-row:3;margin-top:52px}
 .net-lines{position:absolute;inset:0;z-index:1;pointer-events:none}
 .net-lines line{
   stroke:url(#lineGrad);stroke-width:1.5;
@@ -379,6 +382,11 @@ h1.hero-title{
   box-shadow:0 0 70px rgba(0,102,255,.55),inset -10px -12px 36px rgba(0,0,0,.6);
 }
 .world.core-world span{color:#fff;font-weight:700}
+.core-sphere{
+  display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(circle at 32% 28%,rgba(255,255,255,.3),rgba(0,102,255,.55) 35%,rgba(124,58,237,.5) 70%,rgba(5,5,20,.95)) !important;
+}
+.core-sphere svg{width:54px;height:54px;filter:drop-shadow(0 0 12px rgba(255,255,255,.55))}
 .worlds-hint{margin-top:26px;font-size:12.5px;color:rgba(255,255,255,.35)}
 
 /* ---------- future ---------- */
@@ -464,6 +472,7 @@ footer{
       <div class="sat sat2 p en"><i></i>CubeGift</div>
       <div class="sat sat3 p en"><i></i>Cubely</div>
       <div class="sat sat4 en"><i></i>CubeSaz</div>
+      <div class="sat sat5 en"><i></i>CubeVPN</div>
     </div>
   </div>
 </section>
@@ -473,7 +482,7 @@ footer{
   <div class="wrap">
     <div class="section-kicker reveal">THE CUBE NETWORK</div>
     <h2 class="section-title en reveal d1">One core.<br>Infinite connections.</h2>
-    <p class="section-fa reveal d2">همه‌چیز از یک هسته شروع می‌شود — CubeVPN قلب اکوسیستم است<br>و چهار جهان دیگر به دور آن می‌چرخند.</p>
+    <p class="section-fa reveal d2">همه‌چیز از یک هسته شروع می‌شود — CUBE قلب اکوسیستم است<br>و پنج جهان دیجیتال به دور آن می‌چرخند.</p>
 
     <div class="net-scene reveal d2">
       <svg class="net-lines" width="100%" height="100%" preserveAspectRatio="none" viewBox="0 0 100 100">
@@ -483,18 +492,20 @@ footer{
           </linearGradient>
         </defs>
         <line x1="50" y1="14" x2="50" y2="42"/>
-        <line x1="50" y1="58" x2="50" y2="86"/>
         <line x1="18" y1="50" x2="38" y2="50"/>
         <line x1="62" y1="50" x2="82" y2="50"/>
+        <line x1="42" y1="58" x2="24" y2="80"/>
+        <line x1="58" y1="58" x2="76" y2="80"/>
       </svg>
-      <div class="net-node net-top en">CubeSaz</div>
+      <div class="net-node net-top en">CubeVPN</div>
       <div class="net-node net-left en">CubeGift</div>
-      <div class="net-node net-core en">CubeVPN</div>
+      <div class="net-node net-core en">CUBE</div>
       <div class="net-node net-right en">CubePay</div>
-      <div class="net-node net-bottom en">Cubely</div>
+      <div class="net-node net-bl en">Cubely</div>
+      <div class="net-node net-br en">CubeSaz</div>
     </div>
 
-    <p class="net-msg reveal d3"><strong>CubeVPN is the core.</strong><br>Everything connects around it.</p>
+    <p class="net-msg reveal d3"><strong>CUBE is the core.</strong><br>Everything connects around it.</p>
   </div>
 </section>
 
@@ -505,7 +516,7 @@ footer{
       <div class="prod-num en reveal">01</div>
       <h2 class="prod-name en reveal d1">Cube<span class="accent">VPN</span></h2>
       <div class="prod-fa reveal d2">اتصال سریع،<br>امن و بدون مرز.</div>
-      <p class="prod-desc reveal d2">زیرساخت اینترنت آزاد برای همه. هسته اکوسیستم Cube — جایی که هر اتصال از آن آغاز می‌شود.</p>
+      <p class="prod-desc reveal d2">زیرساخت اینترنت آزاد برای همه. اتصالی که هیچ مرزی نمی‌شناسد.</p>
       <a class="prod-link reveal d3" href="https://t.me/Cube_VPNN" target="_blank" rel="noopener">t.me/Cube_VPNN ↗</a>
     </div>
     <div class="prod-visual reveal d1">
@@ -600,19 +611,24 @@ footer{
     <p class="section-fa reveal d2">پنج جهان دیجیتال، در مدار یک هسته.</p>
     <div class="worlds-stage reveal d2" id="worldsStage">
       <div class="worlds-orbit" id="worldsOrbit">
-        <a class="world core-world" href="https://t.me/Cube_VPNN" target="_blank" rel="noopener" data-depth="0">
+        <div class="world core-world">
+          <div class="sphere core-sphere">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 2 21 7v10l-9 5-9-5V7l9-5Z" stroke="#fff" stroke-width="1.3"/><path d="M12 2v10m0 0 9-5m-9 5-9-5m9 5v10" stroke="rgba(255,255,255,.7)" stroke-width="1"/></svg>
+          </div><span>CUBE</span>
+        </div>
+        <a class="world" href="https://t.me/Cube_VPNN" target="_blank" rel="noopener" data-angle="0">
           <div class="sphere"></div><span>CubeVPN</span>
         </a>
-        <a class="world" href="https://t.me/Cubepy" target="_blank" rel="noopener" data-angle="0">
+        <a class="world pu" href="https://t.me/Cubepy" target="_blank" rel="noopener" data-angle="72">
           <div class="sphere"></div><span>CubePay</span>
         </a>
-        <a class="world pu" href="https://cubegift.ir/" target="_blank" rel="noopener" data-angle="90">
+        <a class="world" href="https://cubegift.ir/" target="_blank" rel="noopener" data-angle="144">
           <div class="sphere"></div><span>CubeGift</span>
         </a>
-        <a class="world" href="https://cubely.ir/" target="_blank" rel="noopener" data-angle="180">
+        <a class="world pu" href="https://cubely.ir/" target="_blank" rel="noopener" data-angle="216">
           <div class="sphere"></div><span>Cubely</span>
         </a>
-        <a class="world pu" href="https://t.me/CubeSaz" target="_blank" rel="noopener" data-angle="270">
+        <a class="world" href="https://t.me/CubeSaz" target="_blank" rel="noopener" data-angle="288">
           <div class="sphere"></div><span>CubeSaz</span>
         </a>
       </div>
