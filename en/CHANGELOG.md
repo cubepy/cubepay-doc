@@ -6,6 +6,29 @@ All notable changes to this project are recorded here, in chronological order.
 
 ---
 
+## [2.1.8] — Support tickets + several improvements and fixes
+
+### Added
+
+- **🎫 Support tickets inside the bot.** From "📢 News & support → 🎫 Open a ticket", describe your problem; a numbered ticket is created and the support reply arrives in the same bot. "📋 My tickets" shows each ticket's status. Escalation from the AI assistant now feeds the same ticket system.
+- **📬 Telegram notifications for VIP merchants.** The review outcome of your payout address (approved/rejected) and the final outcome of every withdrawal (crypto delivered, or amount returned) are now sent to you automatically by the bot — no more polling the dashboard.
+
+### Changed
+
+- **🏷 Store IDs are now automatic.** New merchants no longer type a name during sign-up; they automatically get an ID like `cubepay-1000`, and registration is one step shorter.
+- **"Mismatched deposit" messages are clearer.** Each message now carries its own code, the SMS time, the card's last 4 digits (when present) and a list of your other pending invoices — with several invoices and deposits in flight, every message identifies exactly which deposit it is about.
+
+### Fixed
+
+- **A duplicated bank SMS no longer produces duplicated messages.** If the same bank SMS reaches the system more than once (forwarder retry, or two channels at once), only the first delivery is processed — one deposit, one message, one decision.
+- **Two VIP money paths are now strictly all-or-nothing.** Crediting a customer payment and activating a subscription are now atomic; even if the server dies at the worst possible moment, a paid invoice can no longer end up uncredited, nor a paid subscription without service.
+
+### Docs
+
+- New FAQ entry for the most common VIP migration mistake: if your `vip_` token gets an "invalid token" error, your code is calling the legacy endpoint — the URL must be `POST /pay/create-order.php` with the amount in toman via `price_amount`.
+
+---
+
 ## [2.1.7] — A permanent download link for the SMS Forwarder app
 
 ### Changed
