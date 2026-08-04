@@ -64,6 +64,7 @@ cubepay-doc/
     ├── wordpress-plugin-guide.md
     ├── faoxima-integration-guide.md
     ├── android-sms-forwarder-guide.md      ← CubePay's own Android SMS-forwarding app
+    ├── using-both-systems-guide.md         ← running normal + VIP together in one integration
     ├── ios-shortcuts-sms-forwarding-guide.md  ← Bank SMS from an iPhone, no extra app
     └── faoxima-ready-files/
         └── faoxima-ready-files-guide.md
