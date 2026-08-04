@@ -442,9 +442,12 @@ The four balances (`pending_toman`, `available_toman`, `settling_toman`, `settle
   "order_id": "ORD123",
   "invoice_uid": "b1a2c3d4-...",
   "amount_toman": 500000,
+  "amount": 500000,
   "sig": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 }
 ```
+
+`amount` is exactly the same value as `amount_toman` — it is sent twice so that code written for the crypto callback (whose field is named `amount`) works with VIP unchanged.
 
 Exactly as on the existing crypto path, rebuild `sig` with your own `api_token` and compare (HMAC-SHA256 over `order_id|status|amount_toman`) — if it doesn't match, ignore the request:
 
