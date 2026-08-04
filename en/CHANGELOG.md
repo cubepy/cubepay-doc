@@ -6,6 +6,26 @@ All notable changes to this project are recorded here, in chronological order.
 
 ---
 
+## [2.1.7] — A permanent download link for the SMS Forwarder app
+
+### Changed
+
+- **The Android app is now downloaded from GitHub, and its link no longer changes.** The new address:
+
+  ```
+  https://github.com/cubepy/cubepay-doc/releases/download/android-latest/CubePay.apk
+  ```
+
+  It always points at the latest build, so you can bookmark it or put it in your own internal guide and forget about it. The download button inside the bot now goes to the same place.
+
+### Fixed
+
+- **The build served by the docs and the build served by the bot's button were not the same.** The file was kept in two separate places and one of them had fallen behind. Both now come from a single source, so that mismatch can no longer happen.
+
+> If you already have the app installed, there is nothing to do — just use the new link for future updates.
+
+---
+
 ## [2.1.6] — VIP intake capacity + running both systems together
 
 ### Added
