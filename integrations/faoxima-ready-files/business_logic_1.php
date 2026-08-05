@@ -205,7 +205,23 @@ function createPayZarinpey($price, $order_id, $userId)
         ];
     }
 
-    $amountRial = $normalizedPrice * 10;
+    // 🧾 کارمزدِ قابل‌انتقال به مشتری — تنظیمِ «کارمزد ثابت» در پنل ادمین ربات:
+    //   عددِ 0 تا 100  → درصدِ اضافه‌شونده روی فاکتور (اعشار مجاز، مثلاً 9.9)
+    //   عددِ بالای 100 → مبلغِ ثابت به تومان
+    // فقط مبلغِ فاکتورِ درگاه بزرگ‌تر می‌شود؛ کیف پول مشتری همچنان به اندازه‌ی
+    // مبلغِ درخواستیِ خودش شارژ می‌شود (successful.php با price سفارش کار می‌کند).
+    // چون قبل از ساختِ سفارش اعمال می‌شود، برای کارت‌به‌کارت، کریپتو و VIP یکسان کار می‌کند.
+    $payablePrice = $normalizedPrice;
+    if (getPaySettingValue('zarinpeyfeestatus', 'offzarinpeyfee') === 'onzarinpeyfee') {
+        $feeSetting = (float) str_replace([',', '،'], '', (string) getPaySettingValue('zarinpeyfeeamount', '0'));
+        if ($feeSetting > 0) {
+            $payablePrice = $feeSetting <= 100
+                ? (int) ceil($normalizedPrice * (1 + $feeSetting / 100))
+                : $normalizedPrice + (int) round($feeSetting);
+        }
+    }
+
+    $amountRial = $payablePrice * 10;
 
     $baseHost = trim($domainhosts ?? '');
     $scheme = 'https';
@@ -234,7 +250,7 @@ function createPayZarinpey($price, $order_id, $userId)
     // به مشتری نشون بده. برخلاف endpoint قدیمی، مبلغ اینجا «تومان»ه نه ریال.
     $payload = [
         'order_id' => $order_id,
-        'price_amount' => $normalizedPrice,
+        'price_amount' => $payablePrice,
         'callback_url' => rtrim($callbackBase, '/') . '/payment/ZarinPay/successful.php',
     ];
 
