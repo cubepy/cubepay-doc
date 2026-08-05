@@ -94,9 +94,9 @@ Also note that in VIP, reusing an `order_id` is forbidden **forever** — even a
 | | Normal path | VIP |
 |---|---|---|
 | Status lookup | `verify-payment.php` with `authority` | `check-order-status.php` with `invoice_uid` or `order_id` |
-| Callback signing key | your API token | **the same normal API token** (not the VIP token) |
+| Callback signing key | your normal API token | **your `vip_` token** (the one you created the order with) |
 
-> 📌 An easy thing to get wrong: the `sig` on the VIP callback is also built with your **normal** token, not the `vip_` one. So your existing validation code works unchanged.
+> 📌 The simple rule: **every callback is signed with the same token you created that order with.** Normal crypto order → normal token; VIP order → `vip_` token. If your code only holds one token (like the ready-made bot files), this works out by itself — you created the order with that same token. Only if you run both paths into one endpoint do you need to pick the matching token when validating (a callback carrying `invoice_uid` is VIP).
 
 If the create-invoice response contains `invoice_uid`, it went through VIP — you can store that and later know which path each order took:
 
