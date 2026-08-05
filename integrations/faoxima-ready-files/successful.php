@@ -69,6 +69,12 @@ require_once $projectRoot . '/Marzban.php';
 require_once $projectRoot . '/function.php';
 require_once $projectRoot . '/panels.php';
 require_once $projectRoot . '/keyboard.php';
+// [FIX] بدونِ این خط، ساختِ QR کدِ سرویس با «Class not found» فتال می‌شد —
+// دقیقاً وسطِ تحویلِ سرویس. نتیجه: سرویس تو پنل ساخته می‌شد و تو «سرویس‌های
+// من» می‌آمد، ولی نه پیامِ تحویل به مشتری می‌رسید و نه گزارشِ کانال ثبت
+// می‌شد (چون اسکریپت همان‌جا می‌مرد). بقیه‌ی درگاه‌های فاکسیما هم دقیقاً
+// همین خط را دارند.
+require_once $projectRoot . '/vendor/autoload.php';
 
 $ManagePanel = new ManagePanel();
 
@@ -194,7 +200,10 @@ try {
         $atomic->execute();
 
         if ($atomic->rowCount() >= 1) {
-            DirectPayment($paymentReport['id_order']);
+            // مسیرِ تصویرِ پس‌زمینه‌ی QR نسبت به همین فایل داده می‌شود: این فایل
+            // دو پوشه پایین‌ترِ ریشه‌ی رباته (payment/ZarinPay/)، برخلافِ بقیه‌ی
+            // درگاه‌ها که یکی پایین‌ترن و "../images.jpg" می‌دن.
+            DirectPayment($paymentReport['id_order'], $projectRoot . '/images.jpg');
             update('user', 'Processing_value', '0', 'id', $paymentReport['id_user']);
             update('user', 'Processing_value_one', '0', 'id', $paymentReport['id_user']);
             update('user', 'Processing_value_tow', '0', 'id', $paymentReport['id_user']);
