@@ -6,6 +6,22 @@ All notable changes to this project are recorded here, in chronological order.
 
 ---
 
+## [2.1.9] — VIP callback signing key fixed + live fee reference
+
+### Fixed
+
+- **The VIP callback signing key is fixed — `sig` is now built with your `vip_` token**, the same token you created the order with (not your normal token). Single-token integrations — including the ready-made bot files — that used to hit "this callback's signature is invalid" when the customer returned now work without any change. The simple rule: every callback is signed with the token that created its order.
+
+### Added
+
+- **🌐 Live fee reference: [cubevps.ir/fees.php](https://cubevps.ir/fees.php).** Fees and conditions for both merchant types (normal and VIP) on one page, read straight from the platform's live settings — always current, no manual doc edits needed. The bot's new "📊 تعرفه‌ها و شرایط" (fees & conditions) menu button shows the same comparison with live numbers.
+
+### Docs
+
+- The default VIP fee in the docs was updated from 10% to **9%** (the rate really was lowered). The "using both systems" guide was corrected regarding the callback signing key.
+
+---
+
 ## [2.1.8] — Support tickets + several improvements and fixes
 
 ### Added
