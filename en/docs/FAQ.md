@@ -50,7 +50,7 @@ See the [WordPress guide](../integrations/wordpress-plugin-guide.md).
 
 ### How is VIP different from the normal system?
 
-On the normal system the money goes straight to **your own** card and CubePay only confirms it — but you need a phone that is always on, running the forwarder app. With VIP the money lands on the **CubePay treasury card**, a 10% fee is deducted, and the rest is added to your internal balance, which you withdraw in crypto. No phone and no app required.
+On the normal system the money goes straight to **your own** card and CubePay only confirms it — but you need a phone that is always on, running the forwarder app. With VIP the money lands on the **CubePay treasury card**, the VIP fee (default 9% — [live rates](https://cubevps.ir/fees.php)) is deducted, and the rest is added to your internal balance, which you withdraw in crypto. No phone and no app required.
 
 ### Do I have to choose one, or can I have both?
 

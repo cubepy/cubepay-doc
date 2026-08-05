@@ -90,10 +90,12 @@ flowchart TD
 ## 💰 Every critical number, in one place
 
 > This is the same table the merchant panel shows under the **"📖 Fees & limits"** tab. The values below are **defaults**; the exact numbers for your own account always come from `GET api/dashboard.php` (an admin can set them per merchant).
+>
+> 🌐 **Always-up-to-date online version of this table** (covering both normal and VIP merchants, read live from the platform's settings): [cubevps.ir/fees.php](https://cubevps.ir/fees.php) — if a number there differs from this table, the online page wins.
 
 | Item | Default |
 |---|---|
-| CubePay fee per invoice | **10%** |
+| CubePay fee per invoice | **9%** |
 | VIP monthly subscription | **1,000,000 toman / 1 month** |
 | Subscription expiry warning | **3 days before** |
 | Max amount per invoice | **1,000,000 toman** |
@@ -400,11 +402,11 @@ GET /managed-settlement/api/dashboard.php
   "vip_api_token": "vip_a4fd1be3944e...",
   "vip_sandbox_token": "vipsb_7c21ee08b1...",
   "fees": {
-    "percent": 10,
+    "percent": 9,
     "min_toman": null,
     "max_toman": null,
-    "sample_on_100k": 10000,
-    "net_on_100k": 90000
+    "sample_on_100k": 9000,
+    "net_on_100k": 91000
   },
   "settlement": {
     "hold_hours": 0,
@@ -449,10 +451,13 @@ The four balances (`pending_toman`, `available_toman`, `settling_toman`, `settle
 
 `amount` is exactly the same value as `amount_toman` — it is sent twice so that code written for the crypto callback (whose field is named `amount`) works with VIP unchanged.
 
-Exactly as on the existing crypto path, rebuild `sig` with your own `api_token` and compare (HMAC-SHA256 over `order_id|status|amount_toman`) — if it doesn't match, ignore the request:
+Exactly as on the existing crypto path, rebuild `sig` and compare (HMAC-SHA256 over `order_id|status|amount_toman`) — if it doesn't match, ignore the request.
+
+> 🔑 **The signing key is your VIP token** — the exact `vip_…` token you created the order with (the one in the `Authorization` header). Your normal 64-character token plays no role here; if you rebuild the signature with it, it will never match and you will reject perfectly good payments.
 
 ```php
-$expectedSig = hash_hmac('sha256', $orderId . '|paid|' . $amountToman, $apiToken);
+// $vipToken = the same vip_… token you sent in Authorization when creating the order
+$expectedSig = hash_hmac('sha256', $orderId . '|paid|' . $amountToman, $vipToken);
 if (!hash_equals($expectedSig, $sig)) { exit; }
 ```
 
@@ -467,7 +472,7 @@ A frequently asked question: normal CubePay merchants already had a crypto withd
 | Layer | The 3% path (normal merchants) | CubePay VIP |
 |---|---|---|
 | Accounts and records | fully separate | fully separate |
-| Fee | 3% | 10% (configurable per merchant) |
+| Fee | 3% | 9% (default; configurable per merchant) |
 | Token | normal API token | `vip_` token |
 | Fee wallet | required | **never checked** |
 | Balance | separate | separate |
