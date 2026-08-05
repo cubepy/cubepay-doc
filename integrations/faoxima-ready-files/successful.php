@@ -86,6 +86,20 @@ $ManagePanel = new ManagePanel();
  * «سرویس ساخته شد ولی خبری نشد» دیده می‌شود — بدونِ هیچ سرنخی. این لاگ و
  * shutdown handlerِ پایین، دقیقاً می‌گویند کجا و با چه خطایی متوقف شده.
  */
+/**
+ * ⏱️ این کال‌بک نباید به زنده‌بودنِ اتصالِ درگاه وابسته باشد.
+ *
+ * تحویلِ سرویس چند کار پشت‌سرِ هم دارد: ساختِ کاربر در پنل، تولیدِ QR، و چند
+ * پیامِ تلگرام. مجموعشان به‌راحتی از مهلتِ چند‌ثانیه‌ایِ درگاه بیشتر می‌شود.
+ * وقتی درگاه اتصال را می‌بندد، PHP به‌طور پیش‌فرض همان‌جا اسکریپت را می‌کُشد —
+ * بی‌صدا، بدون خطا، وسطِ کار: سرویس ساخته شده ولی نه پیامی رفته، نه کیف پول
+ * کسر شده، نه گزارشی ثبت شده. دقیقاً همان چیزی که در لاگ دیده شد.
+ *
+ * پول قبلاً تایید شده، پس کار باید تا آخر انجام شود حتی اگر کسی پشتِ خط نماند.
+ */
+ignore_user_abort(true);
+@set_time_limit(300);
+
 function cubepay_log(string $step, array $context = []): void
 {
     $line = date('Y-m-d H:i:s') . ' | ' . $step;
@@ -104,7 +118,11 @@ register_shutdown_function(static function (): void {
             'file' => $err['file'],
             'line' => $err['line'],
         ]);
+        return;
     }
+    // اگر اتصال قطع شده باشد این را می‌بینیم — بدون این، پایانِ ناگهانی هیچ ردی نمی‌گذارد.
+    $state = connection_aborted() ? 'client disconnected' : 'connection ok';
+    cubepay_log('callback finished', ['connection' => $state]);
 });
 
 cubepay_log('callback received', [
