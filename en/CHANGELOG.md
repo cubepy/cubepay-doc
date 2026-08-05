@@ -6,6 +6,14 @@ All notable changes to this project are recorded here, in chronological order.
 
 ---
 
+## [2.1.11] — WooCommerce plugin: "invalid signature" on VIP payments
+
+### Fixed
+
+- **WooCommerce plugin 1.2.1:** the callback signature is now checked against the token that created the order — the `vip_` token for VIP orders. Version 1.2.0 always checked against the normal token, so after the server-side fix in 2.1.9 it rejected VIP payments with an "invalid signature" error. **If you use VIP together with the plugin, update it.** The normal token is still accepted as well, so older invoices keep verifying.
+
+---
+
 ## [2.1.10] — Customer fee pass-through (percent or fixed) in the ready-made files
 
 ### Added
