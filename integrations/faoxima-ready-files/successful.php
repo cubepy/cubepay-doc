@@ -78,6 +78,41 @@ require_once $projectRoot . '/vendor/autoload.php';
 
 $ManagePanel = new ManagePanel();
 
+/**
+ * 🩺 ثبتِ گام‌به‌گامِ این کال‌بک در payment/ZarinPay/cubepay-callback.log
+ *
+ * چرا: این فایل سرویس را تحویل می‌دهد، کیف پول را کسر می‌کند و گزارشِ کانال
+ * را می‌فرستد. اگر وسطِ کار بمیرد، همه‌ی این‌ها نصفه می‌مانند و از بیرون فقط
+ * «سرویس ساخته شد ولی خبری نشد» دیده می‌شود — بدونِ هیچ سرنخی. این لاگ و
+ * shutdown handlerِ پایین، دقیقاً می‌گویند کجا و با چه خطایی متوقف شده.
+ */
+function cubepay_log(string $step, array $context = []): void
+{
+    $line = date('Y-m-d H:i:s') . ' | ' . $step;
+    if ($context) {
+        $line .= ' | ' . json_encode($context, JSON_UNESCAPED_UNICODE);
+    }
+    @file_put_contents(__DIR__ . '/cubepay-callback.log', $line . PHP_EOL, FILE_APPEND | LOCK_EX);
+}
+
+// فتالِ واقعی (مثل Class not found) را try/catch نمی‌گیرد — این می‌گیرد.
+register_shutdown_function(static function (): void {
+    $err = error_get_last();
+    if ($err !== null && in_array($err['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR], true)) {
+        cubepay_log('FATAL', [
+            'message' => $err['message'],
+            'file' => $err['file'],
+            'line' => $err['line'],
+        ]);
+    }
+});
+
+cubepay_log('callback received', [
+    'order_id' => $invoiceId,
+    'has_sig' => $isCryptoCallback ? 'yes' : 'no',
+    'method' => $_SERVER['REQUEST_METHOD'] ?? '?',
+]);
+
 $textbotlang = languagechange($projectRoot . '/text.json');
 
 $paymentReport = select('Payment_report', '*', 'id_order', $invoiceId, 'select');
@@ -203,7 +238,31 @@ try {
             // مسیرِ تصویرِ پس‌زمینه‌ی QR نسبت به همین فایل داده می‌شود: این فایل
             // دو پوشه پایین‌ترِ ریشه‌ی رباته (payment/ZarinPay/)، برخلافِ بقیه‌ی
             // درگاه‌ها که یکی پایین‌ترن و "../images.jpg" می‌دن.
-            DirectPayment($paymentReport['id_order'], $projectRoot . '/images.jpg');
+            //
+            // ⚠️ DirectPayment سرویس را می‌سازد، پیامِ تحویل را می‌فرستد و سهمِ
+            // کیف پول را کسر می‌کند. اگر خطا بدهد، نباید گزارشِ کانالِ پایین را
+            // هم با خودش ببرد — وگرنه ادمین هیچ ردی از این پرداخت نمی‌بیند.
+            cubepay_log('delivering service', ['order_id' => $paymentReport['id_order']]);
+            try {
+                DirectPayment($paymentReport['id_order'], $projectRoot . '/images.jpg');
+                cubepay_log('service delivered');
+            } catch (Throwable $deliveryError) {
+                cubepay_log('DELIVERY FAILED', [
+                    'error' => $deliveryError->getMessage(),
+                    'file' => $deliveryError->getFile(),
+                    'line' => $deliveryError->getLine(),
+                ]);
+                if (!empty($setting['Channel_Report'])) {
+                    telegram('sendmessage', [
+                        'chat_id' => $setting['Channel_Report'],
+                        'text' => "⭕️ خطا در تحویل سرویس بعد از پرداخت موفق\n\n"
+                            . "🛒 سفارش: {$paymentReport['id_order']}\n"
+                            . "👤 کاربر: {$paymentReport['id_user']}\n"
+                            . '✍️ خطا: ' . $deliveryError->getMessage(),
+                        'parse_mode' => 'HTML',
+                    ]);
+                }
+            }
             update('user', 'Processing_value', '0', 'id', $paymentReport['id_user']);
             update('user', 'Processing_value_one', '0', 'id', $paymentReport['id_user']);
             update('user', 'Processing_value_tow', '0', 'id', $paymentReport['id_user']);
@@ -240,6 +299,9 @@ try {
                 }
 
                 telegram('sendmessage', $telegramPayload);
+                cubepay_log('channel report sent');
+            } else {
+                cubepay_log('channel report skipped - Channel_Report not configured');
             }
         }
     }
