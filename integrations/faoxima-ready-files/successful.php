@@ -329,7 +329,11 @@ try {
         'title' => 'پرداخت موفق!',
         'text'  => 'از انجام تراکنش متشکریم.',
     ];
-} catch (Exception $e) {
+} catch (Throwable $e) {
+    // Throwable و نه Exception: خطاهای PHP مثل Error/TypeError (نمونه‌ی واقعی:
+    // «Call to a member function prepare() on null» وقتی اتصال DB وسط کار
+    // می‌افتد) از Exception رد می‌شوند و صفحه را با 500 خالی می‌کشتند —
+    // در حالی که چند خط بالاتر ممکن است پرداخت paid شده باشد.
     $page = [
         'state' => 'error',
         'title' => 'پرداخت تایید نشد',
