@@ -6,6 +6,15 @@ All notable changes to this project are recorded here, in chronological order.
 
 ---
 
+## [2.1.10] — Customer fee pass-through (percent or fixed) in the ready-made files
+
+### Added
+
+- **The "fee" setting in the Foxima ready files is now dual-mode:** a value of 0–100 = a **percentage** fee (decimals allowed, e.g. `9.9`), above 100 = a **fixed toman** amount — same field, no new buttons. After saving, the bot echoes the interpretation back with a worked example. Fee application also moved into `business_logic_1.php` (at order-creation time), so it works identically for card-to-card, crypto, and VIP, and the customer's wallet is still credited only with the requested amount.
+- **New guide for bot platforms:** ["Passing the fee on to the customer"](integrations/customer-fee-passthrough-guide.md) — the spec of this pattern plus reference code, for any platform (Mirzabot, Seamless, Zitac, …) that wants to offer the same capability. (Persian + English)
+
+---
+
 ## [2.1.9] — VIP callback signing key fixed + live fee reference
 
 ### Fixed

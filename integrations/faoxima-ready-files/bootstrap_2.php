@@ -5979,23 +5979,36 @@ $text_expie_agent
     $currentFeeStatus = getPaySettingValue('zarinpeyfeestatus', 'offzarinpeyfee');
     $newFeeStatus = ($currentFeeStatus === 'onzarinpeyfee') ? 'offzarinpeyfee' : 'onzarinpeyfee';
     update("PaySetting", "ValuePay", $newFeeStatus, "NamePay", "zarinpeyfeestatus");
-    $feeAmountNow = number_format((int) getPaySettingValue('zarinpeyfeeamount', '0'));
+    $feeValueNow = (float) str_replace([',', '،'], '', (string) getPaySettingValue('zarinpeyfeeamount', '0'));
+    $feeDescNow = $feeValueNow <= 100
+        ? "درصدی — {$feeValueNow}٪ روی فاکتور مشتری"
+        : 'ثابت — ' . number_format($feeValueNow) . ' تومان روی فاکتور مشتری';
     if ($newFeeStatus === 'onzarinpeyfee') {
-        nm_adminInstantReply($from_id, "✅ کارمزد ثابت روشن شد.\n\n💵 مبلغ فعلی کارمزد: {$feeAmountNow} تومان\nاین مبلغ به فاکتور مشتری اضافه می‌شود ولی کیف پولش فقط به اندازه‌ی مبلغ درخواستی شارژ می‌شود.", $keyboardzarinpey, 'HTML');
+        nm_adminInstantReply($from_id, "✅ کارمزد روشن شد.\n\n💵 تنظیم فعلی: {$feeDescNow}\nاین مقدار به فاکتور مشتری اضافه می‌شود ولی کیف پولش فقط به اندازه‌ی مبلغ درخواستی شارژ می‌شود.", $keyboardzarinpey, 'HTML');
     } else {
         nm_adminInstantReply($from_id, "❌ کارمزد ثابت خاموش شد.", $keyboardzarinpey, 'HTML');
     }
 } elseif ($text == "💵 مبلغ کارمزد ثابت") {
     $currentFeeAmount = getPaySettingValue('zarinpeyfeeamount', '0');
-    nm_adminInstantReply($from_id, "💵 مبلغ کارمزد ثابت (تومان) را ارسال کنید.\n\nمبلغ فعلی: {$currentFeeAmount} تومان\n\n(این مبلغ فقط وقتی «کارمزد ثابت» روشن باشد به فاکتور اضافه می‌شود.)", $backadmin, 'HTML');
+    nm_adminInstantReply($from_id, "💵 عدد کارمزد را ارسال کنید:\n\n▫️ عدد <b>0 تا 100</b> → کارمزد <b>درصدی</b> (اعشار مجاز — مثلاً <code>9.9</code>)\n▫️ عدد <b>بالای 100</b> → مبلغ <b>ثابت به تومان</b> (مثلاً <code>5000</code>)\n\nتنظیم فعلی: {$currentFeeAmount}\n\n💡 برای انتقال کامل کارمزد ۹٪ CubePay VIP به مشتری، <code>9.9</code> بفرستید.\n(فقط وقتی «کارمزد ثابت» روشن باشد اعمال می‌شود.)", $backadmin, 'HTML');
     step("getfeeamountzarinpey", $from_id);
 } elseif ($user['step'] == "getfeeamountzarinpey") {
-    if (!ctype_digit($text)) {
+    // ارقام فارسی/جداکننده‌ها را هم بپذیر؛ 0 تا 100 = درصد، بالای 100 = تومان
+    $feeInput = strtr(trim($text), ['۰'=>'0','۱'=>'1','۲'=>'2','۳'=>'3','۴'=>'4','۵'=>'5','۶'=>'6','۷'=>'7','۸'=>'8','۹'=>'9','٫'=>'.','/'=>'.',','=>'','،'=>'']);
+    if (!is_numeric($feeInput) || (float) $feeInput < 0) {
         nm_adminInstantReply($from_id, $textbotlang['Admin']['agent']['invalidvlue'], $backadmin, 'HTML');
         return;
     }
-    update("PaySetting", "ValuePay", $text, "NamePay", "zarinpeyfeeamount");
-    nm_adminInstantReply($from_id, "✅ مبلغ کارمزد ثابت با موفقیت ذخیره گردید.", $keyboardzarinpey, 'HTML');
+    $feeValue = (float) $feeInput;
+    update("PaySetting", "ValuePay", (string) $feeValue, "NamePay", "zarinpeyfeeamount");
+    if ($feeValue <= 100) {
+        $sample = number_format((int) ceil(100000 * (1 + $feeValue / 100)));
+        $feeSavedMsg = "✅ ذخیره شد — کارمزد <b>درصدی {$feeValue}٪</b>\n\nمثال: فاکتور ۱۰۰,۰۰۰ تومانی برای مشتری می‌شود {$sample} تومان.";
+    } else {
+        $sample = number_format(100000 + (int) round($feeValue));
+        $feeSavedMsg = '✅ ذخیره شد — کارمزد <b>ثابت ' . number_format($feeValue) . " تومان</b>\n\nمثال: فاکتور ۱۰۰,۰۰۰ تومانی برای مشتری می‌شود {$sample} تومان.";
+    }
+    nm_adminInstantReply($from_id, $feeSavedMsg, $keyboardzarinpey, 'HTML');
     step('home', $from_id);
 } elseif ($text == "🧑🏼‍💻 اموزش اتصال") {
     $inlineKeyboard = json_encode([
