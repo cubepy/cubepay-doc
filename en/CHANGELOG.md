@@ -6,14 +6,6 @@ All notable changes to this project are recorded here, in chronological order.
 
 ---
 
-## [2.1.10] — `customer_fee_share`: splitting the VIP fee with the customer
-
-### Added
-
-- **`customer_fee_share` on the VIP `create-order.php`.** When creating an invoice you can now decide what share of the percentage fee the customer bears (`0` to `1` — e.g. `0.5` for an even split, `1` for fully customer-paid). The customer's payable amount is grossed-up automatically so your take never drops below your base price; the API response, the callback and `check-order-status.php` also return `price_toman` (your own base price) separately. Deliberately a per-request parameter rather than a global setting, so your code always knows what its customer is paying.
-
----
-
 ## [2.1.9] — VIP callback signing key fixed + live fee reference
 
 ### Fixed

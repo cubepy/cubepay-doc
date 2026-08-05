@@ -223,7 +223,6 @@ The only way to create an invoice in this module — no manual invoices from the
 | `amount_toman` | number | ✅ | amount in **toman** — default cap 1,000,000 toman (an admin can change it per merchant) |
 | `callback_url` | string | ❌ | where the final result is announced |
 | `customer_ref` | string | ❌ | your customer/user identifier — used only to sharpen duplicate detection |
-| `customer_fee_share` | number | ❌ | the **customer's** share of the percentage fee, `0` to `1` — default `0` (you bear the whole fee). `0.5` = split in half, `1` = the customer bears it all. The customer's payable amount is grossed-up automatically (rounded up) so that after the fee is deducted, you never receive less than your base price |
 
 ### ✅ Example response
 
@@ -237,18 +236,6 @@ The only way to create an invoice in this module — no manual invoices from the
   "expires_in_minutes": 60
 }
 ```
-
-If you sent `customer_fee_share`, the response carries two extra fields and `amount_toman` is the grossed-up amount (what the customer actually pays):
-
-```json
-{
-  "amount_toman": 549452,
-  "price_toman": 500000,
-  "customer_fee_share": 1
-}
-```
-
-> ⚠️ With `customer_fee_share`, the callback and `check-order-status.php` also return `price_toman` separately — credit your customer's wallet/order with **`price_toman`** (your own price), not `amount_toman`. The caps (per-transaction/daily/monthly) apply to the gross amount. The `sig` signature is still built over `amount_toman` only.
 
 ### ❌ Important errors
 
