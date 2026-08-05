@@ -35,7 +35,7 @@ In your WordPress dashboard: **Plugins ← Add New ← Upload Plugin**, select t
 ### 2) Get your info from the Telegram bot
 
 In the `@cubepy_bot` bot, from the "🔗 My Panel" menu, copy:
-- **API Token** — always required (payment verification uses this one)
+- **API Token** — always required (used for the plain card path and its verification)
 - **Card-to-card server address** (like `https://cubevps.ir/smspay`) — always required
 - 🆕 If you want to accept crypto too: **Unified server address** (like `https://cubevps.ir/pay`)
 - 👑 If you have a VIP subscription: your **VIP token** (like `vip_…`) — from the "👑 CubePay VIP" panel
@@ -48,7 +48,9 @@ In WordPress go to: **WooCommerce ← Settings ← Payments ← "CubePay" ← Ma
 - 📋 Paste the API token and the card-to-card server address
 - 👑 **Have a CubePay VIP subscription?** Put your `vip_…` token in the **separate "CubePay VIP token" field** (version 1.2.0 and later), and make sure **Unified server address** is filled in too.
 
-  ⚠️ **Do not remove your normal API token** — it is still required, because payment verification uses it. If you put the VIP token in place of the normal one, invoices get created but payments are never confirmed.
+  ⚠️ **Do not remove your normal API token** — it is still required (for the plain card path and its verification). Do not put the VIP token in its place; it has its own field.
+
+  📌 **Make sure the plugin is on version 1.2.1 or newer.** In 1.2.0 the callback signature was checked against the normal token, while a VIP callback is signed with the `vip_` token — so VIP payments were rejected with an "invalid signature" error.
 
   From then on the customer sees the CubePay treasury card and you settle in crypto. Details: [`docs/CUBEPAY-VIP-API-REFERENCE.md`](../docs/CUBEPAY-VIP-API-REFERENCE.md)
 - 🆕 **Unified server address (optional):** if you fill this in, and crypto is also enabled on your merchant account (in the bot, "⚙️ Payment Methods"), the customer will choose between card and crypto at checkout. If left empty, it works exactly as before — card-to-card only.
