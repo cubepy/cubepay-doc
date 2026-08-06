@@ -35,7 +35,9 @@ function isBase64($string)
 function sendMessageService($panel_info, $config, $sub_link, $username_service, $reply_markup, $caption, $invoice_id, $user_id = null, $image = 'images.jpg')
 {
     global $setting, $from_id;
+if (function_exists('cubepay_log')) cubepay_log('SMS: enter');
     $config = normalizeServiceConfigs($config);
+    if (function_exists('cubepay_log')) cubepay_log('SMS: configs normalized');
     if (!check_active_btn($setting['keyboardmain'], "text_help"))
         $reply_markup = null;
     $user_id = $user_id == null ? $from_id : $user_id;
@@ -55,8 +57,11 @@ function sendMessageService($panel_info, $config, $sub_link, $username_service, 
     if ($STATUS_SEND_MESSAGE_PHOTO) {
 
         $infoCardSent = false;
+        if (function_exists('cubepay_log')) cubepay_log('SMS: branch photo', ['infocard_available' => function_exists('getInfoCardStatus') ? 'yes' : 'no']);
         if (function_exists('getInfoCardStatus') && getInfoCardStatus()) {
+if (function_exists('cubepay_log')) cubepay_log('SMS: rendering info card');
             $cardPath = nm_renderInfoCardForInvoice($panel_info, $username_service, $invoice_id, $user_id);
+            if (function_exists('cubepay_log')) cubepay_log('SMS: info card rendered', ['path' => $cardPath ?? 'null']);
             if ($cardPath !== null) {
 
                 $cardKeyboard = nm_appendInfoCardQrButton($reply_markup, $invoice_id);
@@ -74,19 +79,24 @@ function sendMessageService($panel_info, $config, $sub_link, $username_service, 
         if (!$infoCardSent) {
 
             $urlimage = "$user_id$invoice_id.png";
+            if (function_exists('cubepay_log')) cubepay_log('SMS: building qr');
             $qrCode = createqrcode($out_put_qrcode);
-            file_put_contents($urlimage, $qrCode->getString());
+            if (function_exists('cubepay_log')) cubepay_log('SMS: qr built');
+            $qrBytes = @file_put_contents($urlimage, $qrCode->getString());
+            if (function_exists('cubepay_log')) cubepay_log('SMS: qr written', ['file' => $urlimage, 'bytes' => $qrBytes === false ? 'WRITE FAILED' : $qrBytes, 'cwd' => getcwd()]);
             if (!addBackgroundImage($urlimage, $qrCode, $image)) {
                 error_log("Unable to apply background image for QR code using path '{$image}'");
             }
-            telegram('sendphoto', [
+if (function_exists('cubepay_log')) cubepay_log('SMS: sending qr photo', ['chat' => $user_id]);
+            $tgResult = telegram('sendphoto', [
                 'chat_id' => $user_id,
                 'photo' => new CURLFile($urlimage),
                 'reply_markup' => $reply_markup,
                 'caption' => $caption,
                 'parse_mode' => "HTML",
             ]);
-            unlink($urlimage);
+            if (function_exists('cubepay_log')) cubepay_log('SMS: qr photo sent', ['tg_ok' => is_array($tgResult) ? ($tgResult['ok'] ?? 'no-ok-field') : gettype($tgResult)]);
+            @unlink($urlimage);
         }
         if ($panel_info['type'] == "WGDashboard") {
             $urlimage = "{$panel_info['inboundid']}_{$username_service}.conf";
@@ -95,8 +105,10 @@ function sendMessageService($panel_info, $config, $sub_link, $username_service, 
             unlink($urlimage);
         }
     } else {
+        if (function_exists('cubepay_log')) cubepay_log('SMS: branch text only');
         sendmessage($user_id, $caption, $reply_markup, 'HTML');
     }
+    if (function_exists('cubepay_log')) cubepay_log('SMS: main send done');
     if ($panel_info['config'] == "onconfig" && $setting['status_keyboard_config'] == "1" && function_exists('keyboard_config')) {
         if (is_array($config)) {
             $validConfigs = array_values(array_filter($config, function ($item) {

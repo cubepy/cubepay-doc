@@ -6,6 +6,19 @@ All notable changes to this project are recorded here, in chronological order.
 
 ---
 
+## [2.1.12] — Foxima ready files: delivery that survives an unstable host
+
+### Fixed
+
+- **The post-payment chain no longer gets lost when the process dies.** On a real install (a crowded shared host) the process was sometimes killed midway after payment: the service got created, but the delivery message, the buyer's wallet deduction, and the channel report never happened. The ready-file set now makes the wallet deduction **atomic and at-most-once** (transaction + marker), **auto-rescues** any half-finished order on the next callback (missed deduction + a compensating channel report), and speeds up an image-processing hotspot (22 Gaussian blurs for the QR background) ~40× — the main thing getting the process killed.
+- **Built-in diagnostic log:** `payment/ZarinPay/cubepay-callback.log` records the delivery path step by step (self-rotating, ~1MB max) — turning future debugging from hours into minutes.
+
+### Changed
+
+- Two files joined the required ready-file set: `database_helpers_2.php` and `bot_api_helpers.php` (paths in the guide). The former is a companion to the new `successful.php` — install both or neither.
+
+---
+
 ## [2.1.11] — WooCommerce plugin: "invalid signature" on VIP payments
 
 ### Fixed
