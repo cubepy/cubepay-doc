@@ -102,11 +102,17 @@ ignore_user_abort(true);
 
 function cubepay_log(string $step, array $context = []): void
 {
+    $logFile = __DIR__ . '/cubepay-callback.log';
+    // چرخشِ ساده که لاگ برای همیشه بزرگ نشود: بالای ~۵۱۲KB، نسخه‌ی فعلی
+    // جای .old را می‌گیرد و از نو شروع می‌شود (همیشه حداکثر ~۱MB روی دیسک).
+    if (is_file($logFile) && (int) @filesize($logFile) > 524288) {
+        @rename($logFile, $logFile . '.old');
+    }
     $line = date('Y-m-d H:i:s') . ' | ' . $step;
     if ($context) {
         $line .= ' | ' . json_encode($context, JSON_UNESCAPED_UNICODE);
     }
-    @file_put_contents(__DIR__ . '/cubepay-callback.log', $line . PHP_EOL, FILE_APPEND | LOCK_EX);
+    @file_put_contents($logFile, $line . PHP_EOL, FILE_APPEND | LOCK_EX);
 }
 
 // فتالِ واقعی (مثل Class not found) را try/catch نمی‌گیرد — این می‌گیرد.
@@ -130,6 +136,91 @@ cubepay_log('callback received', [
     'has_sig' => $isCryptoCallback ? 'yes' : 'no',
     'method' => $_SERVER['REQUEST_METHOD'] ?? '?',
 ]);
+
+/**
+ * 🛟 بازیابیِ دنباله‌های ناتمام — روی هر کال‌بکِ تازه اجرا می‌شود.
+ *
+ * روی این هاست دیده شد که پروسه گاهی وسطِ دُمِ کار (کسر کیف‌پول / گزارش
+ * کانال) بی‌صدا کشته می‌شود: تحویلِ سرویس انجام شده ولی این دو قدم می‌مانند.
+ * اینجا سفارش‌های paid همین درگاه (فقط Payment_Method='zarinpay') که
+ * مارکرشان نخورده را پیدا و تمام می‌کنیم — ادعای اتمیکِ [wallet-done] هم
+ * اینجا و هم داخل DirectPayment یکی است، پس کسرِ دوباره ریاضیاتاً ممکن نیست.
+ *
+ * کفِ شناسه (rescue-floor): بار اول فقط «الان» ثبت می‌شود و به هیچ سفارشِ
+ * قدیمی‌تری دست نمی‌زنیم — سفارش‌های قبل از نصبِ این سیستم مارکر ندارند و
+ * اصلاحشان دستی است، نه خودکار.
+ */
+try {
+    $rescueFloorFile = __DIR__ . '/rescue-floor.txt';
+    $rescueFloor = is_file($rescueFloorFile) ? (int) trim((string) file_get_contents($rescueFloorFile)) : null;
+    if ($rescueFloor === null) {
+        $maxId = (int) $pdo->query('SELECT COALESCE(MAX(id), 0) FROM Payment_report')->fetchColumn();
+        @file_put_contents($rescueFloorFile, (string) $maxId, LOCK_EX);
+        cubepay_log('rescue: floor set', ['floor' => $maxId]);
+    } else {
+        $rescueSt = $pdo->prepare(
+            "SELECT id, id_order, id_user, price, id_invoice, dec_not_confirmed FROM Payment_report
+             WHERE id > ? AND payment_Status = 'paid' AND Payment_Method = 'zarinpay'
+               AND (dec_not_confirmed IS NULL OR dec_not_confirmed NOT LIKE '%[wallet-done]%')
+             ORDER BY id ASC LIMIT 10"
+        );
+        $rescueSt->execute([$rescueFloor]);
+        foreach ($rescueSt->fetchAll(PDO::FETCH_ASSOC) as $ro) {
+            $roStep = explode('|', (string) $ro['id_invoice']);
+            $roPortion = 0.0;
+            if (($roStep[0] ?? '') === 'getconfigafterpay' && ($roStep[1] ?? '') !== '') {
+                $invQ = $pdo->prepare('SELECT price_product FROM invoice WHERE username = ? ORDER BY id_invoice DESC LIMIT 1');
+                $invQ->execute([$roStep[1]]);
+                $roProduct = $invQ->fetchColumn();
+                if ($roProduct !== false) {
+                    $roPortion = max(0.0, (float) $roProduct - (float) $ro['price']);
+                }
+            }
+            $pdo->beginTransaction();
+            $roClaim = $pdo->prepare(
+                "UPDATE Payment_report SET dec_not_confirmed = CONCAT(COALESCE(dec_not_confirmed,''), ' [wallet-done] [rescued]')
+                 WHERE id = ? AND (dec_not_confirmed IS NULL OR dec_not_confirmed NOT LIKE '%[wallet-done]%')"
+            );
+            $roClaim->execute([$ro['id']]);
+            if ($roClaim->rowCount() === 1) {
+                if ($roPortion > 0) {
+                    $pdo->prepare('UPDATE user SET Balance = GREATEST(0, CAST(Balance AS DECIMAL(20,2)) - ?) WHERE id = ?')
+                        ->execute([$roPortion, $ro['id_user']]);
+                }
+                $pdo->commit();
+                cubepay_log('rescue: wallet completed', ['order' => $ro['id_order'], 'portion' => $roPortion]);
+            } else {
+                $pdo->rollBack();
+            }
+            // گزارشِ کانالِ جامانده — نسخه‌ی فشرده، که ادمین بداند این پرداخت وجود داشته
+            if (strpos((string) $ro['dec_not_confirmed'], '[report-done]') === false) {
+                $roSetting = select('setting', '*', null, null, 'select');
+                if (!empty($roSetting['Channel_Report'])) {
+                    $roTopic = select('topicid', 'idreport', 'report', 'paymentreport', 'select')['idreport'] ?? null;
+                    $roPayload = [
+                        'chat_id' => $roSetting['Channel_Report'],
+                        'text' => "🛟 گزارش بازیابی‌شده — این پرداخت قبلاً انجام شده بود ولی گزارشش به‌خاطر قطعیِ وسطِ کار ثبت نشده بود.\n\n"
+                            . "🛒 سفارش: {$ro['id_order']}\n👤 کاربر: {$ro['id_user']}\n💵 مبلغ: " . number_format((float) $ro['price']) . " تومان\n💳 روش: کیوب‌پی"
+                            . ($roPortion > 0 ? "\n👛 سهم کیف پول (الان کسر شد): " . number_format($roPortion) . ' تومان' : ''),
+                        'parse_mode' => 'HTML',
+                    ];
+                    if (!empty($roTopic)) {
+                        $roPayload['message_thread_id'] = $roTopic;
+                    }
+                    telegram('sendmessage', $roPayload);
+                    $pdo->prepare(
+                        "UPDATE Payment_report SET dec_not_confirmed = CONCAT(COALESCE(dec_not_confirmed,''), ' [report-done]')
+                         WHERE id = ? AND (dec_not_confirmed IS NULL OR dec_not_confirmed NOT LIKE '%[report-done]%')"
+                    )->execute([$ro['id']]);
+                    cubepay_log('rescue: report sent', ['order' => $ro['id_order']]);
+                }
+            }
+        }
+    }
+} catch (Throwable $rescueError) {
+    try { if ($pdo->inTransaction()) { $pdo->rollBack(); } } catch (Throwable $ignored) {}
+    cubepay_log('rescue failed (main flow continues)', ['error' => $rescueError->getMessage()]);
+}
 
 $textbotlang = languagechange($projectRoot . '/text.json');
 
