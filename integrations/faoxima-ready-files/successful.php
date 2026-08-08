@@ -545,7 +545,30 @@ try {
             $rtStep = explode('|', (string) ($paymentReport['id_invoice'] ?? ''));
             $rtUser = $rtStep[1] ?? '';
 
-            if (($rtStep[0] ?? '') === 'getconfigafterpay' && $rtUser !== '') {
+            /**
+             * ⏳ فقط سفارش‌هایی که به‌قدرِ کافی کهنه‌اند.
+             *
+             * درگاه دو بار کال‌بک می‌زند: POST که تحویل را انجام می‌دهد، و
+             * چند ثانیه بعد GETِ مرورگرِ مشتری. تحویل ۵ تا ۱۰ ثانیه طول
+             * می‌کشد، پس درخواستِ دوم وسطِ کارِ اولی می‌رسد و آن لحظه
+             * `invoice.Status` هنوز active نشده — بدونِ این گارد، تلاشِ
+             * مجدد روی سفارشی کلید می‌خورد که همین الان در حالِ تحویل است
+             * و مشتری دو بار سرویس می‌گیرد.
+             *
+             * برخلافِ حلقه‌ی بازیابی، اینجا عمداً fail-closed است: اگر
+             * قالبِ ستونِ time خوانده نشود، تلاشِ مجدد انجام *نمی‌شود* —
+             * چون خطای «تحویلِ دوباره» از خطای «تحویلِ دیرتر» بدتر است.
+             * سفارش‌های جامانده را حلقه‌ی بازیابی می‌بیند و گزارش می‌دهد.
+             */
+            $rtAgeSt = $pdo->prepare(
+                "SELECT TIMESTAMPDIFF(SECOND, STR_TO_DATE(time, '%Y/%m/%d %H:%i:%s'), NOW())
+                 FROM Payment_report WHERE id_order = ? LIMIT 1"
+            );
+            $rtAgeSt->execute([$paymentReport['id_order']]);
+            $rtAge = $rtAgeSt->fetchColumn();
+            $rtOldEnough = ($rtAge !== false && $rtAge !== null && (int) $rtAge >= 120);
+
+            if (($rtStep[0] ?? '') === 'getconfigafterpay' && $rtUser !== '' && $rtOldEnough) {
                 $rtChk = $pdo->prepare("SELECT COUNT(*) FROM invoice WHERE username = ? AND Status = 'active'");
                 $rtChk->execute([$rtUser]);
                 $rtDelivered = ((int) $rtChk->fetchColumn()) > 0;
