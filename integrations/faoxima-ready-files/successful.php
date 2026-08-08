@@ -151,6 +151,12 @@ cubepay_log('callback received', [
  * اصلاحشان دستی است، نه خودکار.
  */
 try {
+    // $pdo همیشه در این نقطه ساخته نشده — یک‌بار واقعاً روی سرورِ یک فروشنده
+    // «Call to a member function prepare() on null» داد و کلِ بازیابی سوخت.
+    if (!isset($pdo) || !($pdo instanceof PDO)) {
+        throw new RuntimeException('اتصال دیتابیس هنوز آماده نیست');
+    }
+
     $rescueFloorFile = __DIR__ . '/rescue-floor.txt';
     $rescueFloor = is_file($rescueFloorFile) ? (int) trim((string) file_get_contents($rescueFloorFile)) : null;
     if ($rescueFloor === null) {
@@ -159,23 +165,120 @@ try {
         cubepay_log('rescue: floor set', ['floor' => $maxId]);
     } else {
         $rescueSt = $pdo->prepare(
+            /**
+             * 🚫 سفارشِ همین درخواست کنار گذاشته می‌شود.
+             *
+             * درگاه دو بار این آدرس را می‌زند: یک‌بار سرور-به-سرور (POST) که
+             * تحویل را انجام می‌دهد، و چند ثانیه بعد مرورگرِ خودِ مشتری (GET).
+             * ساختِ اکانت در پنل گاهی ۵ تا ۱۰ ثانیه طول می‌کشد، پس درخواستِ
+             * دوم دقیقاً وسطِ کارِ درخواستِ اول می‌رسد و بدونِ این شرط،
+             * همان سفارشِ در حالِ تحویل را «ناتمام» تشخیص می‌داد.
+             */
             "SELECT id, id_order, id_user, price, id_invoice, dec_not_confirmed FROM Payment_report
-             WHERE id > ? AND payment_Status = 'paid' AND Payment_Method = 'zarinpay'
+             WHERE id > ? AND id_order <> ? AND payment_Status = 'paid' AND Payment_Method = 'zarinpay'
                AND (dec_not_confirmed IS NULL OR dec_not_confirmed NOT LIKE '%[wallet-done]%')
+               -- فقط سفارش‌هایی که به‌قدرِ کافی کهنه‌اند تا تحویلشان (حتی
+               -- کندترین حالت، ~۱۰ ثانیه) قطعاً تمام شده باشد. اگر قالبِ
+               -- ستونِ time روی نصبی متفاوت باشد و STR_TO_DATE نتواند
+               -- بخواندش، عمداً fail-open است: ردیف رد نمی‌شود و چکِ
+               -- «واقعاً تحویل شده؟» پایین‌تر همچنان محافظت می‌کند.
+               AND (
+                    STR_TO_DATE(time, '%Y/%m/%d %H:%i:%s') IS NULL
+                 OR STR_TO_DATE(time, '%Y/%m/%d %H:%i:%s') < DATE_SUB(NOW(), INTERVAL 3 MINUTE)
+               )
              ORDER BY id ASC LIMIT 10"
         );
-        $rescueSt->execute([$rescueFloor]);
+        $rescueSt->execute([$rescueFloor, (string) $invoiceId]);
         foreach ($rescueSt->fetchAll(PDO::FETCH_ASSOC) as $ro) {
             $roStep = explode('|', (string) $ro['id_invoice']);
             $roPortion = 0.0;
+
+            /**
+             * 🚦 آیا سرویس واقعاً تحویل شده؟
+             *
+             * این چک حیاتی است. `payment_Status = 'paid'` **قبل** از
+             * DirectPayment ست می‌شود (تا دو کال‌بکِ هم‌زمان دوبار تحویل
+             * ندهند). یعنی سفارشی که تحویلش شکست خورده هم `paid` است.
+             *
+             * بدونِ این چک، حلقه‌ی بازیابی چنین سفارشی را «تمام‌شده» فرض
+             * می‌کرد، کیف‌پول را کسر می‌کرد و یک «گزارش بازیابی‌شده» به
+             * کانال می‌فرستاد — یعنی مشتری پول داده، سرویس نگرفته، و
+             * سیستم هم موضوع را برای همیشه مختومه اعلام کرده بود.
+             *
+             * نشانه‌ی تحویلِ واقعی: ردیفِ invoice با همان username به
+             * Status='active' رسیده باشد (آخرین کاری که DirectPayment در
+             * مسیر خرید انجام می‌دهد).
+             *
+             * خروجی: true تحویل‌شده، false تحویل‌نشده، null نامشخص
+             * (مسیرهای تمدید/افزایش حجم که سرویس از قبل فعال است و از
+             *  روی وضعیت نمی‌شود قضاوت کرد).
+             */
+            $roDelivered = null;
             if (($roStep[0] ?? '') === 'getconfigafterpay' && ($roStep[1] ?? '') !== '') {
-                $invQ = $pdo->prepare('SELECT price_product FROM invoice WHERE username = ? ORDER BY id_invoice DESC LIMIT 1');
-                $invQ->execute([$roStep[1]]);
-                $roProduct = $invQ->fetchColumn();
-                if ($roProduct !== false) {
-                    $roPortion = max(0.0, (float) $roProduct - (float) $ro['price']);
+                $dlvQ = $pdo->prepare("SELECT COUNT(*) FROM invoice WHERE username = ? AND Status = 'active'");
+                $dlvQ->execute([$roStep[1]]);
+                $roDelivered = ((int) $dlvQ->fetchColumn()) > 0;
+
+                if ($roDelivered) {
+                    $invQ = $pdo->prepare('SELECT price_product FROM invoice WHERE username = ? ORDER BY id_invoice DESC LIMIT 1');
+                    $invQ->execute([$roStep[1]]);
+                    $roProduct = $invQ->fetchColumn();
+                    if ($roProduct !== false) {
+                        $roPortion = max(0.0, (float) $roProduct - (float) $ro['price']);
+                    }
                 }
             }
+
+            // ❌ تحویل نشده یا قابلِ تایید نیست → هرگز «تمام‌شده» علامتش نزن.
+            // فقط یک‌بار به ادمین هشدار بده تا دستی رسیدگی کند.
+            if ($roDelivered !== true) {
+                if (strpos((string) $ro['dec_not_confirmed'], '[needs-review]') === false) {
+                    $roSetting = select('setting', '*', null, null, 'select');
+                    if (!empty($roSetting['Channel_Report'])) {
+                        $roTopic = select('topicid', 'idreport', 'report', 'errorreport', 'select')['idreport'] ?? null;
+                        $roPayload = [
+                            'chat_id' => $roSetting['Channel_Report'],
+                            'text' => "⛔️ <b>پرداخت موفق، سرویس تحویل نشده</b> — نیاز به رسیدگی دستی
+
+"
+                                . "🛒 سفارش: {$ro['id_order']}
+"
+                                . "👤 کاربر: {$ro['id_user']}
+"
+                                . '💵 مبلغ: ' . number_format((float) $ro['price']) . " تومان
+"
+                                . "💳 روش: کیوب‌پی
+
+"
+                                . ($roDelivered === false
+                                    ? "وضعیت: پرداخت ثبت شده ولی هیچ سرویسِ فعالی برای این سفارش ساخته نشده.
+
+"
+                                    : "وضعیت: این سفارش از نوعِ تمدید/افزایش است و به‌صورت خودکار قابلِ تایید نیست.
+
+")
+                                . "⚠️ کیف‌پول این کاربر عمداً کسر <b>نشد</b> و سفارش مختومه اعلام نشد.
+"
+                                . 'لطفاً سرویس را دستی بررسی و در صورت لزوم تحویل بدهید.',
+                            'parse_mode' => 'HTML',
+                        ];
+                        if (!empty($roTopic)) {
+                            $roPayload['message_thread_id'] = $roTopic;
+                        }
+                        telegram('sendmessage', $roPayload);
+                        $pdo->prepare(
+                            "UPDATE Payment_report SET dec_not_confirmed = CONCAT(COALESCE(dec_not_confirmed,''), ' [needs-review]')
+                             WHERE id = ? AND (dec_not_confirmed IS NULL OR dec_not_confirmed NOT LIKE '%[needs-review]%')"
+                        )->execute([$ro['id']]);
+                    }
+                    cubepay_log('rescue: NOT delivered — admin alerted', [
+                        'order' => $ro['id_order'],
+                        'delivered' => $roDelivered === false ? 'no' : 'unknown',
+                    ]);
+                }
+                continue; // به هیچ عنوان مارکرِ [wallet-done] نخورد
+            }
+
             $pdo->beginTransaction();
             $roClaim = $pdo->prepare(
                 "UPDATE Payment_report SET dec_not_confirmed = CONCAT(COALESCE(dec_not_confirmed,''), ' [wallet-done] [rescued]')
