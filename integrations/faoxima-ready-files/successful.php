@@ -516,6 +516,92 @@ try {
                 cubepay_log('channel report skipped - Channel_Report not configured');
             }
         }
+    } else {
+        /**
+         * 🔁 تلاشِ مجددِ تحویل.
+         *
+         * وضعیت `paid` **پیش** از DirectPayment ثبت می‌شود (تا دو کال‌بکِ
+         * هم‌زمان دوبار تحویل ندهند). عارضه‌اش این بود که اگر تحویل وسطِ راه
+         * می‌مُرد — مثلاً وقتی دیتابیسِ هاست به سقفِ اتصال می‌خورَد و
+         * `$pdo` وسطِ کار null می‌شود — هر کال‌بکِ بعدی می‌گفت «قبلاً
+         * پرداخت شده» و رد می‌شد. مشتری پول داده بود و هیچ‌وقت چیزی
+         * نمی‌گرفت.
+         *
+         * حالا اگر سفارش `paid` باشد ولی سرویسش ساخته نشده باشد، همین‌جا
+         * دوباره تحویل تلاش می‌شود. درگاه چند ثانیه بعد از POST یک GET هم
+         * می‌زند، پس معمولاً همان تلاشِ دوم کافی است.
+         *
+         * سه گاردِ ضدِ تحویلِ تکراری:
+         *  ۱. اگر `invoice` با همان username به Status='active' رسیده باشد،
+         *     یعنی تحویل شده — دست نمی‌زنیم.
+         *  ۲. شمارنده‌ی تلاش با یک UPDATE اتمیک برداشته می‌شود، پس دو
+         *     درخواستِ هم‌زمان یک شماره‌ی مشترک نمی‌گیرند و تلاش‌ها از
+         *     سقف رد نمی‌شوند.
+         *  ۳. خودِ DirectPayment در حالتِ retry اول پنل را نگاه می‌کند
+         *     (zombie-rescue) و اگر یوزر از قبل ساخته شده باشد، همان را
+         *     برمی‌دارد به‌جای ساختنِ یوزرِ تکراری.
+         */
+        try {
+            $rtStep = explode('|', (string) ($paymentReport['id_invoice'] ?? ''));
+            $rtUser = $rtStep[1] ?? '';
+
+            if (($rtStep[0] ?? '') === 'getconfigafterpay' && $rtUser !== '') {
+                $rtChk = $pdo->prepare("SELECT COUNT(*) FROM invoice WHERE username = ? AND Status = 'active'");
+                $rtChk->execute([$rtUser]);
+                $rtDelivered = ((int) $rtChk->fetchColumn()) > 0;
+
+                if (!$rtDelivered) {
+                    // حداکثر ۳ تلاش — بیش از این یعنی مشکل پایدار است و
+                    // تکرارِ کور فقط یوزرِ زامبی در پنل می‌سازد.
+                    $rtClaim = $pdo->prepare(
+                        'UPDATE Payment_report SET crypto_check_count = COALESCE(crypto_check_count, 0) + 1
+                         WHERE id_order = ? AND COALESCE(crypto_check_count, 0) < 3'
+                    );
+                    $rtClaim->execute([$paymentReport['id_order']]);
+
+                    if ($rtClaim->rowCount() === 1) {
+                        cubepay_log('RETRY: delivering again', [
+                            'order_id' => $paymentReport['id_order'],
+                            'username' => $rtUser,
+                        ]);
+                        try {
+                            DirectPayment($paymentReport['id_order'], $projectRoot . '/images.jpg');
+                            cubepay_log('RETRY: delivered');
+                        } catch (Throwable $rtError) {
+                            cubepay_log('RETRY: failed', [
+                                'error' => $rtError->getMessage(),
+                                'file' => $rtError->getFile(),
+                                'line' => $rtError->getLine(),
+                            ]);
+                        }
+                    } else {
+                        cubepay_log('RETRY: attempt limit reached — needs manual delivery', [
+                            'order_id' => $paymentReport['id_order'],
+                        ]);
+                        // سقف پر شده و هنوز تحویل نشده → یک‌بار به ادمین خبر بده
+                        if (!empty($setting['Channel_Report'])
+                            && strpos((string) ($paymentReport['dec_not_confirmed'] ?? ''), '[retry-exhausted]') === false) {
+                            telegram('sendmessage', [
+                                'chat_id' => $setting['Channel_Report'],
+                                'text' => "⛔️ <b>تحویل بعد از چند تلاش هم انجام نشد</b>\n\n"
+                                    . "🛒 سفارش: {$paymentReport['id_order']}\n"
+                                    . "👤 کاربر: {$paymentReport['id_user']}\n"
+                                    . "🔖 نام کاربری سرویس: {$rtUser}\n\n"
+                                    . 'لطفاً دستی بررسی و تحویل بدهید.',
+                                'parse_mode' => 'HTML',
+                            ]);
+                            $pdo->prepare(
+                                "UPDATE Payment_report SET dec_not_confirmed = CONCAT(COALESCE(dec_not_confirmed,''), ' [retry-exhausted]')
+                                 WHERE id_order = ? AND (dec_not_confirmed IS NULL OR dec_not_confirmed NOT LIKE '%[retry-exhausted]%')"
+                            )->execute([$paymentReport['id_order']]);
+                        }
+                    }
+                }
+            }
+        } catch (Throwable $rtOuter) {
+            // تلاشِ مجدد هیچ‌وقت نباید صفحه‌ی «پرداخت موفق» را بشکند
+            cubepay_log('RETRY: skipped', ['error' => $rtOuter->getMessage()]);
+        }
     }
 
     $page = [
