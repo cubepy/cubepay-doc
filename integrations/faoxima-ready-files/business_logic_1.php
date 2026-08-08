@@ -1,5 +1,36 @@
 <?php
 
+/**
+ * 📋 لاگِ ساختِ لینکِ پرداخت — فقط برای عیب‌یابی.
+ *
+ * چرا لازم است: وقتی ساختِ لینک شکست می‌خورد، ربات به مشتری فقط پیامِ
+ * عمومیِ «خطایی در ساخت لینک پرداخت رخ داده است» را نشان می‌دهد و دلیلِ
+ * واقعی فقط به گروهِ گزارش می‌رود. اگر گروهِ گزارش تنظیم نشده باشد (یا
+ * پیامش گم شود)، هیچ ردی از علت باقی نمی‌ماند و عیب‌یابی کور می‌شود.
+ *
+ * این تابع مستقل است چون در پروسه‌ی ربات اجرا می‌شود، نه در کال‌بک —
+ * cubepay_log() فقط داخلِ successful.php تعریف شده و اینجا در دسترس نیست.
+ * فایل خودش می‌چرخد و از ~۱MB بزرگ‌تر نمی‌شود.
+ */
+if (!function_exists('cubepay_pay_log')) {
+    function cubepay_pay_log(string $step, array $context = []): void
+    {
+        $file = __DIR__ . '/../../../payment/ZarinPay/cubepay-create.log';
+        $dir = dirname($file);
+        if (!is_dir($dir)) {
+            return; // مسیرِ استانداردِ فاکسیما نیست — بی‌سروصدا رد شو
+        }
+        if (is_file($file) && filesize($file) > 1048576) {
+            @rename($file, $file . '.1');
+        }
+        $line = '[' . date('Y-m-d H:i:s') . '] ' . $step;
+        if ($context) {
+            $line .= ' — ' . json_encode($context, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        }
+        @file_put_contents($file, $line . "\n", FILE_APPEND | LOCK_EX);
+    }
+}
+
 if (!function_exists('rx_auth_skip_user')) {
     function rx_auth_skip_user($user)
     {
@@ -198,11 +229,18 @@ function createPayZarinpey($price, $order_id, $userId)
 
     $token = getPaySettingValue('token_zarinpey');
     if (empty($token) || $token === '0') {
+        cubepay_pay_log('FAIL: توکن تنظیم نشده', ['order_id' => $order_id]);
         return [
             'success' => false,
             'message' => 'توکن زرین پی تنظیم نشده است.',
         ];
     }
+    cubepay_pay_log('start', [
+        'order_id'      => $order_id,
+        'price_toman'   => $price,
+        'token_prefix'  => substr((string) $token, 0, 8) . '…',
+        'token_is_vip'  => str_starts_with((string) $token, 'vip_') || str_starts_with((string) $token, 'vipsb_') ? 'yes' : 'no',
+    ]);
 
     $normalizedPrice = filter_var($price, FILTER_VALIDATE_INT, [
         'options' => [
@@ -281,6 +319,7 @@ function createPayZarinpey($price, $order_id, $userId)
     if (curl_errno($ch)) {
         $error = curl_error($ch);
         curl_close($ch);
+        cubepay_pay_log('FAIL: خطای شبکه (cURL)', ['order_id' => $order_id, 'curl_error' => $error]);
 
         return [
             'success' => false,
@@ -292,6 +331,11 @@ function createPayZarinpey($price, $order_id, $userId)
 
     $result = json_decode($response, true);
     if (!is_array($result)) {
+        cubepay_pay_log('FAIL: پاسخ غیر-JSON', [
+            'order_id'  => $order_id,
+            'http_code' => $httpCode,
+            'body'      => mb_substr((string) $response, 0, 300),
+        ]);
         return [
             'success' => false,
             'message' => 'پاسخ نامعتبر از زرین پی دریافت شد.',
@@ -299,6 +343,13 @@ function createPayZarinpey($price, $order_id, $userId)
     }
 
     if (empty($result['success'])) {
+        // ⭐ مهم‌ترین حالت: خودِ CubePay درخواست را رد کرده و *دلیلش را گفته*.
+        // این همان متنی است که برای رفعِ مشکل لازم است.
+        cubepay_pay_log('FAIL: CubePay درخواست را رد کرد', [
+            'order_id'  => $order_id,
+            'http_code' => $httpCode,
+            'reason'    => $result['message'] ?? '(بدون پیام)',
+        ]);
         return [
             'success' => false,
             'message' => $result['message'] ?? 'خطا در ایجاد پرداخت',
@@ -315,6 +366,10 @@ function createPayZarinpey($price, $order_id, $userId)
     // authority نمی‌ده (چون مشتری هنوز روش رو انتخاب نکرده) — این طبیعیه و
     // خطا نیست. فقط لینک پرداخت اجباریه؛ نتیجه‌ی نهایی از طریق callback میاد.
     if (empty($paymentLink)) {
+        cubepay_pay_log('FAIL: پاسخ موفق بود ولی لینک پرداخت نداشت', [
+            'order_id' => $order_id,
+            'keys'     => implode(',', array_keys($result)),
+        ]);
         return [
             'success' => false,
             'message' => $result['message'] ?? 'پاسخ نامعتبر از درگاه دریافت شد.',
@@ -328,6 +383,11 @@ function createPayZarinpey($price, $order_id, $userId)
         // همون مبلغ رند بدون آفست fallback می‌کنیم.
         $exactAmountToman = intdiv($amountRial, 10);
     }
+
+    cubepay_pay_log('OK: لینک پرداخت ساخته شد', [
+        'order_id' => $order_id,
+        'method'   => $result['method'] ?? '(router)',
+    ]);
 
     return [
         'success' => true,
