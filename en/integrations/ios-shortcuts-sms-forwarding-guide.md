@@ -41,6 +41,8 @@ Create a test (Sandbox) or small real invoice, pay it from a real card, and watc
 
 If you also have a SIM dedicated to MeliPayamak, you can set up **the same Automation** so that, alongside "Get Contents of URL" (the webhook), it also adds a **Send Message** action forwarding the message text to the MeliPayamak number — meaning every deposit SMS reaches the system through **two independent paths** at once.
 
+> ⚠️ **One step in the panel comes first:** go to "📲 Deposit confirmation method" and turn on the **"Second path (MeliPayamak number)"** button (the number itself is shown right there). While it is off, the server **discards** any SMS forwarded to that number, so the Send Message action has no effect — and the Shortcut shows no error, because as far as iOS is concerned the message was sent successfully. Turning this on does **not** disable the webhook; both run together.
+
 This is completely safe, with no risk of duplicates or double-charging, because the server's matching engine is atomic: each invoice can only move from "pending" to "paid" once. Whichever of the two paths arrives first closes the invoice, and the second one — arriving later — sees that the invoice is already closed and does nothing (it neither changes the wallet again nor sends a second confirmation message).
 
 **Why it helps:** if one path ever has a problem (the MeliPayamak server slows down, say, or the phone's internet drops mid-webhook), the other one takes over and the payment is still confirmed without delay — a free backup layer, from nothing but a Shortcut.
