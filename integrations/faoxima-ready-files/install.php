@@ -59,8 +59,79 @@ function is_cli(): bool
  * } $cfg
  * @return string[] لاگ خط‌به‌خط عملیات
  */
+/**
+ * 🩺 بررسی‌های پیش از نصب — *قبل* از دست‌زدن به هر فایلی.
+ *
+ * چرا این ترتیب مهم است: نسخه‌ی قبلی اول همه‌ی فایل‌ها را جایگزین می‌کرد و
+ * تازه بعدش به دیتابیس وصل می‌شد. اگر افزونه‌ی pdo_mysql نبود، PDO با
+ * «could not find driver» می‌ترکید — یعنی فایل‌های ربات عوض شده بود ولی
+ * توکن ثبت نشده بود، و پیام خطا هیچ ربطی به کارِ لازم نداشت.
+ *
+ * شایع‌ترین علت: نسخه‌ی PHP خط فرمان با نسخه‌ی وب فرق دارد. روی cPanel
+ * دستور `php` معمولاً به یک PHP قدیمیِ سیستمی اشاره می‌کند که افزونه‌های
+ * سایت را ندارد، در حالی که همان کد از مرورگر بی‌مشکل کار می‌کند.
+ */
+function preflight_or_die(): void
+{
+    $problems = [];
+
+    if (!class_exists('PDO')) {
+        $problems[] = 'افزونه‌ی PDO روی این نسخه‌ی PHP فعال نیست.';
+    } elseif (!in_array('mysql', PDO::getAvailableDrivers(), true)) {
+        $available = PDO::getAvailableDrivers();
+        $problems[] = 'درایور pdo_mysql فعال نیست'
+            . ($available ? ' (درایورهای موجود: ' . implode(', ', $available) . ')' : ' (هیچ درایوری فعال نیست)')
+            . '.';
+    }
+
+    if (!$problems) {
+        return;
+    }
+
+    $isCli = is_cli();
+    $msg = "❌ نصب انجام نشد — هیچ فایلی تغییر نکرد.\n\n"
+        . implode("\n", $problems) . "\n\n"
+        . 'نسخه‌ی PHP فعلی: ' . PHP_VERSION . ' (' . PHP_SAPI . ")\n"
+        . 'مسیر باینری: ' . (defined('PHP_BINARY') && PHP_BINARY ? PHP_BINARY : '—') . "\n"
+        . 'فایل php.ini: ' . (php_ini_loaded_file() ?: '—') . "\n\n";
+
+    if ($isCli) {
+        $msg .= "🔧 راه‌حل — تقریباً همیشه همین است:\n\n"
+            . "دستور `php` روی هاست‌های اشتراکی معمولاً به یک PHP قدیمیِ سیستمی اشاره\n"
+            . "می‌کند که افزونه‌های سایت شما را ندارد. با باینریِ درست اجرا کنید:\n\n"
+            . "    /usr/local/bin/php install.php\n\n"
+            . "یا مسیر دقیق را پیدا کنید:\n\n"
+            . "    ls /opt/cpanel/ea-php*/root/usr/bin/php\n"
+            . "    /opt/cpanel/ea-php82/root/usr/bin/php install.php\n\n"
+            . "🌐 ساده‌ترین جایگزین: همین فایل را از مرورگر باز کنید —\n"
+            . "https://دامنه‌ی‌شما/مسیرِ‌ربات/install.php\n"
+            . "آنجا همان PHP ای اجرا می‌شود که خودِ ربات با آن کار می‌کند و این مشکل را ندارد.\n";
+    } else {
+        $msg .= "🔧 راه‌حل:\n\n"
+            . "از بخش «Select PHP Version» در cPanel، افزونه‌ی pdo_mysql (یا nd_pdo_mysql)\n"
+            . "را تیک بزنید و ذخیره کنید، سپس دوباره تلاش کنید.\n\n"
+            . "اگر ربات شما همین حالا کار می‌کند، یعنی این افزونه روی نسخه‌ی دیگری از PHP\n"
+            . "فعال است — مطمئن شوید نسخه‌ی انتخاب‌شده برای همین دامنه/زیردامنه است.\n";
+    }
+
+    if ($isCli) {
+        fwrite(STDERR, $msg . "\n");
+        exit(1);
+    }
+
+    http_response_code(500);
+    echo '<pre style="direction:rtl;text-align:right;white-space:pre-wrap;font-family:Tahoma,sans-serif;'
+        . 'background:#2b1416;color:#ffd9dc;padding:18px;border-radius:12px;line-height:2">'
+        . htmlspecialchars($msg, ENT_QUOTES, 'UTF-8')
+        . '</pre>';
+    exit;
+}
+
 function run_install(array $cfg): array
 {
+    // هیچ فایلی نباید قبل از این بررسی دست بخورد.
+    preflight_or_die();
+
     $log = [];
     $botRoot = rtrim($cfg['bot_root'], '/');
 
