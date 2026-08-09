@@ -96,13 +96,14 @@ flowchart TD
 | Item | Default |
 |---|---|
 | CubePay fee per invoice | **9%** |
-| VIP monthly subscription | **1,000,000 toman / 1 month** |
+| VIP monthly subscription | **799,000 toman / 1 month** |
 | Subscription expiry warning | **3 days before** |
 | Max amount per invoice | **1,000,000 toman** |
 | Daily cap | **10,000,000 toman** |
 | Monthly cap | **100,000,000 toman** |
-| Minimum withdrawal | **500,000 toman** |
+| Minimum withdrawal | **1,000,000 toman** |
 | Maximum withdrawal | no cap |
+| Balance hold period | **depends on your account — read it from `dashboard.php`** |
 | Duplicate guard | **3 similar invoices in 15 minutes** |
 
 > Every one of these can be configured per merchant. If your business is larger, contact support about raising your caps.
@@ -110,6 +111,63 @@ flowchart TD
 > 📌 **How are the daily and monthly caps counted?** They sum your **paid** invoices in that window — not the invoices you created. An expired or cancelled invoice does not count towards the cap, and Sandbox invoices are never counted at all. Your current usage is in `dashboard.php` under `today_paid_toman` and `this_month_paid_toman`.
 >
 > If the admin has not set a cap specifically for your account, the global default above applies — and if the admin later changes that default, your account follows it immediately. A `null` in the `dashboard.php` response means that cap does not apply to you.
+
+### ⏳ Balance hold period — important
+
+The money from an invoice is not immediately withdrawable. After payment it
+first lands in the **"pending"** bucket, and once your account's hold period
+has elapsed it moves **automatically** to **"available"**.
+
+Your account's exact value is in the `GET api/dashboard.php` response:
+
+```json
+"settlement": {
+  "hold_hours": 168,
+  "note": "..."
+}
+```
+
+A `hold_hours` of zero means no hold at all.
+
+📌 **The part that usually causes confusion:** the period is counted **per
+invoice**, not once for the whole account. So you only ever wait once — after
+that, each day releases the sales of its corresponding day and you have a
+continuous daily income stream.
+
+**Why it exists:** your customers pay onto CubePay's cards, and a card-to-card
+transfer stays reversible for several days, while our settlement to you is
+crypto and irreversible. This gap is exactly the window in which the reversal
+risk drops to zero.
+
+### 🎫 VIP eligibility requirements
+
+For `request-activation.php` to accept your request, **both** conditions must
+hold:
+
+| Condition | Default |
+|---|---|
+| Account age | at least **30 days** since your normal account was activated |
+| Successful transactions | at least **30 verified transactions** (Sandbox excluded) |
+
+If either fails you get a `403`, and the message states exactly which condition
+and how much is still missing. Both numbers are admin-configurable.
+
+### ⚠️ Mismatched deposit amounts
+
+If your customer transfers an amount different from the invoice amount,
+automatic settlement does **not** happen and no callback is sent to you — the
+system cannot decide on its own which invoice to settle.
+
+In that case you receive an **informational** notification in the bot (order
+id, expected amount, deposited amount, difference). The final decision rests
+with the CubePay team, and the outcome is reported back to you in the same
+place.
+
+If you decide to deliver the order manually, tell support so the deposited
+amount (minus the fee) can be credited to your available balance.
+
+> 💡 To avoid this entirely, remind your customers to transfer **exactly** the
+> stated amount — even a few toman off stops automatic settlement.
 
 ### Network-level withdrawal minimums
 
