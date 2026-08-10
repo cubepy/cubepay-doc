@@ -6,6 +6,20 @@ All notable changes to this project are recorded here, in chronological order.
 
 ---
 
+## [2.1.13] — Clearing up how the webhook and the "second path" relate
+
+### Changed
+
+- **The Android and iOS guides no longer present the webhook as a "method you choose".** The webhook is always on and there is no button to switch it off — the "Prerequisite" section used to say "select the Webhook method", which led merchants to believe that turning on MeliPayamak forwarding would cut their webhook off.
+- **A new "Second path: forward to the MeliPayamak number" section was added to the Android guide**, and the equivalent note in the iOS guide was completed: the two paths complement each other rather than replacing one another, and they belong in **the same** forwarder-app filter (not a new one).
+
+### Fixed
+
+- **A trap a real merchant fell into is now documented explicitly:** the MeliPayamak path is only accepted server-side while the "Second path" button in the panel is on. While it is off, an SMS forwarded to the number is **discarded** — yet the forwarder app reports "sent successfully", because it only sees the message leaving the phone, not whether the server accepted it. This is the one case where the app's green report does not mean the path works.
+- **Android troubleshooting section:** an **HTTP 403** on the webhook is now explained by its actual cause — the `secret` inside the app no longer matches the `secret` currently in the panel (usually a stale URL left in the app).
+
+---
+
 ## [2.1.12] — Foxima ready files: delivery that survives an unstable host
 
 ### Fixed
