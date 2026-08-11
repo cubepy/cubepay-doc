@@ -174,9 +174,28 @@ try {
              * دوم دقیقاً وسطِ کارِ درخواستِ اول می‌رسد و بدونِ این شرط،
              * همان سفارشِ در حالِ تحویل را «ناتمام» تشخیص می‌داد.
              */
+            /**
+             * 🎯 فقط خریدِ جدید بازیابی می‌شود، نه تمدید/افزایش.
+             *
+             * بازیابی به یک نشانه‌ی قابلِ‌اتکا از «واقعاً تحویل شد» نیاز
+             * دارد، و تنها نشانه‌ای که داریم رسیدنِ `invoice` به
+             * Status='active' است — که فقط برای خریدِ جدید معنی می‌دهد.
+             * برای تمدید/افزایش، سرویس از قبل فعال است و این چک همیشه
+             * true برمی‌گرداند؛ یعنی نه می‌شود تاییدش کرد نه ردش. نسخه‌ی
+             * قبلی این حالت را «نامشخص» می‌گرفت و به ادمین هشدارِ «نیاز به
+             * رسیدگی دستی» می‌داد — روی *هر* تمدیدِ کاملاً سالم. حالا این
+             * سفارش‌ها اصلاً وارد حلقه نمی‌شوند.
+             */
             "SELECT id, id_order, id_user, price, id_invoice, dec_not_confirmed FROM Payment_report
              WHERE id > ? AND id_order <> ? AND payment_Status = 'paid' AND Payment_Method = 'zarinpay'
-               AND (dec_not_confirmed IS NULL OR dec_not_confirmed NOT LIKE '%[wallet-done]%')
+               AND id_invoice LIKE 'getconfigafterpay|%'
+               -- [cb-done] یعنی کال‌بک تا آخر رفت (هر نوع سفارشی)، و
+               -- [wallet-done] یعنی کسرِ کیف‌پولِ خریدِ جدید انجام شد. هر
+               -- کدام که باشد، این سفارش کارِ ناتمامی ندارد.
+               AND (dec_not_confirmed IS NULL OR (
+                        dec_not_confirmed NOT LIKE '%[wallet-done]%'
+                    AND dec_not_confirmed NOT LIKE '%[cb-done]%'
+               ))
                -- فقط سفارش‌هایی که به‌قدرِ کافی کهنه‌اند تا تحویلشان (حتی
                -- کندترین حالت، ~۱۰ ثانیه) قطعاً تمام شده باشد. اگر قالبِ
                -- ستونِ time روی نصبی متفاوت باشد و STR_TO_DATE نتواند
@@ -209,29 +228,35 @@ try {
              * Status='active' رسیده باشد (آخرین کاری که DirectPayment در
              * مسیر خرید انجام می‌دهد).
              *
-             * خروجی: true تحویل‌شده، false تحویل‌نشده، null نامشخص
-             * (مسیرهای تمدید/افزایش حجم که سرویس از قبل فعال است و از
-             *  روی وضعیت نمی‌شود قضاوت کرد).
+             * خروجی: true تحویل‌شده، false تحویل‌نشده. حالتِ سومِ «نامشخص»
+             * دیگر وجود ندارد — سفارش‌های تمدید/افزایش حجم از همان کوئریِ
+             * بالا کنار گذاشته می‌شوند، چون سرویسشان از قبل فعال است و این
+             * چک برایشان همیشه true می‌دهد (نه قابلِ تایید، نه قابلِ رد).
              */
-            $roDelivered = null;
-            if (($roStep[0] ?? '') === 'getconfigafterpay' && ($roStep[1] ?? '') !== '') {
-                $dlvQ = $pdo->prepare("SELECT COUNT(*) FROM invoice WHERE username = ? AND Status = 'active'");
-                $dlvQ->execute([$roStep[1]]);
-                $roDelivered = ((int) $dlvQ->fetchColumn()) > 0;
+            if (($roStep[1] ?? '') === '') {
+                // بدونِ username هیچ راهی برای تایید یا ردِ تحویل نداریم — نه
+                // ادعا می‌کنیم، نه ادمین را با هشداری که نمی‌تواند رویش
+                // تصمیم بگیرد بیدار می‌کنیم.
+                cubepay_log('rescue: skipped — no username in id_invoice', ['order' => $ro['id_order']]);
+                continue;
+            }
 
-                if ($roDelivered) {
-                    $invQ = $pdo->prepare('SELECT price_product FROM invoice WHERE username = ? ORDER BY id_invoice DESC LIMIT 1');
-                    $invQ->execute([$roStep[1]]);
-                    $roProduct = $invQ->fetchColumn();
-                    if ($roProduct !== false) {
-                        $roPortion = max(0.0, (float) $roProduct - (float) $ro['price']);
-                    }
+            $dlvQ = $pdo->prepare("SELECT COUNT(*) FROM invoice WHERE username = ? AND Status = 'active'");
+            $dlvQ->execute([$roStep[1]]);
+            $roDelivered = ((int) $dlvQ->fetchColumn()) > 0;
+
+            if ($roDelivered) {
+                $invQ = $pdo->prepare('SELECT price_product FROM invoice WHERE username = ? ORDER BY id_invoice DESC LIMIT 1');
+                $invQ->execute([$roStep[1]]);
+                $roProduct = $invQ->fetchColumn();
+                if ($roProduct !== false) {
+                    $roPortion = max(0.0, (float) $roProduct - (float) $ro['price']);
                 }
             }
 
-            // ❌ تحویل نشده یا قابلِ تایید نیست → هرگز «تمام‌شده» علامتش نزن.
+            // ❌ تحویل نشده → هرگز «تمام‌شده» علامتش نزن.
             // فقط یک‌بار به ادمین هشدار بده تا دستی رسیدگی کند.
-            if ($roDelivered !== true) {
+            if (!$roDelivered) {
                 if (strpos((string) $ro['dec_not_confirmed'], '[needs-review]') === false) {
                     $roSetting = select('setting', '*', null, null, 'select');
                     if (!empty($roSetting['Channel_Report'])) {
@@ -250,13 +275,9 @@ try {
                                 . "💳 روش: کیوب‌پی
 
 "
-                                . ($roDelivered === false
-                                    ? "وضعیت: پرداخت ثبت شده ولی هیچ سرویسِ فعالی برای این سفارش ساخته نشده.
+                                . "وضعیت: پرداخت ثبت شده ولی هیچ سرویسِ فعالی برای این سفارش ساخته نشده.
 
 "
-                                    : "وضعیت: این سفارش از نوعِ تمدید/افزایش است و به‌صورت خودکار قابلِ تایید نیست.
-
-")
                                 . "⚠️ کیف‌پول این کاربر عمداً کسر <b>نشد</b> و سفارش مختومه اعلام نشد.
 "
                                 . 'لطفاً سرویس را دستی بررسی و در صورت لزوم تحویل بدهید.',
@@ -273,7 +294,7 @@ try {
                     }
                     cubepay_log('rescue: NOT delivered — admin alerted', [
                         'order' => $ro['id_order'],
-                        'delivered' => $roDelivered === false ? 'no' : 'unknown',
+                        'delivered' => 'no',
                     ]);
                 }
                 continue; // به هیچ عنوان مارکرِ [wallet-done] نخورد
@@ -458,6 +479,28 @@ try {
             try {
                 DirectPayment($paymentReport['id_order'], $projectRoot . '/images.jpg');
                 cubepay_log('service delivered');
+
+                /**
+                 * ✅ مارکرِ «این کال‌بک تا آخر رفت» — برای *هر* نوع سفارش.
+                 *
+                 * چرا لازم است: تنها مارکرِ قبلی `[wallet-done]` بود که فقط
+                 * داخلِ مسیرِ خریدِ جدید (بلوکِ کسرِ کیف‌پول در
+                 * database_helpers_2.php) نوشته می‌شود. سفارش‌های
+                 * تمدید/افزایش هیچ‌وقت به آن بلوک نمی‌رسند، پس تا ابد
+                 * «ناتمام» می‌ماندند و حلقه‌ی بازیابی ساعت‌ها بعد دوباره
+                 * پیدایشان می‌کرد و برای سفارشی که مو‌به‌مو درست تحویل شده
+                 * بود هشدارِ «سرویس تحویل نشده» یا «گزارش بازیابی‌شده»
+                 * می‌فرستاد. حالا هر سفارشی که DirectPayment رویش موفق
+                 * برگردد همین‌جا مختومه علامت می‌خورد.
+                 */
+                try {
+                    $pdo->prepare(
+                        "UPDATE Payment_report SET dec_not_confirmed = CONCAT(COALESCE(dec_not_confirmed,''), ' [cb-done]')
+                         WHERE id_order = ? AND (dec_not_confirmed IS NULL OR dec_not_confirmed NOT LIKE '%[cb-done]%')"
+                    )->execute([$paymentReport['id_order']]);
+                } catch (Throwable $cbDoneError) {
+                    cubepay_log('cb-done marker failed (non-fatal)', ['error' => $cbDoneError->getMessage()]);
+                }
             } catch (Throwable $deliveryError) {
                 cubepay_log('DELIVERY FAILED', [
                     'error' => $deliveryError->getMessage(),
