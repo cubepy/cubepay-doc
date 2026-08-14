@@ -10,13 +10,21 @@ Besides the general-purpose "SMS Forwarder" apps mentioned in the FAQ, there is 
 
 ## Prerequisite
 
-In your account panel ("⚙️ More settings → 📲 Deposit confirmation method") copy your own webhook URL — it looks something like this:
+In your account panel ("⚙️ More settings → 📲 Deposit confirmation method") take these three values:
 
-```
-https://cubevps.ir/smspay/webhook/sms.php?secret=XXXXXXXXXXXXXXXXXXXXXXXX
-```
+| | Value |
+|---|---|
+| **URL** | `https://cubevps.ir/smspay/webhook/sms.php` |
+| **Method** | `POST` |
+| **Request body template** | `{"secret":"YOUR_SECRET","text":"{msg}","time":"{time}"}` |
 
-The webhook is **always on** and there is no button to switch it off — you don't need to "select" anything, just take that URL. (The on/off button further down that screen belongs to the **second path**; see the "Second path" section below.)
+🔒 **Why is the secret in the body rather than the URL?** The connection is encrypted with HTTPS, so nobody on the network can read the secret. But the web server's access log records the full URL *after* decryption — and so do your browser history and any screenshot you take of that screen. With a clean URL, none of them ever see it.
+
+> **If you already configured the `...sms.php?secret=...` form, it still works** — nothing breaks and there is no rush to change it. Whenever you get around to it, drop `?secret=...` from the end of the URL and add `"secret"` to the body template instead.
+>
+> If your forwarder app has no "custom request body" and only sends GET, keep the old form (secret in the URL) — it remains supported.
+
+The webhook is **always on** and there is no button to switch it off. (The on/off button further down that screen belongs to the **second path**; see the "Second path" section below.)
 
 ## Download and install
 

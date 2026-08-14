@@ -6,6 +6,23 @@ All notable changes to this project are recorded here, in chronological order.
 
 ---
 
+## [2.1.14] — The webhook secret moved out of the URL
+
+### Added
+
+- **The SMS secret is now read from three places:** the `X-CubePay-Secret` header, the request body (JSON/POST), and — as before — the URL query string. That is also the precedence order.
+- The bot and mini app now present the **clean URL + secret-in-body** form as the recommended setup, with a separate copy button for the body template.
+
+### Changed
+
+- The Android and iOS guides were updated to match, including *why*: HTTPS encrypts the request so the secret never leaks on the wire, but the web server's access log stores the full URL *after* decryption — and on shared hosting the log format cannot be changed. Browser history and screenshots have the same problem.
+
+### Compatibility
+
+- **No merchant is cut off.** The old form (`?secret=...` in the URL) remains fully supported and was deliberately kept: many general-purpose forwarder apps only send GET with URL parameters. Migrating is entirely optional and not urgent.
+
+---
+
 ## [2.1.13] — Clearing up how the webhook and the "second path" relate
 
 ### Changed
