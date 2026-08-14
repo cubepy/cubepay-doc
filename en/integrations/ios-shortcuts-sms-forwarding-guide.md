@@ -10,11 +10,18 @@ The "webhook" method for receiving bank SMS automatically is usually handled on 
 
 ## Prerequisite
 
-In your account panel ("⚙️ More settings → 📲 Deposit confirmation method") select the **"🔗 Webhook"** method and copy your own webhook URL — it looks something like this:
+In your account panel ("⚙️ More settings → 📲 Deposit confirmation method") take two things: the **URL** and the **secret**.
 
 ```
-https://cubevps.ir/smspay/webhook/sms.php?secret=XXXXXXXXXXXXXXXXXXXXXXXX
+URL:     https://cubevps.ir/smspay/webhook/sms.php
+Secret:  XXXXXXXXXXXXXXXXXXXXXXXX
 ```
+
+You enter the secret as one of the form fields in step 4 — **not** inside the URL.
+
+🔒 **Why?** The connection is encrypted with HTTPS, so nobody on the network can read the secret. But the web server's access log records the full URL *after* decryption — and so do your browser history and any screenshot you take. With a clean URL, none of them ever see it.
+
+> If you already set the `...sms.php?secret=...` form, it **still works** and nothing breaks. Whenever you like, drop `?secret=...` from the end of the URL — the `secret` field you add in step 4 replaces it.
 
 ## Building the Shortcut
 
