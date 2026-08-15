@@ -1,6 +1,6 @@
-# CLAUDE.md
+# Maintainers' guide
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Conventions, structure, and hard-won context for anyone working on this repository's contents.
 
 ## What this repository is
 
