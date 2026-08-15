@@ -9,7 +9,7 @@ Verifies internal Markdown links across the repo:
     slug rules (lowercase, strip punctuation/emoji, spaces -> hyphens).
 
 Skips http(s)/mailto links and anything without a leading ./ or ../, since
-this repo's docs conventions (see CLAUDE.md) use relative links for
+this repo's docs conventions (see MAINTAINERS.md) use relative links for
 same-repo cross-references.
 
 Exit code is non-zero if any broken link or anchor is found.
