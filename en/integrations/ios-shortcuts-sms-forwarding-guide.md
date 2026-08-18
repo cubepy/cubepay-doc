@@ -31,9 +31,49 @@ You enter the secret as one of the form fields in step 4 — **not** inside the 
 4. Put your webhook URL in that action. Then tap the small arrow next to the action (Show More):
    - set **Method** to **POST**
    - set **Request Body** to **Form**
-   - add two fields:
-     - `secret` → the same secret that is in your webhook URL (you can put it here instead; it doesn't have to stay in the URL)
-     - `text` → from the variable list, pick **Shortcut Input** (this is the text of the message that arrived)
+
+   Now add **two fields**. Each time you tap "Add new field", iOS asks what
+   **type** the field is and offers two choices: **Text** and **File**.
+   Pick **Text** both times; you never need File here.
+
+   > ⚠️ The word "text" means two different things at this step, which is
+   > exactly what trips people up: **Text** (capitalised) is the field
+   > *type* iOS is asking about, while `text` (lowercase) is the *name* you
+   > type for the second field.
+
+   **First field — the webhook secret:**
+
+   | Box | What to put |
+   |---|---|
+   | Key | `secret` |
+   | Value | your own secret (typed or pasted) |
+
+   **Second field — the message text:**
+
+   | Box | What to put |
+   |---|---|
+   | Key | `text` |
+   | Value | the **Shortcut Input** variable (don't type it — see below) |
+
+   To fill in the second field's Value:
+   1. Tap the **Value** box, but **don't type anything**
+   2. A bar of variables appears above the keyboard → tap **Shortcut Input**
+   3. A blue "Shortcut Input" token should drop into the box
+
+   > 🚫 If you type the words `Shortcut Input` by hand instead of picking
+   > the variable, that literal text gets sent to the server rather than the
+   > message body, and no invoice will ever be confirmed. The token must be
+   > **blue**.
+   >
+   > If the variable bar doesn't appear above the keyboard: press and hold
+   > the Value box until the menu opens, then choose **Insert Variable**.
+
+   When you're done it should look exactly like this:
+
+   ```
+   secret  →  (your secret, plain text)
+   text    →  [Shortcut Input]   ← blue token
+   ```
 5. (Optional but recommended) Add a **Text** action combining Current Date + Shortcut Input + the server's reply (Contents of URL), then log it to a note with the **Append to Note** action — that way, if something ever goes wrong, you can see exactly which message arrived and what the server answered.
 6. At the top of the screen, turn **Ask Before Running** **off** — otherwise you have to confirm the Shortcut manually every time a bank message arrives, which defeats the whole point of automating it.
 7. Save. From now on, every incoming message runs this Automation automatically (without you even unlocking the phone).
