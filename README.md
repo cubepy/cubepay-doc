@@ -52,6 +52,8 @@ cubepay-doc/
 │   ├── CUBEPAY-VIP-API-REFERENCE.md          ← 👑 مرجع فنی «CubePay VIP» (تسویه توسط CubePay)
 │   ├── MANAGED-SETTLEMENT-ARCHITECTURE.md    ← معماری و تصمیم‌های طراحیِ CubePay VIP
 │   ├── FAQ.md                    ← سوالات متداول
+│   ├── PRIVACY-POLICY.md         ← 🔒 سیاست حریم خصوصی اپلیکیشن اندروید
+│   ├── PLAY-STORE-CHECKLIST.md   ← 🏪 چک‌لیست انتشار اپ در گوگل‌پلی
 │   ├── openapi.yaml              ← اسپک OpenAPI 3.0 (برای Postman/Swagger)
 │   └── examples/                 ← نمونه کد آماده به ازای هر زبان
 │       ├── CubePayClient.php
