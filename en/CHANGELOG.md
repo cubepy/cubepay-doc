@@ -14,7 +14,8 @@ All notable changes to this project are recorded here, in chronological order.
 
 ### Changed
 
-- **The iPhone guide was rewritten.** It used to say "the iPhone has no forwarder app" and then link to a forwarder app immediately below. It now presents both routes side by side from the start: the built-in Shortcuts app (free, nothing to install) and the App Store SMS Forwarder app that several merchants have tested.
+- **A ready-made iPhone shortcut was added.** One iCloud link the merchant taps once; Shortcuts itself asks for their secret at import time (an Import Question) — so the link is identical for everyone and carries no secret. It is in the guide and behind an "⚡️ Add the ready-made shortcut" button in the bot.
+- **The iPhone guide was rewritten.** It used to say "the iPhone has no forwarder app" and then link to a forwarder app immediately below. It now presents all three routes side by side from the start: the ready-made shortcut, building it by hand in the built-in Shortcuts app, and the App Store SMS Forwarder app that several merchants have tested.
 - **Two optional fields, `sender` and `time`, were added to the iPhone guide** to bring it in line with what the Android app sends. Leaving them out breaks nothing; it only makes troubleshooting harder.
 - **The "Test it" section now points at the real buttons:** "🧪 Connection test" → "🧪 Test webhook", instead of an outdated button name.
 - **The guides no longer tell merchants to "turn on the second path".** That toggle has been permanently on for everyone for a while; the text now matches reality.

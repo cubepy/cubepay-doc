@@ -4,10 +4,31 @@
 
 On Android we have our own forwarder app. The iPhone has no equivalent of it, but there are two ways to do the same job:
 
-1. **The built-in Shortcuts app** — already installed on every iPhone, free, nothing extra to install. This guide covers it in full.
-2. **The [SMS Forwarder](https://apps.apple.com/us/app/sms-forwarder-forward-sms/id6693285061) app** from the App Store — several merchants have tested it and it works. If building an Automation feels like too much, this is simpler.
+1. **[The ready-made shortcut](https://www.icloud.com/shortcuts/708c82bc80f247139fa0e2bbac39c816)** — one tap, it asks you for your secret, done. **The easiest route**, described just below.
+2. **The built-in Shortcuts app, by hand** — if you would rather build it yourself, or the ready-made one won't open. This guide walks through it step by step.
+3. **The [SMS Forwarder](https://apps.apple.com/us/app/sms-forwarder-forward-sms/id6693285061) app** from the App Store — several merchants have tested it and it works.
 
-We document the Shortcuts route in full because it is free and depends on no third-party app.
+---
+
+## ⚡️ Fastest route: the ready-made shortcut
+
+1. On your iPhone, open this link: **[Add the CubePay shortcut](https://www.icloud.com/shortcuts/708c82bc80f247139fa0e2bbac39c816)**
+2. Tap **Add Shortcut**. During the import it asks you for your **secret** —
+   copy it from your account panel ("📲 Deposit confirmation method") and paste it in.
+3. Go to the **Shortcuts** app → **Automation** tab → **+** →
+   **Create Personal Automation** → **When I Get a Message Containing...**
+4. Choose the CubePay shortcut as the action (**Run Shortcut**).
+5. Turn **Ask Before Running** **off**, and save.
+
+> 🔒 This link is the same for every merchant and **contains no secret** —
+> Shortcuts asks you for it at import time and it is stored only on your
+> own phone.
+
+The ready-made shortcut sends over both paths at once: the webhook and the shortcode forward.
+
+---
+
+The rest of this guide is for building it **by hand**.
 
 > This runs on the SIM that receives the bank's SMS (you need an iPhone that receives your bank messages — and that phone has to stay powered on and connected to the internet).
 
