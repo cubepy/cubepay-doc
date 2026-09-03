@@ -1,8 +1,13 @@
 [🇮🇷 فارسی](../../integrations/ios-shortcuts-sms-forwarding-guide.md) · 🇬🇧 English
 
-# 📱 Forwarding bank SMS from an iPhone (iOS Shortcuts) — no third-party app
+# 📱 Forwarding bank SMS from an iPhone (iOS Shortcuts)
 
-The "webhook" method for receiving bank SMS automatically is usually handled on Android by an "SMS Forwarder" app. The iPhone has no such app (Apple does not let third-party apps read SMS), but the **built-in Shortcuts app** can do exactly the same job — completely free, with nothing extra to install.
+On Android we have our own forwarder app. The iPhone has no equivalent of it, but there are two ways to do the same job:
+
+1. **The built-in Shortcuts app** — already installed on every iPhone, free, nothing extra to install. This guide covers it in full.
+2. **The [SMS Forwarder](https://apps.apple.com/us/app/sms-forwarder-forward-sms/id6693285061) app** from the App Store — several merchants have tested it and it works. If building an Automation feels like too much, this is simpler.
+
+We document the Shortcuts route in full because it is free and depends on no third-party app.
 
 > This runs on the SIM that receives the bank's SMS (you need an iPhone that receives your bank messages — and that phone has to stay powered on and connected to the internet).
 
@@ -74,25 +79,38 @@ You enter the secret as one of the form fields in step 4 — **not** inside the 
    secret  →  (your secret, plain text)
    text    →  [Shortcut Input]   ← blue token
    ```
+
+   **Two optional fields (recommended, but not required):**
+
+   | Key | Value | What it buys you |
+   |---|---|---|
+   | `sender` | the **Sender** variable | tells us which bank the message came from |
+   | `time` | the **Current Date** variable | the exact time of the message, for debugging |
+
+   Leaving them out breaks nothing — deposits are still confirmed. They
+   only make troubleshooting easier if something goes wrong. The Android
+   app sends these same fields.
 5. (Optional but recommended) Add a **Text** action combining Current Date + Shortcut Input + the server's reply (Contents of URL), then log it to a note with the **Append to Note** action — that way, if something ever goes wrong, you can see exactly which message arrived and what the server answered.
 6. At the top of the screen, turn **Ask Before Running** **off** — otherwise you have to confirm the Shortcut manually every time a bank message arrives, which defeats the whole point of automating it.
 7. Save. From now on, every incoming message runs this Automation automatically (without you even unlocking the phone).
 
 ## Test it
 
-Create a test (Sandbox) or small real invoice, pay it from a real card, and watch the bank SMS arrive and the invoice get confirmed automatically within a few seconds. To debug, use the log note from step 5, or the "🧪 Test SMS connection" button in your account panel.
+**The easiest way:** in the bot, go to "🧪 Connection test" → **"🧪 Test webhook"**. It creates a free test invoice and checks the whole path (network, secret, parsing, matching) without you having to move any real money.
+
+If you also want a real-money test, create a small invoice and pay it from a real card; it should be confirmed automatically within a few seconds. For deeper debugging use the log note from step 5.
 
 ---
 
-## 💡 Trick: webhook + MeliPayamak at the same time (each backing the other up)
+## 💡 Trick: webhook + shortcode at the same time (each backing the other up)
 
-If you also have a SIM dedicated to MeliPayamak, you can set up **the same Automation** so that, alongside "Get Contents of URL" (the webhook), it also adds a **Send Message** action forwarding the message text to the MeliPayamak number — meaning every deposit SMS reaches the system through **two independent paths** at once.
+If you also have a SIM you can send from, you can set up **the same Automation** so that, alongside "Get Contents of URL" (the webhook), it also adds a **Send Message** action forwarding the message text to our shortcode — meaning every deposit SMS reaches the system through **two independent paths** at once.
 
-> ⚠️ **One step in the panel comes first:** go to "📲 Deposit confirmation method" and turn on the **"Second path (MeliPayamak number)"** button (the number itself is shown right there). While it is off, the server **discards** any SMS forwarded to that number, so the Send Message action has no effect — and the Shortcut shows no error, because as far as iOS is concerned the message was sent successfully. Turning this on does **not** disable the webhook; both run together.
+> ℹ️ **Nothing to switch on.** The shortcode path is always active for every merchant — just copy the shortcode itself from "📲 Deposit confirmation method". It does **not** disable the webhook; both run together.
 
 This is completely safe, with no risk of duplicates or double-charging, because the server's matching engine is atomic: each invoice can only move from "pending" to "paid" once. Whichever of the two paths arrives first closes the invoice, and the second one — arriving later — sees that the invoice is already closed and does nothing (it neither changes the wallet again nor sends a second confirmation message).
 
-**Why it helps:** if one path ever has a problem (the MeliPayamak server slows down, say, or the phone's internet drops mid-webhook), the other one takes over and the payment is still confirmed without delay — a free backup layer, from nothing but a Shortcut.
+**Why it helps:** if one path ever has a problem (SMS delivery slows down, say, or the phone's internet drops mid-webhook), the other one takes over and the payment is still confirmed without delay — a free backup layer, from nothing but a Shortcut.
 
 ---
 
@@ -100,4 +118,9 @@ This is completely safe, with no risk of duplicates or double-charging, because 
 
 There is also a direct SMS forwarder app for iPhone on the App Store: **[SMS Forwarder](https://apps.apple.com/us/app/sms-forwarder-forward-sms/id6693285061)**
 
-If building the Automation was too fiddly, or it didn't work for whatever reason, give this app a try — it may do the job. Its settings mirror the Android version: set the forwarding destination to **URL** and enter exactly your webhook address.
+Several merchants have tested it and it works. If building the Automation was too fiddly, this is simpler. Its settings mirror the Android version: set the forwarding destination to **URL** and enter exactly your webhook address.
+
+> ⚠️ If the app only lets you set a URL and has no separate fields, you
+> will have to put the secret inside the URL (`...sms.php?secret=...`).
+> That works, but it is not as safe — so never share that URL and never
+> screenshot it.

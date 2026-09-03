@@ -6,6 +6,26 @@ All notable changes to this project are recorded here, in chronological order.
 
 ---
 
+## [2.1.15] — Shortcode provider name scrubbed + iPhone guide rewritten
+
+### Security
+
+- **The shortcode provider's name was removed from every public and merchant-facing text** — the Android guide, the iOS guide, and the changelog, in both languages. Merchants only ever see "the shortcode"; the infrastructure behind it is not their concern and naming it buys nobody anything.
+
+### Changed
+
+- **The iPhone guide was rewritten.** It used to say "the iPhone has no forwarder app" and then link to a forwarder app immediately below. It now presents both routes side by side from the start: the built-in Shortcuts app (free, nothing to install) and the App Store SMS Forwarder app that several merchants have tested.
+- **Two optional fields, `sender` and `time`, were added to the iPhone guide** to bring it in line with what the Android app sends. Leaving them out breaks nothing; it only makes troubleshooting harder.
+- **The "Test it" section now points at the real buttons:** "🧪 Connection test" → "🧪 Test webhook", instead of an outdated button name.
+- **The guides no longer tell merchants to "turn on the second path".** That toggle has been permanently on for everyone for a while; the text now matches reality.
+
+### Fixed
+
+- 🔴 **The merchant panel was still showing a dead on/off toggle.** The shortcode path had already been enabled for everyone and the server-side action had become a no-op, yet the panel still rendered "tap to turn on". It now just shows the status.
+- 🔴 **Persian/Arabic digits were rejected in numeric inputs.** Many phones' Persian keyboards send Persian digits and the user sees no difference, but `ctype_digit()` does not count them as digits — so a correct phone number was rejected as "not a valid Iranian number", and amounts were read as zero. They are now converted for phone numbers, IBANs, and every numeric step. Free-text fields (business name, invoice description, tickets) are deliberately left untouched.
+
+---
+
 ## [2.1.14] — The webhook secret moved out of the URL
 
 ### Added
@@ -27,12 +47,12 @@ All notable changes to this project are recorded here, in chronological order.
 
 ### Changed
 
-- **The Android and iOS guides no longer present the webhook as a "method you choose".** The webhook is always on and there is no button to switch it off — the "Prerequisite" section used to say "select the Webhook method", which led merchants to believe that turning on MeliPayamak forwarding would cut their webhook off.
-- **A new "Second path: forward to the MeliPayamak number" section was added to the Android guide**, and the equivalent note in the iOS guide was completed: the two paths complement each other rather than replacing one another, and they belong in **the same** forwarder-app filter (not a new one).
+- **The Android and iOS guides no longer present the webhook as a "method you choose".** The webhook is always on and there is no button to switch it off — the "Prerequisite" section used to say "select the Webhook method", which led merchants to believe that turning on shortcode forwarding would cut their webhook off.
+- **A new "Second path: forward to the shortcode" section was added to the Android guide**, and the equivalent note in the iOS guide was completed: the two paths complement each other rather than replacing one another, and they belong in **the same** forwarder-app filter (not a new one).
 
 ### Fixed
 
-- **A trap a real merchant fell into is now documented explicitly:** the MeliPayamak path is only accepted server-side while the "Second path" button in the panel is on. While it is off, an SMS forwarded to the number is **discarded** — yet the forwarder app reports "sent successfully", because it only sees the message leaving the phone, not whether the server accepted it. This is the one case where the app's green report does not mean the path works.
+- **A trap a real merchant fell into is now documented explicitly:** the shortcode path is only accepted server-side while the "Second path" button in the panel is on. While it is off, an SMS forwarded to the number is **discarded** — yet the forwarder app reports "sent successfully", because it only sees the message leaving the phone, not whether the server accepted it. This is the one case where the app's green report does not mean the path works.
 - **Android troubleshooting section:** an **HTTP 403** on the webhook is now explained by its actual cause — the `secret` inside the app no longer matches the `secret` currently in the panel (usually a stale URL left in the app).
 
 ---
@@ -351,34 +371,34 @@ Even though this bug is fixed, we still recommend also running a periodic check 
 
 ### Added
 
-- **The merchant web panel is now complete** — in addition to earlier features (wallet, transactions, discrepancies), you can now do the following right from the Mini App: fully manage cards (add/remove/enable/rotation mode), change the fee-compensation percentage, create manual invoices, choose and test the bank-SMS receiving method (webhook/MeliPayamak), view referral info, and export to Excel.
-- **"🧪 Test SMS Connection" button** — creates a free test invoice and sends a synthetic bank SMS through the real path (webhook or MeliPayamak) so you can confirm your pipeline is healthy without an actual deposit.
-- **A separate forwarding number for the MeliPayamak method** — for when your Telegram account differs from the phone/SIM linked to your bank.
+- **The merchant web panel is now complete** — in addition to earlier features (wallet, transactions, discrepancies), you can now do the following right from the Mini App: fully manage cards (add/remove/enable/rotation mode), change the fee-compensation percentage, create manual invoices, choose and test the bank-SMS receiving method (webhook/shortcode), view referral info, and export to Excel.
+- **"🧪 Test SMS Connection" button** — creates a free test invoice and sends a synthetic bank SMS through the real path (webhook or shortcode) so you can confirm your pipeline is healthy without an actual deposit.
+- **A separate forwarding number for the shortcode method** — for when your Telegram account differs from the phone/SIM linked to your bank.
 - **Terms warning before the initial top-up** — before paying, you explicitly confirm you've read the terms and documentation, and that the amount is non-refundable.
 
 ### Changed
 
 - The bot's menu was fully reorganized and categorized (grouped buttons with submenus instead of one long list) and buttons are now arranged two-by-two.
 - The "SMS Connection Guide" button was renamed to "Choose Deposit Confirmation Method."
-- A Forwarder app connection guide was added for the MeliPayamak method too (previously only available for webhook).
+- A Forwarder app connection guide was added for the shortcode method too (previously only available for webhook).
 
 ### Fixed
 
-- 🔴 The number format MeliPayamak sends for the SMS sender (without a leading zero) used to be flagged as invalid.
+- 🔴 The sender-number format the shortcode route delivers (without a leading zero) used to be flagged as invalid.
 - A temporary issue that caused the merchant web panel to sometimes get stuck on "Loading" was fixed.
 
 ---
 
-## [1.10.0] — Second SMS confirmation method (MeliPayamak) + menu reorganization
+## [1.10.0] — Second SMS confirmation method (shortcode) + menu reorganization
 
 ### Added
 
-- **A second deposit-detection method: SMS forwarding via MeliPayamak** — in addition to the webhook (URL), merchants can now forward their bank SMS directly (SMS-to-SMS) to a MeliPayamak shortcode; the merchant is identified by the sender's phone number, without needing the phone to have constant internet access
+- **A second deposit-detection method: SMS forwarding via shortcode** — in addition to the webhook (URL), merchants can now forward their bank SMS directly (SMS-to-SMS) to a shortcode shortcode; the merchant is identified by the sender's phone number, without needing the phone to have constant internet access
 - Merchants can define a **forwarding number separate from their account's registration number** (for when the Telegram account uses one phone/SIM but the bank SMS comes from a different number)
 - From a new settings page ("📡 Bank SMS Receiving Method"), the admin can:
-  - Turn webhook and MeliPayamak on/off independently (disabling either one deactivates that method's tokens)
-  - Configure/regenerate the MeliPayamak shortcode and its global token
-- A step-by-step Forwarder app guide for the MeliPayamak method (destination = Phone Number/SMS instead of a URL), alongside the webhook guide
+  - Turn webhook and shortcode on/off independently (disabling either one deactivates that method's tokens)
+  - Configure/regenerate the shortcode shortcode and its global token
+- A step-by-step Forwarder app guide for the shortcode method (destination = Phone Number/SMS instead of a URL), alongside the webhook guide
 - **Admins can register an IBAN (Sheba) number for each merchant** (from within "Manage Merchants")
 - **A platform IBAN number** for merchant wallet top-ups, separate from and alongside the existing card
 - **Terms warning before the initial top-up**: the initial top-up message now explicitly states that paying means accepting the terms, having fully read the GitHub documentation, and that the amount is non-refundable; the merchant must explicitly confirm this warning before seeing the actual payment button
@@ -391,7 +411,7 @@ Even though this bug is fixed, we still recommend also running a periodic check 
 
 ### Fixed
 
-- 🔴 **Phone number detection bug:** the number format MeliPayamak sends for the SMS sender (without a leading zero, like `9123456789`) used to be incorrectly flagged as invalid, causing real transactions to go unconfirmed; this format is now supported
+- 🔴 **Phone number detection bug:** the number format shortcode sends for the SMS sender (without a leading zero, like `9123456789`) used to be incorrectly flagged as invalid, causing real transactions to go unconfirmed; this format is now supported
 
 ---
 

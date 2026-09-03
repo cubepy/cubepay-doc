@@ -58,15 +58,15 @@ Unlike iOS, Android usually kills apps that sit idle in the background to save b
 
 Without this, bank messages may occasionally arrive late or not at all, even with the phone powered on and online.
 
-## 💡 Second path: forward to the MeliPayamak number (webhook backup)
+## 💡 Second path: forward to the shortcode (webhook backup)
 
-The webhook needs the phone's internet connection **at the very moment the SMS arrives**. If the phone sleeps, loses data, or Android kills the app (see the section above), the message never reaches the server and the invoice is not confirmed. The second path covers exactly that gap: the message text is forwarded over **SMS** (not the internet) to the MeliPayamak number.
+The webhook needs the phone's internet connection **at the very moment the SMS arrives**. If the phone sleeps, loses data, or Android kills the app (see the section above), the message never reaches the server and the invoice is not confirmed. The second path covers exactly that gap: the message text is forwarded over **SMS** (not the internet) to our shortcode.
 
 **These two are not alternatives — they run together.** Turning the second path on does *not* disable the webhook.
 
 Setting it up takes two steps:
 
-1. **In your account panel** (bot or mini app): go to "📲 Deposit confirmation method" and turn on the **"Second path (MeliPayamak number)"** button. The number you should forward to is shown right there.
+1. **In your account panel** (bot or mini app): open "📲 Deposit confirmation method" and copy the shortcode you should forward to. There is nothing to switch on — this path is always active for every merchant.
 2. **In the forwarder app**: inside **the same filter you already created for the webhook** (don't create a new one), open "Destination numbers" and add that number. From then on, every message goes out through both paths at once.
 
 > ⚠️ **Don't skip step 1.** While that button is off, the server **discards** any SMS forwarded to the number — yet the forwarder app still reports "sent successfully", because the app only knows the message left the phone and has no idea the server rejected it. This is the one case where the app's green report does not mean the path is working.
@@ -86,6 +86,6 @@ Create a test (Sandbox) or small real invoice, pay it from a real card, and watc
 - Make sure you didn't deny the SMS permission (in Android settings: **Apps → CubePay SMS Forwarder → Permissions**).
 - Check battery optimisation again (the section above).
 - Copy the webhook URL from the panel and paste it again — a stray space or extra character may have crept in, or the URL inside the app may be an old one. If the webhook returns **HTTP 403**, that is exactly what happened: the `secret` in the app no longer matches the `secret` currently in the panel.
-- If you are forwarding to the MeliPayamak number but transactions still aren't confirmed, check that the "Second path (MeliPayamak number)" button in the panel is **on** — while it's off the server discards those messages (see the "Second path" section above).
+- If you are forwarding to the shortcode but transactions still aren't confirmed, the usual cause is that **the SIM sending the forward is not the number registered on your account** — that number is how we identify you. Check your forwarding number under "📲 Deposit confirmation method", and make sure the shortcode you entered in the app is correct.
 - If it still doesn't work, use the general-purpose "SMS Forwarder" apps (mentioned in [docs/FAQ.md](../docs/FAQ.md)) as an alternative — their setup is similar: set the forwarding destination to **URL** and enter the same webhook address.
 - Or ask via [cube_sup](https://t.me/cube_sup).
