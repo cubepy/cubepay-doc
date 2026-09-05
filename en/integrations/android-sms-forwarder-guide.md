@@ -34,7 +34,7 @@ This link always serves the **latest published build** and never changes — fee
 
 > Older builds and per-version release notes are on the [Releases page of this repository](https://github.com/cubepy/cubepay-doc/releases).
 
-🔒 **SHA-256:** `c9fc968449c7d19f3da9d985baf7909cbb9a0d7a2d55404a14dc18c2bcd75aff`
+🔒 **SHA-256:** `8c8f1492a61aad5316395855c5c909ac78a0128f264208e4db7dffb877f58e07`
 (Compare the hash of the downloaded file against this value to be sure it hasn't been tampered with — any SHA-256 tool on your phone or computer will do. This value is synced automatically with the real file every day, so it never needs updating by hand.)
 
 Because this app is not installed from Google Play, Android shows an "unknown source" warning during installation — that is normal:
