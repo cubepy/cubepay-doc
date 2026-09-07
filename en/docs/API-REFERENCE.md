@@ -34,6 +34,7 @@ POST https://cubevps.ir/smspay/api/create-payment.php
 | `amount` | int | ✅ | Transaction amount in **Rial** (minimum 1000 Rial) |
 | `order_id` | string | ✅ | Your unique order identifier |
 | `callback_url` | string | ✅ | The address notified after a successful payment |
+| `redirect_after_payment` | bool | ❌ | Pass `false` and the customer's browser is **not** redirected to `callback_url` after payment is confirmed — they simply see a "payment confirmed" message on the same page. `callback_url` is still called server-to-server, unchanged. Use `false` for bot-driven integrations (which deliver the result through a Telegram message rather than a browser redirect), so your domain is never shown to the customer. **If you omit this parameter**, your account setting applies — "🏪 My Store → 💳 Payment methods → 🔀 Redirect after payment" in the bot. An explicit value always overrides the account setting. |
 | `type` | string | ✅ | Currently only `card` |
 | `customer_user_id` | string | ❌ | Your customer's identifier (e.g. their Telegram numeric ID) |
 | `description` | string | ❌ | Order description |
