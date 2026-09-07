@@ -298,10 +298,18 @@ function createPayZarinpey($price, $order_id, $userId)
     // («⚙️ تنظیمات بیشتر → 💳 روش‌های پرداخت»)، خودش تصمیم می‌گیره فاکتور
     // کارت‌به‌کارت بسازه، فاکتور کریپتویی بسازه، یا صفحه‌ی «کارت یا کریپتو؟»
     // به مشتری نشون بده. برخلاف endpoint قدیمی، مبلغ اینجا «تومان»ه نه ریال.
+    //
+    // redirect_after_payment: false — چون اینجا یه رباتیم نه سایت، بعدِ
+    // تاییدِ پرداخت نیازی نیست مرورگرِ مشتری به successful.php ریدایرکت
+    // بشه (که دامنه‌ی شما رو نشون بده)؛ همین callback_url سرور-به-سرور
+    // صدا زده می‌شه و successful.php پیامِ موفقیت رو مستقیم تو ربات
+    // می‌فرسته. اگه ترجیح می‌دید مرورگر هم (برای اطمینانِ بیشتر) به
+    // successful.php ریدایرکت بشه، این خط رو true کنید یا حذفش کنید.
     $payload = [
         'order_id' => $order_id,
         'price_amount' => $payablePrice,
         'callback_url' => rtrim($callbackBase, '/') . '/payment/ZarinPay/successful.php',
+        'redirect_after_payment' => false,
     ];
 
     $ch = curl_init('https://cubevps.ir/pay/create-order.php');
