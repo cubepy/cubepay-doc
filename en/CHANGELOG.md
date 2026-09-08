@@ -6,26 +6,6 @@ All notable changes to this project are recorded here, in chronological order.
 
 ---
 
-<<<<<<< Updated upstream
-## [2.1.15] — Shortcode provider name scrubbed + iPhone guide rewritten
-
-### Security
-
-- **The shortcode provider's name was removed from every public and merchant-facing text** — the Android guide, the iOS guide, and the changelog, in both languages. Merchants only ever see "the shortcode"; the infrastructure behind it is not their concern and naming it buys nobody anything.
-
-### Changed
-
-- **A ready-made iPhone shortcut was added.** One iCloud link the merchant taps once; Shortcuts itself asks for their secret at import time (an Import Question) — so the link is identical for everyone and carries no secret. It is in the guide and behind an "⚡️ Add the ready-made shortcut" button in the bot.
-- **The iPhone guide was rewritten.** It used to say "the iPhone has no forwarder app" and then link to a forwarder app immediately below. It now presents all three routes side by side from the start: the ready-made shortcut, building it by hand in the built-in Shortcuts app, and the App Store SMS Forwarder app that several merchants have tested.
-- **Two optional fields, `sender` and `time`, were added to the iPhone guide** to bring it in line with what the Android app sends. Leaving them out breaks nothing; it only makes troubleshooting harder.
-- **The "Test it" section now points at the real buttons:** "🧪 Connection test" → "🧪 Test webhook", instead of an outdated button name.
-- **The guides no longer tell merchants to "turn on the second path".** That toggle has been permanently on for everyone for a while; the text now matches reality.
-
-### Fixed
-
-- 🔴 **The merchant panel was still showing a dead on/off toggle.** The shortcode path had already been enabled for everyone and the server-side action had become a no-op, yet the panel still rendered "tap to turn on". It now just shows the status.
-- 🔴 **Persian/Arabic digits were rejected in numeric inputs.** Many phones' Persian keyboards send Persian digits and the user sees no difference, but `ctype_digit()` does not count them as digits — so a correct phone number was rejected as "not a valid Iranian number", and amounts were read as zero. They are now converted for phone numbers, IBANs, and every numeric step. Free-text fields (business name, invoice description, tickets) are deliberately left untouched.
-=======
 ## [2.2.0] — The post-payment redirect is now the merchant's call
 
 ### Added
@@ -44,7 +24,27 @@ All notable changes to this project are recorded here, in chronological order.
 - **New accounts start with the redirect off** (most integrations are bot-driven). Existing accounts were left on, unchanged.
 - **WooCommerce plugin 1.2.1:** it now sends `redirect_after_payment: true` explicitly (a web shop must always return to its order page, whatever the account setting says), gains a separate "CubePay VIP token" field, and correctly verifies callbacks for VIP invoices — those are signed with the `vip_` token and were previously checked against the normal token only, and rejected.
 - **The Foxima ready files** send the parameter explicitly as `false`; the same change was submitted upstream for Mirzabot as a pull request.
->>>>>>> Stashed changes
+
+---
+
+## [2.1.15] — Shortcode provider name scrubbed + iPhone guide rewritten
+
+### Security
+
+- **The shortcode provider's name was removed from every public and merchant-facing text** — the Android guide, the iOS guide, and the changelog, in both languages. Merchants only ever see "the shortcode"; the infrastructure behind it is not their concern and naming it buys nobody anything.
+
+### Changed
+
+- **A ready-made iPhone shortcut was added.** One iCloud link the merchant taps once; Shortcuts itself asks for their secret at import time (an Import Question) — so the link is identical for everyone and carries no secret. It is in the guide and behind an "⚡️ Add the ready-made shortcut" button in the bot.
+- **The iPhone guide was rewritten.** It used to say "the iPhone has no forwarder app" and then link to a forwarder app immediately below. It now presents all three routes side by side from the start: the ready-made shortcut, building it by hand in the built-in Shortcuts app, and the App Store SMS Forwarder app that several merchants have tested.
+- **Two optional fields, `sender` and `time`, were added to the iPhone guide** to bring it in line with what the Android app sends. Leaving them out breaks nothing; it only makes troubleshooting harder.
+- **The "Test it" section now points at the real buttons:** "🧪 Connection test" → "🧪 Test webhook", instead of an outdated button name.
+- **The guides no longer tell merchants to "turn on the second path".** That toggle has been permanently on for everyone for a while; the text now matches reality.
+
+### Fixed
+
+- 🔴 **The merchant panel was still showing a dead on/off toggle.** The shortcode path had already been enabled for everyone and the server-side action had become a no-op, yet the panel still rendered "tap to turn on". It now just shows the status.
+- 🔴 **Persian/Arabic digits were rejected in numeric inputs.** Many phones' Persian keyboards send Persian digits and the user sees no difference, but `ctype_digit()` does not count them as digits — so a correct phone number was rejected as "not a valid Iranian number", and amounts were read as zero. They are now converted for phone numbers, IBANs, and every numeric step. Free-text fields (business name, invoice description, tickets) are deliberately left untouched.
 
 ---
 
