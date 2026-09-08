@@ -46,6 +46,26 @@ See the [WordPress guide](../integrations/wordpress-plugin-guide.md).
 
 ---
 
+## 🔀 Where does the customer go after paying?
+
+**What happens to the customer after a successful payment?**
+There are two behaviours, and you choose — in the bot, under "🏪 My Store → 💳 Payment methods → 🔀 Redirect after payment":
+- **On:** the customer's browser is redirected to your `callback_url` (your site). Right for web shops with an "order received" page.
+- **Off:** the customer stays on the CubePay page and sees a "Your payment was successful" card. Right for Telegram bots, where your bot tells the customer the result and your domain is never shown to them.
+
+New accounts start with the toggle **off**; accounts that already existed were left **on**, unchanged. In both cases your `callback_url` is still called server-to-server, so order fulfilment is unaffected.
+
+**Can the customer go straight back to my bot after paying?**
+Yes. In the bot, go to "🏪 My Store → 💳 Payment methods → 🤖 My bot's username" and save your bot's username (e.g. `@myshop_bot`). From then on, the success card shows a **"Close and go to the bot"** button instead of "Close this page", taking the customer directly into that bot's chat.
+
+**Why doesn't the payment page close by itself?**
+Browsers only let a page close itself if JavaScript opened it. A page the user opened by tapping a link cannot be closed by code — that is a browser restriction, not a bug. The practical answer is the "Close and go to the bot" button: one tap takes the customer out of the page and into the bot chat.
+
+**What if my code also sends the parameter?**
+An explicit `redirect_after_payment` in the API request always wins over the account setting. The bot toggle only applies when your code sends nothing.
+
+---
+
 ## 👑 CubePay VIP questions
 
 ### How is VIP different from the normal system?
