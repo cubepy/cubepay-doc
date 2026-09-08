@@ -108,6 +108,20 @@ In `@cubepy_bot`:
 
 ⚠️ **Don't forget:** the phone running this app must always stay connected to the internet, or no transactions will be confirmed.
 
+### 🔀 Where the customer goes after paying
+
+These ready files deliberately send `redirect_after_payment` as `false`. After the payment is confirmed:
+
+- the customer's browser is **not** redirected to `successful.php` on your domain — so your server address is never shown to them
+- the customer sees a "Your payment was successful" card on the CubePay page itself
+- `successful.php` is still called **server-to-server** as always, so service delivery and your bot's message are unaffected
+
+This is the right behaviour for a Telegram bot: your bot already tells the customer the result, so the redirect adds nothing.
+
+💡 **"Close and go to the bot" button:** in `@cubepy_bot`, under "🏪 My Store → 💳 Payment methods → 🤖 My bot's username", save your bot's username. A button then appears on that success card taking the customer straight back into your bot's chat. Recommended.
+
+⚙️ **If you do want the redirect:** because this file sends the value explicitly, the "🔀 Redirect after payment" toggle in the bot has no effect for you. To restore the old behaviour, change `'redirect_after_payment' => false,` to `true` in `business_logic_1.php`, or remove the line.
+
 ### Step 6 — Test
 Try a small wallet top-up (e.g. 10,000 Toman) in your own bot. It should:
 1. Open the payment link and show the exact amount (with a few extra Toman)
