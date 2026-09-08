@@ -6,6 +6,27 @@ All notable changes to this project are recorded here, in chronological order.
 
 ---
 
+## [2.2.0] — The post-payment redirect is now the merchant's call
+
+### Added
+
+- **A "🔀 Redirect after payment" toggle** under "🏪 My Store → 💳 Payment methods". Turning the redirect off used to require editing the bot's or site's code; it is now a button. An explicit `redirect_after_payment` in the API request still wins over it.
+- **A "🤖 My bot's username" setting** in the same menu. Once saved, the success card on the payment page shows a **"Close and go to the bot"** button instead of "Close this page", taking the customer straight into that bot's chat.
+- **A floating "Your payment was successful" card** on the payment page, replacing the small line at the bottom. It is shared by all four payment-page themes and only appears when the redirect is off.
+
+### Fixed
+
+- **The "choose a method" path ignored `redirect_after_payment` entirely.** Whenever both card and crypto were enabled, the card invoice was created without the flag, so the customer was always redirected regardless of the setting. The value is now resolved before the paths branch and stored on the order.
+- **The VIP path returned no payment URL for a duplicate open invoice** (only `invoice_uid`). The merchant got `success: true` with nowhere to send the customer, and that order could not be paid until the invoice expired. It now returns the existing invoice's link, like the normal path does.
+
+### Changed
+
+- **New accounts start with the redirect off** (most integrations are bot-driven). Existing accounts were left on, unchanged.
+- **WooCommerce plugin 1.2.1:** it now sends `redirect_after_payment: true` explicitly (a web shop must always return to its order page, whatever the account setting says), gains a separate "CubePay VIP token" field, and correctly verifies callbacks for VIP invoices — those are signed with the `vip_` token and were previously checked against the normal token only, and rejected.
+- **The Foxima ready files** send the parameter explicitly as `false`; the same change was submitted upstream for Mirzabot as a pull request.
+
+---
+
 ## [2.1.14] — The webhook secret moved out of the URL
 
 ### Added

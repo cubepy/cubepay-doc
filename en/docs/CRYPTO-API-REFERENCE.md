@@ -27,7 +27,7 @@ Depending on the merchant's settings ("⚙️ More Settings → 💳 Payment Met
 | `order_id` | string | ✅ | Your unique order identifier |
 | `price_amount` | number | ✅ | Amount in **Toman** (not Rial — unlike the older card endpoint) |
 | `callback_url` | string | ❌ | The address notified of the final outcome (whether card or crypto) |
-| `redirect_after_payment` | bool | ❌ | Affects the **card path** only: pass `false` and the customer's browser is not redirected to `callback_url` after payment is confirmed (they see a "payment confirmed" message on the same page); `callback_url` is still called server-to-server, unchanged. If you omit it, your account setting applies — "🏪 My Store → 💳 Payment methods → 🔀 Redirect after payment" in the bot — and an explicit value always overrides it. It applies equally when the customer picks the card option on the "Card or Crypto?" page. (The crypto path has its own result page by nature, so this parameter does not affect it.) |
+| `redirect_after_payment` | bool | ❌ | Affects the **card path** only: pass `false` and the customer's browser is not redirected to `callback_url` after payment is confirmed (they see a "payment confirmed" message on the same page); `callback_url` is still called server-to-server, unchanged. If you omit it, your account setting applies — "🏪 My Store → 💳 Payment methods → 🔀 Redirect after payment" in the bot — and an explicit value always overrides it. New accounts start with the toggle **off**; accounts that already existed were left **on**, unchanged. It applies equally when the customer picks the card option on the "Card or Crypto?" page. (The crypto path has its own result page by nature, so this parameter does not affect it.) |
 
 ### ✅ Sample Response
 
