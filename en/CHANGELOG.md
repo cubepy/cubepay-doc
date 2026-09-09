@@ -6,6 +6,20 @@ All notable changes to this project are recorded here, in chronological order.
 
 ---
 
+## [2.3.0] — "Manual invoice" is now "Payment link", and testing is a separate thing
+
+### Changed
+
+- **"🧾 Create manual invoice" is now "🔗 Payment link".** The feature was already what merchants were asking for — your own amount and validity window, a unique link with its own unique amount — but its name and wording ("this is a test environment…") made it read as a toy rather than something to hand a customer. No logic changed, only labels and copy; the old button still works (Telegram caches keyboards on some phones).
+- **It moved menus:** "🔗 Payment link" went from "⚙️ More settings" to "🏪 My Store". Creating a link for a customer is everyday selling, not configuration.
+
+### Added
+
+- **"🧪 Test invoice"** under the "🧪 Connection test" menu. It uses the sandbox token: no real money moves, no fee is reserved, no card is required, and the payment page offers "simulate successful/failed payment" buttons.
+- The bot's own copy states plainly that a test invoice does **not** exercise the SMS path (there is no real bank SMS), and points to "🧪 SMS test (forwarder)" / "🧪 Webhook test" or a small real payment link instead — which is what merchants had been using the manual invoice for.
+
+---
+
 ## [2.2.0] — The post-payment redirect is now the merchant's call
 
 ### Added

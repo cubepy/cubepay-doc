@@ -32,7 +32,7 @@ CubePay is an API service for creating and automatically confirming transactions
 |---|---|
 | ✅ Automatic payment confirmation (under 30 seconds) | ✅ Automatic callback to your server |
 | ✅ Protection against duplicate confirmation (idempotent) | ✅ No official gateway/license required |
-| ✅ Full management via Telegram bot | ✅ Create manual invoices from the panel |
+| ✅ Full management via Telegram bot | ✅ Create payment links from the bot and panel |
 | ✅ Wallet and multi-card management | ✅ Complete transaction reports |
 | ✅ Account co-owners (multiple admins) | ✅ Encrypted HTTPS connection |
 | 🆕 Crypto payments (USDT · TRX · TON) | 🆕 One unified endpoint: card or crypto, chosen by the customer |

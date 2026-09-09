@@ -46,6 +46,14 @@ See the [WordPress guide](../integrations/wordpress-plugin-guide.md).
 
 ---
 
+**What is "🔗 Payment link", and how is it different from "🧪 Test invoice"?**
+- **🔗 Payment link** (under "🏪 My Store") — a real payment. You choose the amount and the validity window (5 minutes to 24 hours) and get a **unique link with its own unique amount** to hand to the customer. Every time you create one you get a separate invoice; there is no permanent or reusable link. It is in the mini app too. (It used to be called "manual invoice".)
+- **🧪 Test invoice** (under "🧪 Connection test") — created with your sandbox token: no real money moves, no fee is reserved, and the payment page gives you "simulate successful/failed payment" buttons so you can walk the whole flow.
+
+⚠️ A test invoice does **not** exercise the SMS path, because there is no real bank SMS. To test your forwarder, use "🧪 SMS test (forwarder)" and "🧪 Webhook test", or create a real payment link for a small amount and pay it yourself.
+
+---
+
 ## 🔀 Where does the customer go after paying?
 
 **What happens to the customer after a successful payment?**
