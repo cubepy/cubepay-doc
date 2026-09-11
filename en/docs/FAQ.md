@@ -54,6 +54,13 @@ See the [WordPress guide](../integrations/wordpress-plugin-guide.md).
 
 ---
 
+**Can I show the card number inside my own bot?**
+Yes. In the bot: "🏪 My Store → 💳 Payment methods → 🤖 Show card in bot". If you use our ready files (Foxima / the Mirzabot bridge) they follow that setting automatically, and the customer gets a text message with the card and exact amount alongside the pay button. If you wrote your own bot code, the same preference reaches you in the API response as `show_card_in_bot`.
+
+⚠️ That message sits **next to** the pay button rather than replacing it — the main message is built by your bot's own code. And it only applies on the card path: with both card and crypto enabled, no card is assigned yet when the invoice is created.
+
+---
+
 ## 🔀 Where does the customer go after paying?
 
 **What happens to the customer after a successful payment?**

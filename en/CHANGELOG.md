@@ -6,6 +6,21 @@ All notable changes to this project are recorded here, in chronological order.
 
 ---
 
+## [2.5.0] — "Show card in bot" became a button, not a line of code
+
+### Added
+
+- **A "🤖 Show card in bot" setting** under "🏪 My Store → 💳 Payment methods". In 2.4.1 this could only be switched on by editing a file on the merchant's own host; it now lives on the account, like the post-payment redirect, and the ready files follow it by themselves.
+- The create-invoice response carries `show_card_in_bot`, so any custom integration can read the same preference. It defaults to off, so no merchant sees a change unless they ask for one.
+- The in-file constants (`CUBEPAY_SHOW_CARD_IN_BOT` / `SHOW_CARD_IN_BOT`) remain as a local override: `true` means always on, whatever the account says.
+
+### Compatibility
+
+- Integrations that do not know the field keep working untouched, and the ready files behave exactly as before when the response lacks it (an older server).
+- The Mirzabot bridge still needs `TELEGRAM_BOT_TOKEN`, since that file runs outside the bot; the account setting only decides on/off.
+
+---
+
 ## [2.4.1] — A "show the card inside the bot" switch in the Foxima ready files and the Mirzabot bridge
 
 ### Added

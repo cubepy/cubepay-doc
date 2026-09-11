@@ -49,9 +49,12 @@ When `method` is `card`, the response also carries the fields below — for rend
   "card": { "number": "6219861900412221", "holder": "Card holder name", "sheba": null },
   "pay_amount_toman": 24322,
   "expires_at": "2026-09-11T18:27:00+03:30",
-  "expires_in_minutes": 30
+  "expires_in_minutes": 30,
+  "show_card_in_bot": false
 }
 ```
+
+`show_card_in_bot` mirrors your own "🤖 Show card in bot" setting, so your code can follow it.
 
 ⚠️ With card rotation enabled, each invoice may get a different card — always show the one returned for *that* invoice.
 

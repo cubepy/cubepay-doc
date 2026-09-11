@@ -110,13 +110,14 @@ In `@cubepy_bot`:
 
 ### 🤖 Showing the card inside the bot (optional)
 
-Some customers would rather not leave Telegram at all and ask for the card number right there in the chat. If you want that, find this line near the top of `business_logic_1.php`:
+Some customers would rather not leave Telegram at all and ask for the card number right there in the chat.
 
-```php
-const CUBEPAY_SHOW_CARD_IN_BOT = false;
-```
+**Turn it on from the bot — you do not need to edit the file:**
+`@cubepy_bot` → **🏪 My Store → 💳 Payment methods → 🤖 Show card in bot**
 
-and set it to `true`. From then on, alongside the payment link, a second message is sent to the customer with the card number, holder, exact amount and deadline.
+The ready files follow that setting on their own. (If you would rather force it on regardless of the account setting, set `const CUBEPAY_SHOW_CARD_IN_BOT` to `true` in the file — it is a local override.)
+
+When it is on, a second message goes to the customer alongside the payment link, with the card number, holder, exact amount and deadline.
 
 **Notes:**
 - The main message (the one with the pay button) is built by Foxima's own code, not by this file — so this is a message *next to* it, not a replacement.
