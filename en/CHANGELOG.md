@@ -6,6 +6,18 @@ All notable changes to this project are recorded here, in chronological order.
 
 ---
 
+## [2.5.1] — Clarified: flipping the toggle is not enough on its own
+
+### Added
+- **[`docs/CARD-IN-BOT.md`](docs/CARD-IN-BOT.md)** — one page that says, for each kind of integration (Foxima ready files, the Mirzabot custom-gateway bridge, free Mirzabot, your own code, WooCommerce), exactly what is needed to use "show card in bot".
+- A "show the card inside the bot" section in the free-Mirzabot guide, which previously did not mention the feature at all.
+
+### Fixed
+- **Corrected misleading wording in the docs.** The Foxima guide said "no need to touch the file" and the FAQ answer implied the same, when in fact the toggle only surfaces `show_card_in_bot` in the API response and the merchant's own file has to be a version that reads it. Both now say plainly: update the file first, then flip the toggle.
+- The Mirzabot bridge README was rewritten from "only one thing is needed" into three explicit steps (update the file → bot token → toggle).
+
+---
+
 ## [2.5.0] — "Show card in bot" became a button, not a line of code
 
 ### Added

@@ -51,6 +51,7 @@ cubepay-doc/
 │   ├── CRYPTO-API-REFERENCE.md   ← 🆕 مرجع فنی پرداخت ارز دیجیتال و روتر یکپارچه
 │   ├── CUBEPAY-VIP-API-REFERENCE.md          ← 👑 مرجع فنی «CubePay VIP» (تسویه توسط CubePay)
 │   ├── MANAGED-SETTLEMENT-ARCHITECTURE.md    ← معماری و تصمیم‌های طراحیِ CubePay VIP
+│   ├── CARD-IN-BOT.md            ← 🤖 نمایش کارت داخل ربات: هر کس باید چه کاری بکند
 │   ├── FAQ.md                    ← سوالات متداول
 │   ├── PRIVACY-POLICY.md         ← 🔒 سیاست حریم خصوصی اپلیکیشن اندروید
 │   ├── PLAY-STORE-CHECKLIST.md   ← 🏪 چک‌لیست انتشار اپ در گوگل‌پلی
