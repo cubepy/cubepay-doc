@@ -51,9 +51,11 @@ const CUBEPAY_SMSPAY_BASE = 'https://cubevps.ir/smspay';
 /**
  * 🤖 نمایشِ شماره‌کارت داخلِ خودِ ربات (اختیاری)
  *
- * false (پیش‌فرض) = فقط دکمه‌ی پرداخت؛ مشتری صفحه‌ی وب را باز می‌کند.
- * true            = علاوه بر دکمه، یک پیامِ جداگانه با شماره‌کارت، مبلغِ دقیق
- *                   و مهلت هم مستقیم برای مشتری در تلگرام فرستاده می‌شود.
+ * 📌 روشن/خاموشش را معمولاً از رباتِ CubePay تعیین می‌کنید — «🏪 فروشگاه من
+ * → 💳 روش‌های پرداخت → 🤖 نمایش کارت در ربات». این فایل از همان پیروی می‌کند.
+ *
+ * false (پیش‌فرض) = از تنظیمِ حسابِ شما در رباتِ CubePay پیروی کن.
+ * true            = همیشه روشن، حتی اگر در ربات خاموش باشد.
  *
  * برای این کار توکنِ تلگرامیِ رباتِ خودتان لازم است (همان که از @BotFather
  * گرفته‌اید) — چون این فایل باید مستقیم به مشتری پیام بدهد. اگر خالی بماند،
@@ -261,7 +263,9 @@ function cg_notify_bot(string $orderId): bool
  */
 function cg_maybe_send_card(int $userId, array $res): void
 {
-    if (!SHOW_CARD_IN_BOT || TELEGRAM_BOT_TOKEN === '' || $userId <= 0) {
+    // یا فروشنده در رباتِ CubePay روشنش کرده، یا این فایل روی true است.
+    $wanted = SHOW_CARD_IN_BOT || !empty($res['show_card_in_bot']);
+    if (!$wanted || TELEGRAM_BOT_TOKEN === '' || $userId <= 0) {
         return;
     }
     $number = (string) ($res['card']['number'] ?? '');
