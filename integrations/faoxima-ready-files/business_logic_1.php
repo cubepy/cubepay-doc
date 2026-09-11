@@ -223,6 +223,23 @@ function createPayZarinpal($price, $order_id)
     curl_close($curl);
     return json_decode($response, true);
 }
+/**
+ * 🤖 نمایشِ شماره‌کارت داخلِ خودِ ربات (به‌جای فرستادنِ مشتری به صفحه‌ی وب)
+ *
+ * false (پیش‌فرض) = مثل همیشه؛ فقط لینکِ پرداخت به مشتری داده می‌شود.
+ * true            = علاوه بر لینک، یک پیامِ جداگانه با شماره‌کارت، نامِ صاحبِ
+ *                   کارت، مبلغِ دقیق و مهلت هم برای مشتری فرستاده می‌شود.
+ *
+ * چرا «علاوه بر» و نه «به‌جای»: پیامِ اصلی (همان که دکمه‌ی پرداخت را دارد)
+ * را کدِ خودِ فاکسیما می‌سازد، نه این فایل — پس نمی‌شود جلویش را گرفت.
+ * این گزینه یک پیامِ کمکی کنارش می‌گذارد برای مشتری‌هایی که ترجیح می‌دهند
+ * از تلگرام بیرون نروند.
+ *
+ * ⚠️ مبلغی که نشان داده می‌شود همان مبلغِ دقیقِ فاکتور است؛ اگر مشتری عددِ
+ * دیگری واریز کند، تاییدِ خودکار انجام نمی‌شود.
+ */
+const CUBEPAY_SHOW_CARD_IN_BOT = false;
+
 function createPayZarinpey($price, $order_id, $userId)
 {
     global $domainhosts;
@@ -396,6 +413,31 @@ function createPayZarinpey($price, $order_id, $userId)
         'order_id' => $order_id,
         'method'   => $result['method'] ?? '(router)',
     ]);
+
+    // 🤖 اگر فروشنده خواسته باشد، شماره‌کارت را همان‌جا داخلِ ربات هم نشان بده.
+    // فقط وقتی معنا دارد که CubePay کارت برگردانده باشد — یعنی مسیرِ کارتی.
+    // (اگر مشتری هنوز بینِ کارت و کریپتو انتخاب نکرده باشد، کارتی وجود ندارد.)
+    if (CUBEPAY_SHOW_CARD_IN_BOT
+        && !empty($userId)
+        && !empty($result['card']['number'])
+        && function_exists('telegram')
+    ) {
+        $card = $result['card'];
+        $minutes = (int) ($result['expires_in_minutes'] ?? 30);
+        $cardText = "💳 <b>پرداخت کارت‌به‌کارت</b>\n"
+            . "━━━━━━━━━━━━━━━\n\n"
+            . "🔢 شماره کارت:\n<code>" . $card['number'] . "</code>\n"
+            . (!empty($card['holder']) ? "👤 به نام: " . $card['holder'] . "\n" : '')
+            . "\n💰 مبلغ دقیق: <b>" . number_format((int) $exactAmountToman) . "</b> تومان\n"
+            . "⏳ مهلت پرداخت: " . $minutes . " دقیقه\n\n"
+            . "⚠️ مبلغ باید رقم‌به‌رقم دقیق باشه — تاییدِ خودکار فقط با همین عدد انجام می‌شه.";
+
+        telegram('sendmessage', [
+            'chat_id' => $userId,
+            'text' => $cardText,
+            'parse_mode' => 'HTML',
+        ]);
+    }
 
     return [
         'success' => true,

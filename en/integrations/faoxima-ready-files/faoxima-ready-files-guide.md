@@ -108,6 +108,21 @@ In `@cubepy_bot`:
 
 ⚠️ **Don't forget:** the phone running this app must always stay connected to the internet, or no transactions will be confirmed.
 
+### 🤖 Showing the card inside the bot (optional)
+
+Some customers would rather not leave Telegram at all and ask for the card number right there in the chat. If you want that, find this line near the top of `business_logic_1.php`:
+
+```php
+const CUBEPAY_SHOW_CARD_IN_BOT = false;
+```
+
+and set it to `true`. From then on, alongside the payment link, a second message is sent to the customer with the card number, holder, exact amount and deadline.
+
+**Notes:**
+- The main message (the one with the pay button) is built by Foxima's own code, not by this file — so this is a message *next to* it, not a replacement.
+- It is only sent when CubePay returned a card, i.e. the **card path**. If the customer has not yet chosen between card and crypto, no card exists yet and nothing is sent.
+- **The amount must be transferred to the last digit.** Those few extra Toman are deliberate and are what makes bank-SMS matching reliable.
+
 ### 🔀 Where the customer goes after paying
 
 These ready files deliberately send `redirect_after_payment` as `false`. After the payment is confirmed:

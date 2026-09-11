@@ -6,6 +6,15 @@ All notable changes to this project are recorded here, in chronological order.
 
 ---
 
+## [2.4.1] — A "show the card inside the bot" switch in the Foxima ready files
+
+### Added
+
+- A `CUBEPAY_SHOW_CARD_IN_BOT` constant in `business_logic_1.php`. It defaults to `false`, so no merchant sees any change; set it to `true` and a second message goes to the customer alongside the payment link, carrying the card number, holder, exact amount and deadline.
+- It is only sent when CubePay's response includes a card (the card path). The main message with the pay button is built by Foxima's own code, so this sits *next to* it rather than replacing it — the guide says so explicitly, so nobody expects a replacement.
+
+---
+
 ## [2.4.0] — The payment can now be shown inside the bot itself
 
 ### Added
