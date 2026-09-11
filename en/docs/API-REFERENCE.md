@@ -47,9 +47,20 @@ POST https://cubevps.ir/smspay/api/create-payment.php
   "authority": "bdc9e0497c121d6187750d53798dae81",
   "payment_link": "https://cubevps.ir/smspay/pay.php?authority=bdc9e0497c121d6187750d53798dae81",
   "pay_amount": 200720,
-  "pay_amount_toman": 20072
+  "pay_amount_toman": 20072,
+  "card": {
+    "number": "6219861900412221",
+    "holder": "Card holder name",
+    "sheba": null
+  },
+  "expires_at": "2026-09-11T18:27:00+03:30",
+  "expires_in_minutes": 30
 }
 ```
+
+🤖 **What is `card` for?** If you sell through a bot and would rather not send the customer to a web page, these fields let you render the payment **inside your own bot** — card number, holder, exact amount, deadline.
+
+⚠️ **Do not cache and reuse the card:** with card rotation enabled, each invoice may be assigned a different card. Always show the card returned for *that* invoice.
 
 📌 **Take `pay_amount_toman` seriously:** this is the exact amount payable, not necessarily the number you sent. To reliably match bank SMS messages, the system adds a small random amount to the total (e.g. 20,000 becomes 20,072). **Give the `payment_link` directly to the customer** — the payment page itself clearly shows this exact amount, so you don't need to calculate anything yourself.
 

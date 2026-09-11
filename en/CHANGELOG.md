@@ -6,6 +6,24 @@ All notable changes to this project are recorded here, in chronological order.
 
 ---
 
+## [2.4.0] — The payment can now be shown inside the bot itself
+
+### Added
+
+- **The create-invoice response now includes `card`, `expires_at` and `expires_in_minutes`.** The API only ever returned a link to the payment page, so a merchant who wanted to show the card number and amount *inside their own bot* — never sending the customer to the web at all — had no way to do it, even though that data was already stored on the invoice. Added to `create-payment.php` and the card path of `create-order.php`.
+- A copy-paste "show the payment inside your bot" example in the [generic integration guide](integrations/generic-integration-guide.md) (Persian and English).
+- **A ready-made bridge for Mirzabot's "custom gateway"** — [`integrations/mirzabot-custom-gateway/`](integrations/mirzabot-custom-gateway/). Newer Mirzabot builds dropped their built-in gateways in favour of a custom API; this single file speaks both ends and re-checks every callback with CubePay before telling the bot to deliver.
+
+### Fixed
+
+- **The "existing open invoice" path returned no card.** When a customer pressed pay a second time, the server returned the still-open invoice without `card`, leaving the merchant's bot with nothing to display. It now returns the card and the *remaining* minutes, not the original TTL.
+
+### Compatibility
+
+- Purely additive: no field was removed or changed, so every existing integration keeps working. These fields are only ever returned to the merchant's own token.
+
+---
+
 ## [2.3.0] — "Manual invoice" is now "Payment link", and testing is a separate thing
 
 ### Changed

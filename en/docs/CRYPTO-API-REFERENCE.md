@@ -42,6 +42,19 @@ Depending on the merchant's settings ("⚙️ More Settings → 💳 Payment Met
 
 The `method` value can be `card`, `crypto`, or `choice`. For `choice`, the `authority` field is absent (since the method isn't decided yet) — you'll learn the final outcome only through `callback_url`.
 
+When `method` is `card`, the response also carries the fields below — for rendering the payment **inside your own bot** instead of sending the customer to a web page:
+
+```json
+{
+  "card": { "number": "6219861900412221", "holder": "Card holder name", "sheba": null },
+  "pay_amount_toman": 24322,
+  "expires_at": "2026-09-11T18:27:00+03:30",
+  "expires_in_minutes": 30
+}
+```
+
+⚠️ With card rotation enabled, each invoice may get a different card — always show the one returned for *that* invoice.
+
 ---
 
 ## 🪙 Direct Crypto Endpoints (if you don't want to use the unified router)

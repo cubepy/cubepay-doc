@@ -40,6 +40,36 @@ if ($result['success']) {
 
 ---
 
+## 🤖 Showing the payment inside your bot (no web page)
+
+If you sell through a bot, you do not have to send the customer to a web page. The create-invoice response also returns **the card itself and the exact amount**, so you can print it right there in the chat:
+
+```php
+$res = json_decode(curl_exec($ch), true);
+
+if (!empty($res['success']) && !empty($res['card'])) {
+    $card = $res['card'];
+    $text = "💳 To complete your purchase, transfer exactly this amount:\n\n"
+        . "🔢 Card number:\n<code>{$card['number']}</code>\n"
+        . "👤 Holder: {$card['holder']}\n\n"
+        . "💰 Exact amount: <b>" . number_format($res['pay_amount_toman']) . "</b> Toman\n"
+        . "⏳ Valid for: {$res['expires_in_minutes']} minutes\n\n"
+        . "⚠️ The amount must match to the last digit — auto-confirmation only works with this exact number.";
+}
+```
+
+Nothing else changes: as soon as the deposit lands, your usual `callback_url` is called and your bot confirms to the customer — who never had to leave Telegram.
+
+You can offer both: a "Pay on the web page" button using `pay_page_url`, and a "Show card number" button that prints the text above.
+
+⚠️ **Three rules:**
+
+1. **The amount must be exactly `pay_amount_toman`** — the few extra Toman are deliberate and are what makes bank-SMS matching reliable.
+2. **Never cache and reuse the card.** With card rotation on, each invoice may get a different card; always show the one returned for that invoice.
+3. **Do not show a card before creating the invoice** — no card is assigned to a payment until the invoice exists.
+
+---
+
 ## Step 2 — Receive confirmation (your own `callback.php` file)
 
 ```php
