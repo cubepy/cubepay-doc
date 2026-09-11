@@ -49,6 +49,27 @@ const CUBEPAY_PAY_BASE    = 'https://cubevps.ir/pay';
 const CUBEPAY_SMSPAY_BASE = 'https://cubevps.ir/smspay';
 
 /**
+ * 🤖 نمایشِ شماره‌کارت داخلِ خودِ ربات (اختیاری)
+ *
+ * false (پیش‌فرض) = فقط دکمه‌ی پرداخت؛ مشتری صفحه‌ی وب را باز می‌کند.
+ * true            = علاوه بر دکمه، یک پیامِ جداگانه با شماره‌کارت، مبلغِ دقیق
+ *                   و مهلت هم مستقیم برای مشتری در تلگرام فرستاده می‌شود.
+ *
+ * برای این کار توکنِ تلگرامیِ رباتِ خودتان لازم است (همان که از @BotFather
+ * گرفته‌اید) — چون این فایل باید مستقیم به مشتری پیام بدهد. اگر خالی بماند،
+ * این قابلیت بی‌سروصدا خاموش می‌ماند و چیزی خراب نمی‌شود.
+ *
+ * ⚠️ فقط روی مسیرِ کارتی کار می‌کند: اگر روی حسابتان هم کارت و هم کریپتو
+ * فعال باشد، لحظه‌ی ساختِ فاکتور هنوز کارتی اختصاص داده نشده (مشتری هنوز
+ * انتخاب نکرده)، پس پیامی فرستاده نمی‌شود.
+ */
+const SHOW_CARD_IN_BOT    = false;
+const TELEGRAM_BOT_TOKEN  = '';
+
+/** آدرسِ API تلگرام — فقط برای تست عوض می‌شود. */
+const TELEGRAM_API_BASE   = 'https://api.telegram.org';
+
+/**
  * پوشه‌ی نگهداریِ سفارش‌ها (برای جلوگیری از فعال‌سازیِ تکراری و نگهداریِ
  * authority). اگر وجود نداشته باشد، خودش ساخته می‌شود.
  */
@@ -128,6 +149,8 @@ function handle_create(array $in): void
         'notified'  => false,
         'created_at' => date('c'),
     ]);
+
+    cg_maybe_send_card((int) ($in['user_id'] ?? 0), $res);
 
     echo json_encode(['url' => $res['pay_page_url']], JSON_UNESCAPED_UNICODE);
 }
@@ -229,6 +252,55 @@ function cg_notify_bot(string $orderId): bool
     }
     cg_log("bot notified for {$orderId}: " . substr((string) $body, 0, 200));
     return true;
+}
+
+/**
+ * اگر فروشنده خواسته باشد، شماره‌کارت را مستقیم در تلگرام برای مشتری بفرست.
+ * بی‌سروصدا رد می‌شود اگر: خاموش باشد، توکنِ ربات نداشته باشیم، کاربر معلوم
+ * نباشد، یا پاسخِ CubePay اصلاً کارتی نداشته باشد (مسیرِ «کارت یا کریپتو؟»).
+ */
+function cg_maybe_send_card(int $userId, array $res): void
+{
+    if (!SHOW_CARD_IN_BOT || TELEGRAM_BOT_TOKEN === '' || $userId <= 0) {
+        return;
+    }
+    $number = (string) ($res['card']['number'] ?? '');
+    if ($number === '') {
+        return;
+    }
+
+    $holder  = (string) ($res['card']['holder'] ?? '');
+    $minutes = (int) ($res['expires_in_minutes'] ?? 30);
+    $toman   = (int) ($res['pay_amount_toman'] ?? 0);
+
+    $text = "💳 <b>پرداخت کارت‌به‌کارت</b>\n"
+        . "━━━━━━━━━━━━━━━\n\n"
+        . "🔢 شماره کارت:\n<code>{$number}</code>\n"
+        . ($holder !== '' ? "👤 به نام: {$holder}\n" : '')
+        . ($toman > 0 ? "\n💰 مبلغ دقیق: <b>" . number_format($toman) . "</b> تومان\n" : "\n")
+        . "⏳ مهلت پرداخت: {$minutes} دقیقه\n\n"
+        . "⚠️ مبلغ باید رقم‌به‌رقم دقیق باشه — تاییدِ خودکار فقط با همین عدد انجام می‌شه.";
+
+    $ch = curl_init(TELEGRAM_API_BASE . '/bot' . TELEGRAM_BOT_TOKEN . '/sendMessage');
+    curl_setopt_array($ch, [
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_POST => true,
+        CURLOPT_TIMEOUT => 15,
+        CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
+        CURLOPT_POSTFIELDS => json_encode([
+            'chat_id' => $userId,
+            'text' => $text,
+            'parse_mode' => 'HTML',
+        ], JSON_UNESCAPED_UNICODE),
+    ]);
+    $body = curl_exec($ch);
+    $code = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+
+    // شکستش نباید جلوی پرداخت را بگیرد — فقط لاگ می‌شود.
+    if ($code < 200 || $code >= 300) {
+        cg_log("card message failed for user {$userId}: http={$code} " . substr((string) $body, 0, 200));
+    }
 }
 
 // ------------------------------------------------------------
