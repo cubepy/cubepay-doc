@@ -83,11 +83,28 @@ If you are stuck on an older Foxima version and genuinely cannot update, the old
 
 ## 🤖 Showing the card inside the bot
 
-This feature lets the customer pay without leaving Telegram: alongside the payment button they also get a message carrying the card number, the exact amount, and the deadline.
+This feature lets the customer pay without leaving Telegram: alongside the payment button they also get a message carrying the card number, the card holder, the exact amount and the deadline.
 
-**Current status:** it is not in Foxima v1.0.0 yet. We have written and tested the code and proposed it as a pull request to the Foxima team; we're waiting for their review.
+✅ **This has been added to Foxima** ([PR #17](https://github.com/Mmd-Amir/Faoxima/pull/17)) — with one caveat:
 
-Until then the customer only sees the payment button — which works perfectly well.
+| If you update your bot from… | Status |
+|---|---|
+| the `main` branch | ✅ you have it |
+| the `v1.0.0` release | ❌ not yet — it was merged after that release |
+
+**Two steps to enable it:**
+
+1. Update your bot from the official Foxima repository (or wait for the next release)
+
+2. In `@cubepy_bot` go to **🏪 My Store → 💳 Payment methods → 🤖 Show card in bot** and switch it on
+
+> ⚠️ Before flipping the toggle, make sure you have registered a card under **"💳 Manage cards"** — otherwise the API returns an empty card and no message is sent.
+
+**Three things to know:**
+
+- **It doesn't replace the payment button, it sits next to it.** The customer uses whichever they prefer.
+- **It only works on the card path.** If both card and crypto are enabled, no card is assigned at invoice-creation time, so nothing is sent.
+- **The amount must be transferred to the exact digit** — those few extra Toman are intentional and automatic confirmation depends on them.
 
 📖 Full explanation, and how this compares across integration types: [Showing the card inside the bot](../docs/CARD-IN-BOT.md)
 

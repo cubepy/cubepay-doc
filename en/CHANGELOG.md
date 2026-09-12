@@ -6,6 +6,14 @@ All notable changes to this project are recorded here, in chronological order.
 
 ---
 
+## [2.7.0] — the in-bot card display landed in Foxima
+
+### Changed
+- **Foxima now has this feature** — [PR #17](https://github.com/Mmd-Amir/Faoxima/pull/17) was merged. The Foxima guide and [`docs/CARD-IN-BOT.md`](docs/CARD-IN-BOT.md) changed from "pending review" to instructions for enabling it.
+- Both docs now say explicitly that the change is **on `main` but not yet in the `v1.0.0` release** — anyone who installed from the release has to update the bot first, or flipping the toggle does nothing.
+
+---
+
 ## [2.6.0] — Foxima v1.0.0: the gateway went native, the ready files are retired
 
 ### Changed

@@ -32,7 +32,7 @@ The table below tells you exactly which group you're in.
 
 | Your integration | Is the toggle enough? | What's needed |
 |---|---|---|
-| 🟩 **Foxima** | ❌ No | Waiting on a Foxima update |
+| 🟩 **Foxima** | ⚠️ Yes, if you updated from `main` | Otherwise update the bot first |
 | 🟦 **Mirzabot, paid build** (custom gateway) | ❌ No | Update `cubepay-gateway.php` + bot token + toggle |
 | 🟨 **Mirzabot, free build** | ❌ No | Waiting on a Mirzabot update |
 | 🟪 **Your own code** | ❌ No | Add a few lines to your bot |
@@ -42,14 +42,19 @@ The table below tells you exactly which group you're in.
 
 ## 🟩 Foxima
 
-As of v1.0.0 the CubePay gateway lives **inside Foxima's own code**, not in a file you control. So this feature has to be added to Foxima itself first.
+✅ **This has been added to Foxima** ([PR #17](https://github.com/Mmd-Amir/Faoxima/pull/17)) — but it is not in the `v1.0.0` release yet, because it was merged after that release.
 
-**Current status:** the code is written and tested and proposed to the Foxima team as a pull request; we're waiting for their review.
+| If you update your bot from… | Status |
+|---|---|
+| the `main` branch | ✅ you have it — just flip the toggle |
+| the `v1.0.0` release | ❌ update first |
 
-- **Until it's merged:** there is nothing you can do, and flipping the toggle has no effect. The customer only sees the payment button — which works perfectly well.
-- **After it's merged:** update your bot, then turn the toggle on in `@cubepy_bot` under **🏪 My Store → 💳 Payment methods → 🤖 Show card in bot**.
+**Two steps:**
 
-> 📌 If you're still on our old ready-made files, that approach is retired — update to Foxima v1.0.0.
+1. Update your bot from the official Foxima repository (or wait for the next release)
+2. In `@cubepy_bot` go to **🏪 My Store → 💳 Payment methods → 🤖 Show card in bot** and switch it on
+
+> 📌 If you're still on our old ready-made files, that approach is retired — update to current Foxima.
 
 📖 Full guide: [`faoxima-guide.md`](../integrations/faoxima-guide.md)
 
