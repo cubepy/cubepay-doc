@@ -61,7 +61,7 @@ The response still carries `authority`, so your existing `verify-payment.php` co
 
 ## 🤖 Using the ready-made files?
 
-- **Foxima:** the current [ready-made files](../../integrations/faoxima-ready-files/) are already on the router — just replace the required files with the new versions and you're done.
+- **Foxima:** v1.0.0 and later are already on the router — nothing to do ([guide](../integrations/faoxima-guide.md)).
 - **WordPress / generic guide / official Mirzabot:** these have been on the router from the start — nothing to do.
 
 ## ❓ How do I know this is my problem?

@@ -32,8 +32,7 @@ Depending on what you're using, follow one of these guides:
 
 | If you use... | Go to this guide |
 |---|---|
-| A sales bot built with **Foxima** (clean/unmodified) | [Install with ready-made files](./integrations/faoxima-ready-files/faoxima-ready-files-guide.md) |
-| A Foxima bot you've already customized | [Manual integration guide](./integrations/faoxima-integration-guide.md) |
+| A sales bot built with **Foxima** | [Foxima guide](./integrations/faoxima-guide.md) |
 | A **WordPress/WooCommerce** store | [WordPress guide](./integrations/wordpress-plugin-guide.md) |
 | Your own site or bot with custom code | [Generic integration guide](./integrations/generic-integration-guide.md) |
 | You can't install an SMS Forwarder and want CubePay to collect the money and settle in crypto | [docs/CUBEPAY-VIP-API-REFERENCE.md](./docs/CUBEPAY-VIP-API-REFERENCE.md) |

@@ -34,7 +34,7 @@ Base URL: https://cubevps.ir/managed-settlement/
 
 ## 🔀 مهاجرت به VIP: فقط توکن را عوض کنید
 
-اگر از قبل با **روترِ یکپارچه** (`POST /pay/create-order.php`) کار می‌کردید — یعنی راهنمای [Foxima](../integrations/faoxima-integration-guide.md)، [وردپرس](../integrations/wordpress-plugin-guide.md) یا [اتصالِ عمومی](../integrations/generic-integration-guide.md) — برای رفتن به VIP **هیچ تغییری در کدتان لازم نیست**. فقط توکنِ `vip_…` را جای توکنِ قبلی بگذارید:
+اگر از قبل با **روترِ یکپارچه** (`POST /pay/create-order.php`) کار می‌کردید — یعنی راهنمای [Foxima](../integrations/faoxima-guide.md)، [وردپرس](../integrations/wordpress-plugin-guide.md) یا [اتصالِ عمومی](../integrations/generic-integration-guide.md) — برای رفتن به VIP **هیچ تغییری در کدتان لازم نیست**. فقط توکنِ `vip_…` را جای توکنِ قبلی بگذارید:
 
 ```diff
 - 'Authorization: Bearer ' . $apiToken        // توکنِ عادی

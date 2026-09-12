@@ -34,7 +34,7 @@ Base URL: https://cubevps.ir/managed-settlement/
 
 ## 🔀 Migrating to VIP: just swap the token
 
-If you already call the **unified router** (`POST /pay/create-order.php`) — that is, you followed the [Foxima](../integrations/faoxima-integration-guide.md), [WordPress](../integrations/wordpress-plugin-guide.md), or [generic integration](../integrations/generic-integration-guide.md) guide — moving to VIP requires **no code changes at all**. Just put the `vip_…` token where the old one was:
+If you already call the **unified router** (`POST /pay/create-order.php`) — that is, you followed the [Foxima](../integrations/faoxima-guide.md), [WordPress](../integrations/wordpress-plugin-guide.md), or [generic integration](../integrations/generic-integration-guide.md) guide — moving to VIP requires **no code changes at all**. Just put the `vip_…` token where the old one was:
 
 ```diff
 - 'Authorization: Bearer ' . $apiToken        // normal token

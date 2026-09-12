@@ -66,9 +66,7 @@ cubepay-doc/
 └── integrations/                 ← راهنمای اتصال به پلتفرم‌های خاص
     ├── generic-integration-guide.md
     ├── wordpress-plugin-guide.md
-    ├── faoxima-integration-guide.md
-    ├── faoxima-ready-files/
-    │   └── faoxima-ready-files-guide.md
+    ├── faoxima-guide.md
     └── mirzabot-ready-files/
         └── mirzabot-ready-files-guide.md
 ```
@@ -81,8 +79,7 @@ cubepay-doc/
 
 | پلتفرم | راهنما | توضیح |
 |---|---|---|
-| 🤖 **Foxima** (و فورک‌هاش) | [نصب با فایل آماده](./integrations/faoxima-ready-files/faoxima-ready-files-guide.md) | فقط چند فایل PHP رو جایگزین می‌کنید — سریع‌ترین روش |
-| 🤖 **Foxima** (ویرایش دستی) | [راهنمای اتصال دستی](./integrations/faoxima-integration-guide.md) | اگه فایل‌های ربات‌تون شخصی‌سازی شده و نمی‌خواید کامل جایگزین بشه |
+| 🤖 **Foxima** (نسخه‌ی ۱.۰.۰ به بعد) | [راهنمای Foxima](./integrations/faoxima-guide.md) | درگاه از قبل داخل رباته — فقط توکن API رو وارد می‌کنید |
 | 🤖 **Mirzabot** (و فورک‌هاش) | [الان رسمی تو خودِ ریپو](./integrations/mirzabot-ready-files/mirzabot-ready-files-guide.md) | CubePay رسمی وارد ریپوی اصلی Mirzabot شده — فقط از upstream نصب/آپدیت کنید |
 | 🌐 **وردپرس / ووکامرس** | [راهنمای وردپرس](./integrations/wordpress-plugin-guide.md) | نصب CubePay روی فروشگاه وردپرسی |
 | ⚙️ **هر پلتفرم دیگه** | [راهنمای اتصال عمومی](./integrations/generic-integration-guide.md) | اتصال مستقیم به API، مستقل از پلتفرم |

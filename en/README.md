@@ -62,12 +62,10 @@ cubepay-doc/
 └── integrations/                 ← Guides for connecting to specific platforms
     ├── generic-integration-guide.md
     ├── wordpress-plugin-guide.md
-    ├── faoxima-integration-guide.md
+    ├── faoxima-guide.md
     ├── android-sms-forwarder-guide.md      ← CubePay's own Android SMS-forwarding app
     ├── using-both-systems-guide.md         ← running normal + VIP together in one integration
     ├── ios-shortcuts-sms-forwarding-guide.md  ← Bank SMS from an iPhone, no extra app
-    └── faoxima-ready-files/
-        └── faoxima-ready-files-guide.md
 ```
 
 ---
@@ -78,8 +76,7 @@ If you use one of these platforms, you don't need to implement the API from scra
 
 | Platform | Guide | Description |
 |---|---|---|
-| 🤖 **Foxima** (and its forks) | [Install with ready-made files](./integrations/faoxima-ready-files/faoxima-ready-files-guide.md) | Just replace a few PHP files — the fastest method |
-| 🤖 **Foxima** (manual editing) | [Manual integration guide](./integrations/faoxima-integration-guide.md) | If your bot's files are customized and you don't want a full replacement |
+| 🤖 **Foxima** (v1.0.0 and later) | [Foxima guide](./integrations/faoxima-guide.md) | The gateway ships inside the bot — you only enter your API token |
 | 🌐 **WordPress / WooCommerce** | [WordPress guide](./integrations/wordpress-plugin-guide.md) | Installing CubePay on a WordPress store |
 | ⚙️ **Any other platform** | [Generic integration guide](./integrations/generic-integration-guide.md) | Direct API connection, platform-independent |
 

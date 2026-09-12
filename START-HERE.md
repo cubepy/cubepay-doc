@@ -36,8 +36,7 @@ Authorization: Bearer YOUR_API_TOKEN
 
 | اگه از این استفاده می‌کنید... | برید سراغ این راهنما |
 |---|---|
-| ربات فروش ساخته‌شده با **Foxima** (نسخه‌ی تمیز) | [نصب با فایل آماده](./integrations/faoxima-ready-files/faoxima-ready-files-guide.md) |
-| ربات Foxima که قبلاً شخصی‌سازیش کردید | [راهنمای اتصال دستی](./integrations/faoxima-integration-guide.md) |
+| ربات فروش ساخته‌شده با **Foxima** | [راهنمای Foxima](./integrations/faoxima-guide.md) |
 | فروشگاه **وردپرس/ووکامرس** | [راهنمای وردپرس](./integrations/wordpress-plugin-guide.md) |
 | سایت یا ربات با کد اختصاصی خودتون (کارت‌به‌کارت) | [راهنمای اتصال عمومی](./integrations/generic-integration-guide.md) |
 | می‌خواید ارز دیجیتال یا روتر یکپارچه (کارت+کریپتو) رو تست کنید | [docs/CRYPTO-API-REFERENCE.md](./docs/CRYPTO-API-REFERENCE.md) |

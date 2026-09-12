@@ -37,7 +37,7 @@ Currently a sample PHP client is provided at [`docs/examples/CubePayClient.php`]
 ## Platform-Specific Questions
 
 **I use Foxima, where do I start?**
-Start with the [ready-made files installation guide](../integrations/faoxima-ready-files/faoxima-ready-files-guide.md); it's faster. If your bot's files are customized, use the [manual guide](../integrations/faoxima-integration-guide.md) instead.
+Start with the [Foxima guide](../integrations/faoxima-guide.md). As of Foxima v1.0.0 the gateway ships inside the bot and you only need to enter your API token.
 
 **My store is on WordPress, what do I do?**
 See the [WordPress guide](../integrations/wordpress-plugin-guide.md).
@@ -55,7 +55,7 @@ See the [WordPress guide](../integrations/wordpress-plugin-guide.md).
 ---
 
 **Can I show the card number inside my own bot?**
-Yes. In the bot: "🏪 My Store → 💳 Payment methods → 🤖 Show card in bot". If you use our ready files (Foxima / the Mirzabot bridge) they follow that setting automatically, and the customer gets a text message with the card and exact amount alongside the pay button. If you wrote your own bot code, the same preference reaches you in the API response as `show_card_in_bot`.
+Yes. In the bot: "🏪 My Store → 💳 Payment methods → 🤖 Show card in bot". If you use our Mirzabot bridge it follows that setting automatically, and the customer gets a text message with the card and exact amount alongside the pay button. If you wrote your own bot code, the same preference reaches you in the API response as `show_card_in_bot`.
 
 ⚠️ That message sits **next to** the pay button rather than replacing it — the main message is built by your bot's own code. And it only applies on the card path: with both card and crypto enabled, no card is assigned yet when the invoice is created.
 
@@ -152,8 +152,8 @@ No. In VIP the only way to create an invoice is an API call from your own site o
 - Check that the phone connected to the Forwarder app is online and connected.
 
 ### ❌ Foxima Ready-Made Files Didn't Work
-- Your Foxima version probably differs from the one these ready-made files were prepared for, or you'd already customized those same files.
-- Use the [Foxima manual guide](../integrations/faoxima-integration-guide.md), which changes only a few specific lines.
+- As of v1.0.0 the gateway ships inside Foxima and only needs an API token. If you're on an older version, update first.
+- Update to Foxima v1.0.0; the gateway is already built in and only needs a token ([guide](../integrations/faoxima-guide.md)).
 
 ## 🎫 Support tickets
 

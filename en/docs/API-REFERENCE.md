@@ -61,7 +61,7 @@ POST https://cubevps.ir/smspay/api/create-payment.php
 
 🤖 **What is `card` for?** If you sell through a bot and would rather not send the customer to a web page, these fields let you render the payment **inside your own bot** — card number, holder, exact amount, deadline.
 
-🎛 **What is `show_card_in_bot`?** It is your own preference, set in the bot under "🏪 My Store → 💳 Payment methods → 🤖 Show card in bot". We do nothing with it ourselves — we just pass your choice back to your code: `true` means "also show the card inside the bot". Our ready files obey it automatically; if you wrote your own code, use it however you like (or ignore it).
+🎛 **What is `show_card_in_bot`?** It is your own preference, set in the bot under "🏪 My Store → 💳 Payment methods → 🤖 Show card in bot". We do nothing with it ourselves — we just pass your choice back to your code: `true` means "also show the card inside the bot". Our Mirzabot bridge obeys it automatically; if you wrote your own code, use it however you like (or ignore it).
 
 ⚠️ **Do not cache and reuse the card:** with card rotation enabled, each invoice may be assigned a different card. Always show the card returned for *that* invoice.
 

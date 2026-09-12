@@ -6,6 +6,21 @@ All notable changes to this project are recorded here, in chronological order.
 
 ---
 
+## [2.6.0] — Foxima v1.0.0: the gateway went native, the ready files are retired
+
+### Changed
+- **The Foxima guide was rewritten from scratch** → [`integrations/faoxima-guide.md`](../integrations/faoxima-guide.md). As of Foxima v1.0.0 the CubePay gateway ships inside the bot itself, so setup is three steps: get your token, enter it under "💎 Finance & reports → 🟦 CubePay → ⚙️ Settings → 🔑 Set API token", and switch the gateway on.
+- The guide explains that card and crypto both run through that one gateway (the unified router), and that the customer is not redirected out of the bot after paying.
+
+### Removed
+- **`integrations/faoxima-ready-files/`** (eleven PHP files plus its guide) and **`integrations/faoxima-integration-guide.md`** (the manual-edit guide) are gone — the native gateway makes them unnecessary. Their code remains in git history.
+- Every reference in `README`, `START-HERE`, `FAQ`, `ENDPOINT-MIGRATION`, the VIP reference, the fee pass-through guide and `MAINTAINERS` now points at the new guide.
+
+### Added
+- An English version of [`docs/CARD-IN-BOT.md`](docs/CARD-IN-BOT.md), which until now existed only in Persian.
+
+---
+
 ## [2.5.2] — Troubleshooting "the toggle is on but no message arrives"
 
 ### Added
@@ -46,7 +61,7 @@ All notable changes to this project are recorded here, in chronological order.
 
 - A `CUBEPAY_SHOW_CARD_IN_BOT` constant in `business_logic_1.php`. It defaults to `false`, so no merchant sees any change; set it to `true` and a second message goes to the customer alongside the payment link, carrying the card number, holder, exact amount and deadline.
 - It is only sent when CubePay's response includes a card (the card path). The main message with the pay button is built by Foxima's own code, so this sits *next to* it rather than replacing it — the guide says so explicitly, so nobody expects a replacement.
-- The same switch was added to the [Mirzabot bridge](integrations/mirzabot-custom-gateway/) (`SHOW_CARD_IN_BOT` + `TELEGRAM_BOT_TOKEN`). There the bridge only hands a link back to the bot, so sending a message needs the merchant's own Telegram bot token; leave it empty and the feature stays quietly off.
+- The same switch was added to the [Mirzabot bridge](../integrations/mirzabot-custom-gateway/) (`SHOW_CARD_IN_BOT` + `TELEGRAM_BOT_TOKEN`). There the bridge only hands a link back to the bot, so sending a message needs the merchant's own Telegram bot token; leave it empty and the feature stays quietly off.
 
 ---
 
@@ -56,7 +71,7 @@ All notable changes to this project are recorded here, in chronological order.
 
 - **The create-invoice response now includes `card`, `expires_at` and `expires_in_minutes`.** The API only ever returned a link to the payment page, so a merchant who wanted to show the card number and amount *inside their own bot* — never sending the customer to the web at all — had no way to do it, even though that data was already stored on the invoice. Added to `create-payment.php` and the card path of `create-order.php`.
 - A copy-paste "show the payment inside your bot" example in the [generic integration guide](integrations/generic-integration-guide.md) (Persian and English).
-- **A ready-made bridge for Mirzabot's "custom gateway"** — [`integrations/mirzabot-custom-gateway/`](integrations/mirzabot-custom-gateway/). Newer Mirzabot builds dropped their built-in gateways in favour of a custom API; this single file speaks both ends and re-checks every callback with CubePay before telling the bot to deliver.
+- **A ready-made bridge for Mirzabot's "custom gateway"** — [`integrations/mirzabot-custom-gateway/`](../integrations/mirzabot-custom-gateway/). Newer Mirzabot builds dropped their built-in gateways in favour of a custom API; this single file speaks both ends and re-checks every callback with CubePay before telling the bot to deliver.
 
 ### Fixed
 
