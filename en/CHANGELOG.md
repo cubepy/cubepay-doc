@@ -6,6 +6,13 @@ All notable changes to this project are recorded here, in chronological order.
 
 ---
 
+## [2.5.2] — Troubleshooting "the toggle is on but no message arrives"
+
+### Added
+- A troubleshooting section in [`docs/CARD-IN-BOT.md`](docs/CARD-IN-BOT.md): when no card is registered under "💳 Manage cards", the API returns an empty card and no in-bot message is sent — while the web payment page still shows a card, which makes the cause easy to miss.
+
+---
+
 ## [2.5.1] — Clarified: flipping the toggle is not enough on its own
 
 ### Added
