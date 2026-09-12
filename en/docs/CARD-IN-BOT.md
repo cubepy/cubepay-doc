@@ -32,7 +32,7 @@ The table below tells you exactly which group you're in.
 
 | Your integration | Is the toggle enough? | What's needed |
 |---|---|---|
-| 🟩 **Foxima** | ⚠️ Yes, if you updated from `main` | Otherwise update the bot first |
+| 🟩 **Foxima** | ✅ Yes, on `v1.0.1`+ | On older versions, update the bot first |
 | 🟦 **Mirzabot, paid build** (custom gateway) | ❌ No | Update `cubepay-gateway.php` + bot token + toggle |
 | 🟨 **Mirzabot, free build** | ❌ No | Waiting on a Mirzabot update |
 | 🟪 **Your own code** | ❌ No | Add a few lines to your bot |
@@ -42,17 +42,10 @@ The table below tells you exactly which group you're in.
 
 ## 🟩 Foxima
 
-✅ **This has been added to Foxima** ([PR #17](https://github.com/Mmd-Amir/Faoxima/pull/17)) — but it is not in the `v1.0.0` release yet, because it was merged after that release.
+✅ **Available from Foxima `v1.0.1`** ([PR #17](https://github.com/Mmd-Amir/Faoxima/pull/17)).
 
-| If you update your bot from… | Status |
-|---|---|
-| the `main` branch | ✅ you have it — just flip the toggle |
-| the `v1.0.0` release | ❌ update first |
-
-**Two steps:**
-
-1. Update your bot from the official Foxima repository (or wait for the next release)
-2. In `@cubepy_bot` go to **🏪 My Store → 💳 Payment methods → 🤖 Show card in bot** and switch it on
+- **On `v1.0.1` or later:** just flip the toggle — **🏪 My Store → 💳 Payment methods → 🤖 Show card in bot**
+- **On `v1.0.0` or older:** update the bot from the official Foxima repository first
 
 > 📌 If you're still on our old ready-made files, that approach is retired — update to current Foxima.
 

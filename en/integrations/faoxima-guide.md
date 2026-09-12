@@ -33,6 +33,7 @@ The same screen also lets you configure:
 | 🏷️ Display name | The name the customer sees in the payment-method list |
 | ⬇️ Min / ⬆️ Max | The smallest and largest top-up amount allowed through this gateway |
 | 💰 Cashback | The cashback percentage you return to the customer |
+| ⚖️ CubePay fee | Passes the fee on to the customer (from `v1.0.1`) |
 | 📚 Help text | A note shown to the customer before paying |
 
 ### Step 3 — Turn the gateway on
@@ -85,18 +86,9 @@ If you are stuck on an older Foxima version and genuinely cannot update, the old
 
 This feature lets the customer pay without leaving Telegram: alongside the payment button they also get a message carrying the card number, the card holder, the exact amount and the deadline.
 
-✅ **This has been added to Foxima** ([PR #17](https://github.com/Mmd-Amir/Faoxima/pull/17)) — with one caveat:
+✅ **Available from Foxima `v1.0.1`** ([PR #17](https://github.com/Mmd-Amir/Faoxima/pull/17)). If you are on `v1.0.0` or older, update the bot first.
 
-| If you update your bot from… | Status |
-|---|---|
-| the `main` branch | ✅ you have it |
-| the `v1.0.0` release | ❌ not yet — it was merged after that release |
-
-**Two steps to enable it:**
-
-1. Update your bot from the official Foxima repository (or wait for the next release)
-
-2. In `@cubepy_bot` go to **🏪 My Store → 💳 Payment methods → 🤖 Show card in bot** and switch it on
+**To enable it:** in `@cubepy_bot` go to **🏪 My Store → 💳 Payment methods → 🤖 Show card in bot**.
 
 > ⚠️ Before flipping the toggle, make sure you have registered a card under **"💳 Manage cards"** — otherwise the API returns an empty card and no message is sent.
 
@@ -107,6 +99,28 @@ This feature lets the customer pay without leaving Telegram: alongside the payme
 - **The amount must be transferred to the exact digit** — those few extra Toman are intentional and automatic confirmation depends on them.
 
 📖 Full explanation, and how this compares across integration types: [Showing the card inside the bot](../docs/CARD-IN-BOT.md)
+
+---
+
+## ⚖️ Passing the fee on to the customer
+
+CubePay's fee comes out of your wallet. If you would rather the customer paid it, `v1.0.1` adds that option to the same gateway settings screen ([PR #23](https://github.com/Mmd-Amir/Faoxima/pull/23)):
+
+```
+Admin panel → 💎 Finance & reports → 🟦 CubePay → ⚙️ Settings → ⚖️ CubePay fee
+```
+
+| Value | Behaviour |
+|---|---|
+| `0` (default) | Off — you pay the fee, exactly as before |
+| `1` to `100` | That percentage is added to the invoice (decimals allowed, e.g. `9.9`) |
+| above `100` | That many Toman are added to the invoice |
+
+Example with `3`: the customer wants to top up 100,000 Toman → they pay **103,000** and are credited **100,000**.
+
+> 📌 Only the invoice amount grows; the credit the customer receives is still the amount they asked for.
+
+📖 Details and the calculation: [Passing the fee to the customer](./customer-fee-passthrough-guide.md)
 
 ---
 

@@ -6,6 +6,16 @@ All notable changes to this project are recorded here, in chronological order.
 
 ---
 
+## [2.8.0] — Foxima v1.0.1 is out, with both features in it
+
+### Changed
+- **[PR #17](https://github.com/Mmd-Amir/Faoxima/pull/17) and [PR #23](https://github.com/Mmd-Amir/Faoxima/pull/23) were merged and shipped in `v1.0.1`.** Both "show the card inside the bot" and "pass the fee to the customer" are now native to Foxima.
+- The Foxima guide and [`docs/CARD-IN-BOT.md`](docs/CARD-IN-BOT.md) changed from "on `main` but not in a release" to "available from `v1.0.1`".
+- Added a "⚖️ Passing the fee on to the customer" section to the Foxima guide, with the value table and a worked example, plus its row in the gateway-settings table.
+- [`customer-fee-passthrough-guide.md`](integrations/customer-fee-passthrough-guide.md) no longer says the feature was retired for Foxima — it ships natively now.
+
+---
+
 ## [2.7.0] — the in-bot card display landed in Foxima
 
 ### Changed

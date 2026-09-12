@@ -4,7 +4,7 @@
 
 This guide is for **developers of bot/panel platforms** (Mirzabot, Seamless, Zitac, and any other platform offering CubePay to its users): how to let a merchant push the gateway fee — fully or partially — onto their end customer, **with zero changes on the CubePay side**.
 
-This pattern used to ship as a reference implementation in the ready-made Foxima files; those were retired when the gateway became native in Foxima v1.0.0, and their code remains in this repository's git history.
+**Foxima has this built in from `v1.0.1`** — "⚖️ CubePay fee" in the gateway settings ([PR #23](https://github.com/Mmd-Amir/Faoxima/pull/23)); if you use Foxima there is nothing to implement by hand, see the [Foxima guide](./faoxima-guide.md).
 
 ---
 
