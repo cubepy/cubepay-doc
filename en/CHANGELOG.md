@@ -6,6 +6,13 @@ All notable changes to this project are recorded here, in chronological order.
 
 ---
 
+## [2.8.1] — Corrected the "payment methods" menu path
+
+### Fixed
+- Five places in the docs still gave the old path "⚙️ More Settings → 💳 Payment Methods". That button has lived under "🏪 My Store" for a while now. Fixed in `START-HERE.md`, `docs/FAQ.md`, both languages of `CRYPTO-API-REFERENCE.md`, and `generic-integration-guide.md`.
+
+---
+
 ## [2.8.0] — Foxima v1.0.1 is out, with both features in it
 
 ### Changed

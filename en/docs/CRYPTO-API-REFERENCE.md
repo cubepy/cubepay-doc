@@ -15,7 +15,7 @@ This file complements [`API-REFERENCE.md`](./API-REFERENCE.md) (which only cover
 POST https://cubevps.ir/pay/create-order.php
 ```
 
-Depending on the merchant's settings ("⚙️ More Settings → 💳 Payment Methods" in the bot), this endpoint decides on its own:
+Depending on the merchant's settings ("🏪 My Store → 💳 Payment methods" in the bot), this endpoint decides on its own:
 - Only card enabled → creates a card invoice directly and returns its link
 - Only crypto enabled → creates a crypto invoice directly
 - Both enabled → returns a link to a "Card or Crypto?" page; the customer chooses and is routed to the actual invoice from there
