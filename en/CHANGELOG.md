@@ -6,6 +6,19 @@ All notable changes to this project are recorded here, in chronological order.
 
 ---
 
+## [2.10.0] — Simplified the landing page
+
+A merchant said the docs were complicated. They were right — but the problem wasn't length, it was **duplicated navigation**: the `README` listed the same destinations three times in three shapes.
+
+### Removed
+- **The repository file tree from `README`** (both languages). It duplicated the platform table, was missing three files that exist, and needed hand-updating with every new doc.
+
+### Changed
+- **The "Quick Start" section is shorter**: one recommended endpoint and two links, instead of three endpoint blocks and three reference links.
+- **SMS-forwarding guides moved out of the platform table.** They sat next to "which platform do I connect to", when they are really a setup step. They now live in Step 2 of [`START-HERE.md`](START-HERE.md), linked directly — that step previously had no links at all.
+
+---
+
 ## [2.9.0] — A complete Python example, and a clearer path for non-PHP code
 
 ### Changed

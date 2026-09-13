@@ -41,35 +41,6 @@ CubePay is an API service for creating and automatically confirming transactions
 
 ---
 
-## 🗂 Documentation Map for This Repo
-
-```
-cubepay-doc/
-├── START-HERE.md                 ← New here? Read this first
-├── docs/
-│   ├── API-REFERENCE.md          ← Full technical reference for the card API (Endpoints, params, errors)
-│   ├── CRYPTO-API-REFERENCE.md   ← 🆕 Technical reference for crypto payments and the unified router
-│   ├── CUBEPAY-VIP-API-REFERENCE.md  ← 👑 Technical reference for CubePay VIP (settlement by CubePay)
-│   ├── FAQ.md                    ← Frequently asked questions
-│   ├── openapi.yaml              ← OpenAPI 3.0 spec (for Postman/Swagger)
-│   └── examples/                 ← Ready-made code samples per language
-│       ├── CubePayClient.php
-│       ├── php-example.php
-│       ├── python-example.py
-│       ├── node-example.js
-│       ├── laravel-example.php
-│       └── curl-example.sh
-└── integrations/                 ← Guides for connecting to specific platforms
-    ├── generic-integration-guide.md
-    ├── wordpress-plugin-guide.md
-    ├── faoxima-guide.md
-    ├── android-sms-forwarder-guide.md      ← CubePay's own Android SMS-forwarding app
-    ├── using-both-systems-guide.md         ← running normal + VIP together in one integration
-    ├── ios-shortcuts-sms-forwarding-guide.md  ← Bank SMS from an iPhone, no extra app
-```
-
----
-
 ## 🔌 Connecting to Ready-Made Platforms
 
 If you use one of these platforms, you don't need to implement the API from scratch yourself:
@@ -82,29 +53,17 @@ If you use one of these platforms, you don't need to implement the API from scra
 
 ---
 
-## 🚀 Quick Start (Summary)
+## 🚀 Quick Start
 
-```
-Authorization: Bearer YOUR_API_TOKEN
-```
-
-**Recommended approach — one endpoint for both payment types** (depending on which method(s) you've enabled for your account, it automatically creates a card invoice, a crypto invoice, or a method-selection page):
+One endpoint for both payment types — depending on which methods you enabled in the bot, it creates a card invoice, a crypto invoice, or shows the customer a method-selection page:
 
 ```
 POST https://cubevps.ir/pay/create-order.php
+Authorization: Bearer YOUR_API_TOKEN
 ```
 
-**Or, if needed, go directly to either one:**
-
-```
-POST https://cubevps.ir/smspay/api/create-payment.php   ← card-to-card only
-POST https://cubevps.ir/smspay/api/verify-payment.php
-POST https://cubevps.ir/crypto/api/create-crypto-payment.php   ← crypto only
-```
-
-Complete parameter, response, error-code, and transaction-rule details in 👉 **[docs/API-REFERENCE.md](./docs/API-REFERENCE.md)** (card) and **[docs/CRYPTO-API-REFERENCE.md](./docs/CRYPTO-API-REFERENCE.md)** (crypto / unified) and **[docs/CUBEPAY-VIP-API-REFERENCE.md](./docs/CUBEPAY-VIP-API-REFERENCE.md)** (CubePay VIP — settlement handled by CubePay)
-
-Code samples in PHP, Python, Node.js, Laravel, and cURL 👉 **[docs/examples/](./docs/examples/)**
+📘 Parameters, responses and error codes → [`docs/API-REFERENCE.md`](./docs/API-REFERENCE.md)
+💻 Ready-made samples (PHP · Python · Node.js · Laravel · cURL) → [`docs/examples/`](./docs/examples/)
 
 ---
 

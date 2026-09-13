@@ -41,38 +41,6 @@ CubePay یک سرویس API برای ساخت و تأیید خودکار ترا�
 
 ---
 
-## 🗂 نقشه‌ی مستندات این ریپو
-
-```
-cubepay-doc/
-├── START-HERE.md                 ← تازه‌کارید؟ اول این رو بخونید
-├── docs/
-│   ├── API-REFERENCE.md          ← مرجع کامل فنی API کارت‌به‌کارت (Endpoints, پارامترها, خطاها)
-│   ├── CRYPTO-API-REFERENCE.md   ← 🆕 مرجع فنی پرداخت ارز دیجیتال و روتر یکپارچه
-│   ├── CUBEPAY-VIP-API-REFERENCE.md          ← 👑 مرجع فنی «CubePay VIP» (تسویه توسط CubePay)
-│   ├── MANAGED-SETTLEMENT-ARCHITECTURE.md    ← معماری و تصمیم‌های طراحیِ CubePay VIP
-│   ├── CARD-IN-BOT.md            ← 🤖 نمایش کارت داخل ربات: هر کس باید چه کاری بکند
-│   ├── FAQ.md                    ← سوالات متداول
-│   ├── PRIVACY-POLICY.md         ← 🔒 سیاست حریم خصوصی اپلیکیشن اندروید
-│   ├── PLAY-STORE-CHECKLIST.md   ← 🏪 چک‌لیست انتشار اپ در گوگل‌پلی
-│   ├── openapi.yaml              ← اسپک OpenAPI 3.0 (برای Postman/Swagger)
-│   └── examples/                 ← نمونه کد آماده به ازای هر زبان
-│       ├── CubePayClient.php
-│       ├── php-example.php
-│       ├── python-example.py
-│       ├── node-example.js
-│       ├── laravel-example.php
-│       └── curl-example.sh
-└── integrations/                 ← راهنمای اتصال به پلتفرم‌های خاص
-    ├── generic-integration-guide.md
-    ├── wordpress-plugin-guide.md
-    ├── faoxima-guide.md
-    └── mirzabot-ready-files/
-        └── mirzabot-ready-files-guide.md
-```
-
----
-
 ## 🔌 اتصال به پلتفرم‌های آماده
 
 اگه از یکی از این پلتفرم‌ها استفاده می‌کنید، لازم نیست خودتون API رو صفر تا صد پیاده‌سازی کنید:
@@ -84,34 +52,22 @@ cubepay-doc/
 | 🌐 **وردپرس / ووکامرس** | [راهنمای وردپرس](./integrations/wordpress-plugin-guide.md) | نصب CubePay روی فروشگاه وردپرسی |
 | ⚙️ **هر پلتفرم دیگه** | [راهنمای اتصال عمومی](./integrations/generic-integration-guide.md) | اتصال مستقیم به API، مستقل از پلتفرم |
 | 🔀 **هر دو سیستم با هم** | [راهنمای عادی + VIP](./integrations/using-both-systems-guide.md) | اگه اشتراک VIP دارید و می‌خواید برای هر سفارش انتخاب کنید کدوم مسیر بره |
-| 🤖 **دریافت پیامک از اندروید** | [اپ اختصاصی CubePay](./integrations/android-sms-forwarder-guide.md) | اپ رسمی CubePay، از قبل برای وب‌هوک تنظیم‌شده — جایگزین اپ‌های عمومی SMS Forwarder |
-| 🍎 **دریافت پیامک از آیفون** | [راهنمای iOS Shortcuts](./integrations/ios-shortcuts-sms-forwarding-guide.md) | جایگزین اپ‌های SMS Forwarder اندروید، مخصوص آیفون — بدون نصب اپ اضافه |
+
+📲 برای پرداخت کارت‌به‌کارت، گوشی‌تون باید پیامک بانکی رو به CubePay بفرسته — [اندروید](./integrations/android-sms-forwarder-guide.md) · [آیفون](./integrations/ios-shortcuts-sms-forwarding-guide.md)
 
 ---
 
-## 🚀 شروع سریع (خلاصه)
+## 🚀 شروع سریع
 
-```
-Authorization: Bearer YOUR_API_TOKEN
-```
-
-**روش پیشنهادی — یک endpoint برای هر دو نوع پرداخت** (بسته به این‌که کدوم روش(ها) رو برای اکانتتون فعال کردید، خودکار فاکتور کارتی، کریپتویی، یا صفحه‌ی انتخاب روش می‌سازه):
+یک endpoint برای هر دو نوع پرداخت — بسته به روش‌هایی که در ربات فعال کرده‌اید، خودش فاکتور کارتی یا کریپتویی می‌سازد، یا صفحه‌ی انتخاب به مشتری نشان می‌دهد:
 
 ```
 POST https://cubevps.ir/pay/create-order.php
+Authorization: Bearer YOUR_API_TOKEN
 ```
 
-**یا در صورت نیاز، مستقیم به هرکدوم:**
-
-```
-POST https://cubevps.ir/smspay/api/create-payment.php   ← فقط کارت‌به‌کارت
-POST https://cubevps.ir/smspay/api/verify-payment.php
-POST https://cubevps.ir/crypto/api/create-crypto-payment.php   ← فقط ارز دیجیتال
-```
-
-جزئیات کامل پارامترها، پاسخ‌ها، کدهای خطا و قوانین تراکنش در 👉 **[docs/API-REFERENCE.md](./docs/API-REFERENCE.md)** (کارت) و **[docs/CRYPTO-API-REFERENCE.md](./docs/CRYPTO-API-REFERENCE.md)** (ارز دیجیتال / یکپارچه) و **[docs/CUBEPAY-VIP-API-REFERENCE.md](./docs/CUBEPAY-VIP-API-REFERENCE.md)** (CubePay VIP — تسویه توسط CubePay)
-
-نمونه کد در PHP، Python، Node.js، Laravel و cURL 👉 **[docs/examples/](./docs/examples/)**
+📘 جزئیات پارامترها، پاسخ‌ها و کدهای خطا → [`docs/API-REFERENCE.md`](./docs/API-REFERENCE.md)
+💻 نمونه کد آماده (PHP · Python · Node.js · Laravel · cURL) → [`docs/examples/`](./docs/examples/)
 
 ---
 
