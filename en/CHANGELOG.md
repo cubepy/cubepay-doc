@@ -6,6 +6,27 @@ All notable changes to this project are recorded here, in chronological order.
 
 ---
 
+## [2.11.0] — the web panel got documented, group alerts, and first-party QR
+
+Five of this round's seven changes landed in the web panel — which **until today had not a single page of documentation**. Now it does.
+
+### Added
+- **[`docs/WEB-PANEL.md`](docs/WEB-PANEL.md)** (both languages) — the panel guide: signing in, why it sometimes asks for a code again, what each section does, and explicitly **what is bot-only**.
+- **[`docs/GROUP-ALERTS.md`](docs/GROUP-ALERTS.md)** (both languages) — announcing every confirmed payment in a Telegram group. For merchants with staff who should see payments without having access to the account.
+- **Crypto wallet management in the panel** — three currencies, each with its own address. Two rules are now documented: changing the address voids the previous approval, and the last wallet cannot be deleted while crypto is on.
+- **Co-owner in the panel** — view, remove, and **withdraw an invite that was never accepted** (that last one did not exist in the bot either; invites never expired and could not be taken back). Adding stays bot-only on purpose, because it needs the other person's consent.
+- **Payment methods and the sandbox token in the panel** — four switches that used to be bot-only.
+- **A QR on every payment link** in the panel, with a save button — for print, menus and shop windows.
+- **Share buttons on manual invoices** in the bot — Telegram and WhatsApp.
+- Five new rows and questions across [`START-HERE.md`](START-HERE.md) and [`docs/FAQ.md`](docs/FAQ.md) (both languages): what the panel is, where to add a co-owner, link QRs, and group alerts.
+
+### Changed
+- **The crypto payment page's QR no longer comes from `api.qrserver.com`.** Until now every page load sent the customer's deposit address to an outside server, and if that server was down or blocked the QR simply did not appear. It is now generated in the customer's own browser with `qrcode-generator 2.0.4` (MIT), shipped unmodified from npm with its `sha256` verified at install time. The output is SVG, so it stays sharp in print too.
+- **Fixed the panel's "turn on crypto" error message.** It claimed the wallet address could "only be saved from the bot" — untrue since that section was added to the panel itself.
+
+### Security
+- **Saving and deleting a crypto wallet address in the panel now requires re-confirmation.** The first version of that feature did not, and that was a mistake: the settlement destination is read from `payout_wallets_json`, the `whitelisted` flag gates no payout anywhere in the code, and on accounts set to instant settlement the next incoming payment would go to the new address automatically. A stolen session could therefore redirect the money — a bigger risk than adding a card, which already had this guard. Removing a co-owner and withdrawing an invite were added to the same list.
+
 ## [2.10.0] — Simplified the landing page
 
 A merchant said the docs were complicated. They were right — but the problem wasn't length, it was **duplicated navigation**: the `README` listed the same destinations three times in three shapes.
