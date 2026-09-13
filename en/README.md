@@ -51,6 +51,8 @@ If you use one of these platforms, you don't need to implement the API from scra
 | 🌐 **WordPress / WooCommerce** | [WordPress guide](./integrations/wordpress-plugin-guide.md) | Installing CubePay on a WordPress store |
 | ⚙️ **Any other platform** | [Generic integration guide](./integrations/generic-integration-guide.md) | Direct API connection, platform-independent |
 
+🖥 **No website or bot?** Create a payment link in the [web panel](./docs/WEB-PANEL.md) and send that link — or its QR. Not a line of code.
+
 ---
 
 ## 🚀 Quick Start

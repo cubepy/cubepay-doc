@@ -32,6 +32,8 @@
 Authorization: Bearer YOUR_API_TOKEN
 ```
 
+> 🖥 **پنل وب هم دارید:** <https://cubevps.ir/panel/> — با همان شناسه‌ی فروشندگی و یک کد تلگرامی وارد می‌شوید. برای فهرست فاکتورها، خروجی اکسل و لینک‌های پرداخت راحت‌تر از رباتست. ربات به‌تنهایی کافیست؛ پنل اجباری نیست → [راهنمای پنل وب](./docs/WEB-PANEL.md)
+
 ## قدم ۴ — انتخاب مسیر اتصال
 
 بسته به ابزاری که استفاده می‌کنید، یکی از این مسیرها رو دنبال کنید:
@@ -47,6 +49,8 @@ Authorization: Bearer YOUR_API_TOKEN
 | نمی‌تونید SMS Forwarder نصب کنید و می‌خواید CubePay پول رو جمع کنه و ارزی تسویه کنه | [docs/CUBEPAY-VIP-API-REFERENCE.md](./docs/CUBEPAY-VIP-API-REFERENCE.md) |
 | اشتراک VIP دارید و می‌خواید هم‌زمان از سیستم عادی هم استفاده کنید | [راهنمای هر دو سیستم با هم](./integrations/using-both-systems-guide.md) |
 | فقط می‌خواید API رو تست کنید | [docs/API-REFERENCE.md](./docs/API-REFERENCE.md) و [docs/examples/](./docs/examples/) |
+| سایت و ربات ندارید و فقط می‌خواید لینک پرداخت بفرستید | [راهنمای پنل وب](./docs/WEB-PANEL.md) — لینک بسازید، QR بگیرید، بفرستید |
+| کارمند دارید و می‌خواید واریزها رو در یک گروه ببینن | [راهنمای اعلان گروهی](./docs/GROUP-ALERTS.md) |
 
 ## سوالی پیش اومد؟
 

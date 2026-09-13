@@ -12,7 +12,19 @@
 As long as the invoice hasn't expired, detection still happens; bank SMS delay is usually a few seconds.
 
 **How do I change my token or card?**
-From the merchant management bot menu ([@cubepy_bot](https://t.me/cubepy_bot)).
+The token from the bot ([@cubepy_bot](https://t.me/cubepy_bot)) → "🔗 My Panel". The card from either the bot or the [web panel](WEB-PANEL.md).
+
+**Is there a web panel? How is it different from the bot?**
+Yes — <https://cubevps.ir/panel/>. Both act on the same account and the bot alone is enough; the panel is for when a bigger screen helps (invoice lists, Excel export, payment links). You sign in with your Merchant ID and a 6-digit code sent to your Telegram. Details and what lives where → [Web panel guide](WEB-PANEL.md).
+
+**Can I add a co-owner from the web panel?**
+❌ No, only from the bot: "⚙️ More settings ← 👥 Co-owner ← 🤝 Add co-owner". Becoming a co-owner requires that person's own consent — the bot sends them an invite and they must press "I accept" themselves. **Removing** a co-owner and **withdrawing** an invite that was never accepted are both possible from the panel.
+
+**I want my staff to see incoming payments without giving them access to my account.**
+Connect a Telegram group from "⚙️ More settings ← 📢 Group alerts". Every confirmed payment is announced there too, and the bot reads no messages from the group → [Group alerts guide](GROUP-ALERTS.md).
+
+**How do I give a customer a payment link as a QR code?**
+In the [web panel](WEB-PANEL.md) → "🔗 Payment links" → the "📱 QR" button on each link. You can save and print the image. The QR is generated in your own browser, so no server ever sees your link.
 
 **How do I enable Auto Confirmation?**
 Automatic confirmation is enabled by default on all approved accounts; you just need your bank card and the SMS Forwarder app set up correctly.

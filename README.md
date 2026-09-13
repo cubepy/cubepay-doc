@@ -55,6 +55,8 @@ CubePay یک سرویس API برای ساخت و تأیید خودکار ترا�
 
 📲 برای پرداخت کارت‌به‌کارت، گوشی‌تون باید پیامک بانکی رو به CubePay بفرسته — [اندروید](./integrations/android-sms-forwarder-guide.md) · [آیفون](./integrations/ios-shortcuts-sms-forwarding-guide.md)
 
+🖥 **سایت و ربات ندارید؟** از [پنل وب](./docs/WEB-PANEL.md) لینک پرداخت بسازید و همان لینک — یا QRش — رو بفرستید. بدون یک خط کد.
+
 ---
 
 ## 🚀 شروع سریع

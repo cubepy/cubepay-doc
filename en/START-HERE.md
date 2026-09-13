@@ -28,6 +28,8 @@ Grab your API token from **"🔗 My Panel"**. You'll send this token in every re
 Authorization: Bearer YOUR_API_TOKEN
 ```
 
+> 🖥 **There is a web panel too:** <https://cubevps.ir/panel/> — sign in with the same Merchant ID and a Telegram code. It beats the bot for invoice lists, Excel exports and payment links. The bot alone is enough; the panel is optional → [Web panel guide](./docs/WEB-PANEL.md)
+
 ## Step 4 — Pick your integration path
 
 Depending on what you're using, follow one of these guides:
@@ -42,6 +44,8 @@ Depending on what you're using, follow one of these guides:
 | You can't install an SMS Forwarder and want CubePay to collect the money and settle in crypto | [docs/CUBEPAY-VIP-API-REFERENCE.md](./docs/CUBEPAY-VIP-API-REFERENCE.md) |
 | You have a VIP subscription and want to keep using the normal system alongside it | [Running both systems together](./integrations/using-both-systems-guide.md) |
 | Just want to test the API | [docs/API-REFERENCE.md](./docs/API-REFERENCE.md) and [docs/examples/](./docs/examples/) |
+| No website or bot — you just want to send a payment link | [Web panel guide](./docs/WEB-PANEL.md) — create a link, get its QR, send it |
+| You have staff and want them to see payments in a group | [Group alerts guide](./docs/GROUP-ALERTS.md) |
 
 ## Have a question?
 
