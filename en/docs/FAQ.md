@@ -47,6 +47,18 @@ Withdrawal and purchase messages are ignored automatically, so there's no harm i
 **My bank's SMS wasn't recognised — what now?**
 Send support the exact message text (without the full card number) and we'll add that bank's pattern. To check whether the message reached us at all, use "🧪 Connection test → 🧪 SMS test (forwarder)" in the bot.
 
+**I accidentally sent my secret or token somewhere. What now?**
+🔴 Rotate it immediately. Deleting the message is not enough — someone may already have seen it.
+
+- SMS webhook secret → bot → "⚙️ More settings" → rotate webhook secret
+- API token → bot → "🔗 My Panel" → rotate token
+
+**A leaked secret means anyone can send a forged deposit SMS** and mark an unpaid invoice as paid. A leaked token means anyone can create invoices as you.
+
+After rotating, replace the new value in your forwarder app (or iPhone Shortcut) and in your own code, or the bank SMS will stop reaching us.
+
+> 📌 In the support group, if you post a secret as **text**, the bot deletes the message, rotates your key on the spot, and sends you the new value privately. It cannot read text inside an **image**, though — there you have to act yourself.
+
 **Does the phone forwarding SMS need to stay on all the time?**
 ✅ Yes. If that phone goes offline, bank SMS messages won't reach the system and automatic confirmation stops.
 
