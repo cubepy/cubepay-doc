@@ -17,6 +17,24 @@ From the merchant management bot menu ([@cubepy_bot](https://t.me/cubepy_bot)).
 **How do I enable Auto Confirmation?**
 Automatic confirmation is enabled by default on all approved accounts; you just need your bank card and the SMS Forwarder app set up correctly.
 
+**Where do I enter my bank's keyword?**
+Nowhere — there is no such setting, and you don't need one. The system recognises deposit messages on its own.
+
+Automatic detection covers:
+
+- Persian keywords: واریز, انتقال وجه, حواله
+- Latin-script messages (Tejarat, and any bank whose SMS language is set to English): `Variz:Mablagh 1,211,900 IRR`
+- The compact format some banks use (Sepah, Ansar, Mehr…), just a signed number: `+100,000`
+- Persian/Arabic digits, Arabic letters (ي/ك) and zero-width joiners — all normalised
+- Headers some forwarder apps prepend (`From: +98...`) are stripped
+
+Withdrawal and purchase messages are ignored automatically, so there's no harm in them being forwarded.
+
+> 📌 On iPhone, leave the **Message Contains** field empty too. A keyword that doesn't exactly match your bank's real SMS text means the message never reaches us and the payment is never confirmed — with no error anywhere.
+
+**My bank's SMS wasn't recognised — what now?**
+Send support the exact message text (without the full card number) and we'll add that bank's pattern. To check whether the message reached us at all, use "🧪 Connection test → 🧪 SMS test (forwarder)" in the bot.
+
 **Does the phone forwarding SMS need to stay on all the time?**
 ✅ Yes. If that phone goes offline, bank SMS messages won't reach the system and automatic confirmation stops.
 
