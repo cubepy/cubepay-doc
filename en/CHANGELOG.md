@@ -6,6 +6,17 @@ All notable changes to this project are recorded here, in chronological order.
 
 ---
 
+## [2.9.0] — A complete Python example, and a clearer path for non-PHP code
+
+### Changed
+- **[`docs/examples/python-example.py`](docs/examples/python-example.py) was rewritten.** The old version only showed the legacy card endpoint. It now covers the whole flow in one file: creating the order through the unified router, building the payment message (including the in-bot card when `show_card_in_bot` is on), confirming with `verify-payment`, and checking the crypto callback signature.
+
+### Added
+- Two rows in the routing table of [`START-HERE.md`](START-HERE.md) — one for Python, one for other languages. Anyone not writing PHP previously had no obvious path.
+- A note at the top of the "render the payment inside your bot" section of the generic guide, sending non-PHP readers straight to the example for their language.
+
+---
+
 ## [2.8.1] — Corrected the "payment methods" menu path
 
 ### Fixed

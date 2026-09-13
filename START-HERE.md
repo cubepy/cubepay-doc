@@ -39,6 +39,8 @@ Authorization: Bearer YOUR_API_TOKEN
 | ربات فروش ساخته‌شده با **Foxima** | [راهنمای Foxima](./integrations/faoxima-guide.md) |
 | فروشگاه **وردپرس/ووکامرس** | [راهنمای وردپرس](./integrations/wordpress-plugin-guide.md) |
 | سایت یا ربات با کد اختصاصی خودتون (کارت‌به‌کارت) | [راهنمای اتصال عمومی](./integrations/generic-integration-guide.md) |
+| ربات یا سرویس با **پایتون** | [نمونه‌ی کامل پایتون](./docs/examples/python-example.py) — یک فایل، از ساخت فاکتور تا تایید |
+| **Node.js** یا زبان دیگر | [docs/examples/](./docs/examples/) و [docs/API-REFERENCE.md](./docs/API-REFERENCE.md) |
 | می‌خواید ارز دیجیتال یا روتر یکپارچه (کارت+کریپتو) رو تست کنید | [docs/CRYPTO-API-REFERENCE.md](./docs/CRYPTO-API-REFERENCE.md) |
 | نمی‌تونید SMS Forwarder نصب کنید و می‌خواید CubePay پول رو جمع کنه و ارزی تسویه کنه | [docs/CUBEPAY-VIP-API-REFERENCE.md](./docs/CUBEPAY-VIP-API-REFERENCE.md) |
 | اشتراک VIP دارید و می‌خواید هم‌زمان از سیستم عادی هم استفاده کنید | [راهنمای هر دو سیستم با هم](./integrations/using-both-systems-guide.md) |
