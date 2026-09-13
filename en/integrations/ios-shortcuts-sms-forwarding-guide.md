@@ -43,6 +43,16 @@ You enter the secret as one of the form fields in step 4 — **not** inside the 
    - set **Method** to **POST**
    - set **Request Body** to **Form**
 
+   > 🔴 **If you don't open "Show More", you won't see any of this.** The
+   > `Get Contents of URL` action is collapsed by default and only shows the
+   > address. Until you tap that small arrow there is no `Method`, no
+   > `Request Body`, and nowhere to put `secret`.
+   >
+   > **Common mistake:** putting the secret in a separate `Text` action at
+   > the top of the shortcut. That action is wired to nothing and does
+   > nothing — the secret belongs **inside the fields of this request**. The
+   > symptom is that messages forward fine but no invoice is ever confirmed.
+
    Now add **two fields**. Each time you tap "Add new field", iOS asks what
    **type** the field is and offers two choices: **Text** and **File**.
    Pick **Text** both times; you never need File here.
