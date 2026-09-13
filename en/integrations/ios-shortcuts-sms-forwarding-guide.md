@@ -26,7 +26,18 @@ You enter the secret as one of the form fields in step 4 — **not** inside the 
 ## Building the Shortcut
 
 1. Open the **Shortcuts** app → **Automation** tab → **+** → **Create Personal Automation**
-2. Choose **When I Get a Message Containing...**. If you only want bank messages processed (rather than every SMS), put the bank's sender number or name in the **From** field; otherwise leave it empty so every message is checked (on the server side, messages that aren't deposits are ignored automatically, so leaving it empty is fine too).
+2. Choose **When I Get a Message Containing...**.
+
+   This screen has two fields — **both optional**, and we suggest leaving **both empty**:
+
+   | Field | What it does | Our suggestion |
+   |---|---|---|
+   | **Message Contains** | Only messages containing this word | empty |
+   | **From** | Only messages from this sender | empty, or your bank's number/name |
+
+   > ⚠️ **The keyword lives here, not in the actions.** People often go looking for it in the action list later and can't find it. To come back and change it, tap the automation's name at the top of the screen.
+
+   **Why empty?** On the server side, messages that aren't deposits are ignored automatically. But if you put a word here that doesn't **exactly** match your bank's real SMS text, that message is never forwarded and the payment is never confirmed — with no error anywhere.
 3. **Add Action** → search for **Get Contents of URL** and add it.
 4. Put your webhook URL in that action. Then tap the small arrow next to the action (Show More):
    - set **Method** to **POST**
