@@ -116,7 +116,18 @@ flowchart TD
 
 The money from an invoice is not immediately withdrawable. After payment it
 first lands in the **"pending"** bucket, and once your account's hold period
-has elapsed it moves **automatically** to **"available"**.
+has elapsed it moves **automatically** to **"available"**. No manual step is
+needed; it is released on schedule by itself.
+
+> ⏳ **The default hold period is 7 days (168 hours).** So it is normal for
+> the "available" balance to sit unchanged for a few days while "pending" has
+> a figure — the money is not lost or stuck, its release time simply has not
+> arrived yet. The hold exists so that if a deposit is reversed, it can be
+> handled before withdrawal.
+>
+> **Why the hold exists:** a card-to-card deposit can be reversed for a few
+> days, but our (crypto) settlement is irreversible. The hold covers exactly
+> that gap.
 
 Your account's exact value is in the `GET api/dashboard.php` response:
 
