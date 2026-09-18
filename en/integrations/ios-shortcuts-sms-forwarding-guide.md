@@ -4,7 +4,7 @@
 
 On Android we have our own forwarder app. The iPhone has no equivalent of it, but there are two ways to do the same job:
 
-1. **[The ready-made shortcut](https://www.icloud.com/shortcuts/708c82bc80f247139fa0e2bbac39c816)** — one tap, it asks you for your secret, done. **The easiest route**, described just below.
+1. **[The ready-made shortcut](https://www.icloud.com/shortcuts/a22472a5fe254bb6a4c39414d490f2c0)** — add it, paste your connection code into its URL, done. **The easiest route**, described just below.
 2. **The built-in Shortcuts app, by hand** — if you would rather build it yourself, or the ready-made one won't open. This guide walks through it step by step.
 3. **The [SMS Forwarder](https://apps.apple.com/us/app/sms-forwarder-forward-sms/id6693285061) app** from the App Store — several merchants have tested it and it works.
 
@@ -12,19 +12,22 @@ On Android we have our own forwarder app. The iPhone has no equivalent of it, bu
 
 ## ⚡️ Fastest route: the ready-made shortcut
 
-1. On your iPhone, open this link: **[Add the CubePay shortcut](https://www.icloud.com/shortcuts/708c82bc80f247139fa0e2bbac39c816)**
-2. Tap **Add Shortcut**. During the import it asks you for your **secret** —
-   copy it from your account panel ("📲 Deposit confirmation method") and paste it in.
-3. Go to the **Shortcuts** app → **Automation** tab → **+** →
-   **Create Personal Automation** → **When I Get a Message Containing...**
-4. Choose the CubePay shortcut as the action (**Run Shortcut**).
-5. Turn **Ask Before Running** **off**, and save.
+1. On your iPhone, open this link: **[Add the CubePay shortcut](https://www.icloud.com/shortcuts/a22472a5fe254bb6a4c39414d490f2c0)** → tap **Add Shortcut**.
+2. The shortcut lands in your list. Press and hold it (or tap the ⋯) → **Edit**.
+3. Inside the **Get Contents of URL** action the URL ends with `PASTE_YOUR_CODE_HERE`.
+   Tap the URL, delete just that placeholder, and put your own connection code in its
+   place — copy the code from your account panel ("📲 Deposit confirmation method").
+   The final URL should read exactly:
+   `https://cubevps.ir/smspay/webhook/sms.php?secret=YOUR_CODE`
+4. Tap **Done** (top-right).
+5. Go to the **Shortcuts** app → **Automation** tab → **+** → **Create Personal
+   Automation** → **When I Get a Message Containing...**, choose this shortcut as the
+   action, turn **Ask Before Running** **off**, and save.
 
-> 🔒 This link is the same for every merchant and **contains no secret** —
-> Shortcuts asks you for it at import time and it is stored only on your
-> own phone.
-
-The ready-made shortcut sends over both paths at once: the webhook and the shortcode forward.
+> 🔒 The link is the same for every merchant and carries only a placeholder — your
+> real code is pasted on your own phone. With this route the code sits in the URL; if
+> you would rather keep it out of the server access log, build it by hand below, where
+> the code goes in a form field instead.
 
 ---
 
