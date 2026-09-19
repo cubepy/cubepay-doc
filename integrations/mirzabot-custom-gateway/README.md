@@ -49,7 +49,7 @@ https://yourdomain.com/cubepay-gateway.php
 
 ```php
 const BOT_BASE_URL   = 'https://yourbot.com';   // آدرس رباتِ خودتان
-const BOT_TOKEN2     = '...';                   // با دستور /token2 در ربات می‌گیرید
+const BOT_TOKEN2     = '...';                   // توکنِ /token2 رباتِ میرزای خودتان (نه رباتِ CubePay، نه آیدیِ عددی)
 const BRIDGE_API_KEY = '...';                   // یک رشته‌ی تصادفیِ دلخواه بسازید
 const CUBEPAY_TOKEN  = '...';                   // از @cubepy_bot ← «🔗 پنل من»
 ```
