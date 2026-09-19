@@ -21,8 +21,10 @@ On Android we have our own forwarder app. The iPhone has no equivalent of it, bu
    `https://cubevps.ir/smspay/webhook/sms.php?secret=YOUR_CODE`
 4. Tap **Done** (top-right).
 5. Go to the **Shortcuts** app → **Automation** tab → **+** → **Create Personal
-   Automation** → **When I Get a Message Containing...**, choose this shortcut as the
-   action, turn **Ask Before Running** **off**, and save.
+   Automation**. Pick the message trigger — on **newer iOS** it's **When I receive a
+   message** (tap its required **Sender** filter and set your bank's SMS sender number),
+   on **older iOS** it's **When I Get a Message Containing...**. Then choose this shortcut
+   as the action, turn **Ask Before Running** **off**, and save.
 
 > 🔒 The link is the same for every merchant and carries only a placeholder — your
 > real code is pasted on your own phone. With this route the code sits in the URL; if
@@ -55,7 +57,11 @@ You enter the secret as one of the form fields in step 4 — **not** inside the 
 ## Building the Shortcut
 
 1. Open the **Shortcuts** app → **Automation** tab → **+** → **Create Personal Automation**
-2. Choose **When I Get a Message Containing...**. If you only want bank messages processed (rather than every SMS), put the bank's sender number or name in the **From** field; otherwise leave it empty so every message is checked (on the server side, messages that aren't deposits are ignored automatically, so leaving it empty is fine too).
+2. Pick the automation type — **its name depends on your iOS version:**
+   - **Newer iOS:** **When I receive a message**. It has a **Sender** filter that is **required** (until you set it, it stays "Configure 'Sender' to enable this automation" and won't turn on) — tap **Sender** and enter your **bank's SMS sender number/name** (the one your deposit texts come from).
+   - **Older iOS:** **When I Get a Message Containing...**. The **Message Contains** and **From** filters are optional; leave them empty (the server ignores non-deposit messages automatically) or set the bank's sender.
+
+   > 🔎 If you can't find "When I Get a Message Containing", your iOS is newer and it's now called **When I receive a message** — same thing.
 3. **Add Action** → search for **Get Contents of URL** and add it.
 4. Put your webhook URL in that action. Then tap the small arrow next to the action (Show More):
    - set **Method** to **POST**
