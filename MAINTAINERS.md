@@ -33,7 +33,6 @@ cubepay-doc/
 ├── integrations/                              ← how to wire CubePay into specific platforms
 │   ├── generic-integration-guide.md           ← platform-agnostic, direct API integration
 │   ├── wordpress-plugin-guide.md
-│   ├── ios-shortcuts-sms-forwarding-guide.md
 │   ├── android-sms-forwarder-guide.md          ← CubePay's own dedicated Android SMS-forwarding app. The APK is a release asset on THIS repo under the fixed tag `android-latest` (permanent URL `releases/download/android-latest/CubePay.apk`; the app's private source repo republishes it there on every release). `.github/workflows/update-apk-checksum.yml` re-syncs the SHA-256 printed in both language versions of the guide daily — don't hand-edit those hashes.
 │   ├── using-both-systems-guide.md             ← running the normal and VIP paths side by side (one endpoint, two tokens)
 │   ├── faoxima-integration-guide.md           ← manual edit guide for the Foxima bot codebase

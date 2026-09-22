@@ -87,7 +87,7 @@ cubepay-doc/
 | ⚙️ **هر پلتفرم دیگه** | [راهنمای اتصال عمومی](./integrations/generic-integration-guide.md) | اتصال مستقیم به API، مستقل از پلتفرم |
 | 🔀 **هر دو سیستم با هم** | [راهنمای عادی + VIP](./integrations/using-both-systems-guide.md) | اگه اشتراک VIP دارید و می‌خواید برای هر سفارش انتخاب کنید کدوم مسیر بره |
 | 🤖 **دریافت پیامک از اندروید** | [اپ اختصاصی CubePay](./integrations/android-sms-forwarder-guide.md) | اپ رسمی CubePay، از قبل برای وب‌هوک تنظیم‌شده — جایگزین اپ‌های عمومی SMS Forwarder |
-| 🍎 **دریافت پیامک از آیفون** | [راهنمای iOS Shortcuts](./integrations/ios-shortcuts-sms-forwarding-guide.md) | جایگزین اپ‌های SMS Forwarder اندروید، مخصوص آیفون — بدون نصب اپ اضافه |
+| 🍎 **دریافت پیامک از آیفون** | داخلِ ربات: منو → «🍎 آموزش Shortcut (آیفون)» | شورتکاتِ آماده + آموزشِ ویدیویی، مخصوصِ آیفون — بدون نصب اپ اضافه |
 
 ---
 
