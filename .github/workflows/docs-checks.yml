@@ -28,7 +28,9 @@ jobs:
       - name: Install openapi-spec-validator
         run: pip install openapi-spec-validator
       - name: Validate spec
-        run: openapi-spec-validator docs/openapi.yaml
+        run: |
+          openapi-spec-validator docs/openapi.yaml
+          openapi-spec-validator en/docs/openapi.yaml
 
   php-lint:
     name: Lint PHP snippets

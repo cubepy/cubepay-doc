@@ -4,6 +4,9 @@
 
 # 👑 API Reference — CubePay VIP (Settlement handled by CubePay)
 
+> **Scheduled VIP retirement:** service ends no later than **October 21, 2026, 23:59:59 Asia/Tehran**. Subscriptions expiring earlier retain their earlier expiry. This guide is for existing integrations; use the standard payment path for new integrations. Removing the VIP app section does not itself execute subscription refunds.
+
+
 > ✅ **Status:** this module is **deployed and live** on `cubevps.ir`. The full path — buy subscription → VIP token issued → create invoice → customer pays card-to-card → fee deducted → balance released → crypto withdrawal — has been tested end to end with real money. For the architecture and the reasoning behind each design decision, see [`MANAGED-SETTLEMENT-ARCHITECTURE.md`](../../docs/MANAGED-SETTLEMENT-ARCHITECTURE.md) (Persian only for now).
 >
 > This feature ("CubePay VIP", or "special merchants") is entirely **optional and separate** from the existing card-to-card / SMS Forwarder path documented in [`API-REFERENCE.md`](./API-REFERENCE.md) and [`CRYPTO-API-REFERENCE.md`](./CRYPTO-API-REFERENCE.md). It is only for merchants who have bought a VIP subscription; nothing changes and nothing needs migrating for everyone else.

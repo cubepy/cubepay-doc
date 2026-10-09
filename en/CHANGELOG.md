@@ -6,6 +6,15 @@ All notable changes to this project are recorded here, in chronological order.
 
 ---
 
+## 2026-10-10 — Android 2.6.2, build 63 published
+
+- Published the official build 63 APK at the stable download URL; retained 2.6.1 as a prior-version asset.
+- Updated Android setup for easy onboarding, active-code recovery, permissions and both forwarding methods.
+- Corrected the obsolete second-path toggle and explained connection tests versus payment confirmation and fulfillment.
+- iPhone instructions continue to support both internet and SMS forwarding.
+- Documented optional buyer usernames and the limits of identity on historical invoices.
+- Added the scheduled VIP retirement date to relevant guides and the main page.
+
 ## 2026-10-09 — Restore both iPhone forwarding methods
 
 - Restored internet-independent SMS forwarding instructions alongside internet forwarding.
