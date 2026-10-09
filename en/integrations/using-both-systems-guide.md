@@ -4,6 +4,9 @@
 
 # 🔀 Running both systems together (normal + VIP)
 
+> **Scheduled VIP retirement:** service ends no later than **October 21, 2026, 23:59:59 Asia/Tehran**. Subscriptions expiring earlier retain their earlier expiry. This guide is for existing integrations; use the standard payment path for new integrations. Removing the VIP app section does not itself execute subscription refunds.
+
+
 If you have a [CubePay VIP](../docs/CUBEPAY-VIP-API-REFERENCE.md) subscription, **you don't have to choose one**. Both tokens are valid at the same time, and you can decide per order which path it takes.
 
 This guide is for when you want both in a single integration.

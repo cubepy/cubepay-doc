@@ -295,6 +295,10 @@ components:
         customer_user_id:
           type: string
           description: Customer identifier (optional)
+        customer_username:
+          type: string
+          description: Optional store-supplied buyer username metadata, not Telegram authentication. Requires the corresponding server update and database column.
+
         description:
           type: string
           description: Order description (optional)

@@ -293,6 +293,10 @@ components:
         customer_user_id:
           type: string
           description: شناسه مشتری (اختیاری)
+        customer_username:
+          type: string
+          description: نام کاربری اختیاری خریدار؛ دادهٔ نمایشی ارسالی فروشگاه، نه احراز هویت تلگرام. نیازمند به‌روزرسانی سرور و ستون مربوط.
+
         description:
           type: string
           description: توضیح سفارش (اختیاری)

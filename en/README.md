@@ -28,6 +28,8 @@ CubePay is an API service for creating and automatically confirming transactions
 
 ## ✨ Features
 
+> **Latest update:** [Android 2.6.2 build 63](./integrations/android-sms-forwarder-guide.md) is published. [iPhone setup](./integrations/ios-shortcuts-sms-forwarding-guide.md) covers both internet and SMS forwarding. VIP retirement is scheduled for October 21, 2026, 23:59:59 Tehran; use the standard path for new integrations.
+
 | | |
 |---|---|
 | ✅ Automatic payment confirmation (under 30 seconds) | ✅ Automatic callback to your server |

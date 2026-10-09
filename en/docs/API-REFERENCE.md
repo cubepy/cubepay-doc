@@ -37,7 +37,11 @@ POST https://cubevps.ir/smspay/api/create-payment.php
 | `redirect_after_payment` | bool | ❌ | Pass `false` and the customer's browser is **not** redirected to `callback_url` after payment is confirmed — they simply see a "payment confirmed" message on the same page. `callback_url` is still called server-to-server, unchanged. Use `false` for bot-driven integrations (which deliver the result through a Telegram message rather than a browser redirect), so your domain is never shown to the customer. **If you omit this parameter**, your account setting applies — "🏪 My Store → 💳 Payment methods → 🔀 Redirect after payment" in the bot. An explicit value always overrides the account setting. New accounts start with the toggle **off** (most integrations are bot-driven); accounts that already existed were left **on**, unchanged. |
 | `type` | string | ✅ | Currently only `card` |
 | `customer_user_id` | string | ❌ | Your customer's identifier (e.g. their Telegram numeric ID) |
+| `customer_username` | string | ❌ | Optional buyer username; stored without @, 1–64 Latin letters/digits/underscores. Invalid metadata does not block invoice creation. |
 | `description` | string | ❌ | Order description |
+> Buyer identifiers supplied by a store are display metadata, not Telegram authentication. Send the buyer identity when creating the invoice; do not substitute the merchant ID. Missing identities on old invoices are not automatically backfilled. Username storage requires the corresponding server update and database column.
+
+
 
 ### ✅ Sample Success Response
 
