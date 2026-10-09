@@ -6,6 +6,12 @@ All notable changes to this project are recorded here, in chronological order.
 
 ---
 
+## 2026-10-09 — Simplified iPhone setup
+
+- Three setup stages with separate iOS 27 and earlier-version instructions.
+- Clarified the single-action template, complete personal URL replacement and message input.
+- Moved troubleshooting out of the main flow and separated bot tests from phone automation checks.
+
 ## [2.11.0] — the web panel got documented, group alerts, and first-party QR
 
 Five of this round's seven changes landed in the web panel — which **until today had not a single page of documentation**. Now it does.
