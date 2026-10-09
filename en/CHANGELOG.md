@@ -6,6 +6,12 @@ All notable changes to this project are recorded here, in chronological order.
 
 ---
 
+## 2026-10-09 — Restore both iPhone forwarding methods
+
+- Restored internet-independent SMS forwarding instructions alongside internet forwarding.
+- Distinguished the bank sender, CubePay destination and registered outgoing SIM; kept SMS independent of network errors.
+- Preserved working setups and documented both-method operation and SMS charges.
+
 ## 2026-10-09 — Simplified iPhone setup
 
 - Three setup stages with separate iOS 27 and earlier-version instructions.
