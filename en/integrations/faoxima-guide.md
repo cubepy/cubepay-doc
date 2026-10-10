@@ -4,6 +4,8 @@
 
 # 🤖 Connecting CubePay to a Foxima bot
 
+> 📖 **[CubePay help center (Persian)](https://cubevps.ir/panel/help/)** — Searchable, mobile-friendly guides; no sign-in required.
+
 🎉 **As of Foxima v1.0.0, CubePay is a native, first-class gateway inside Foxima itself.**
 
 No files to replace, no code to edit, no ready-made files to download. You enter your API token and you're done.

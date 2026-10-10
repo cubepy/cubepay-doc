@@ -2,6 +2,8 @@
 
 # 🤖 Set up CubePay on Android
 
+> 📖 **[CubePay help center (Persian)](https://cubevps.ir/panel/help/)** — Searchable, mobile-friendly guides; no sign-in required.
+
 Public version: **2.6.2, build 63**. Guide updated October 10, 2026.
 
 CubePay forwards messages from your selected banks using **internet forwarding** and/or **SMS to the receiving number**. SMS forwarding does not require phone internet, but requires cellular coverage, outgoing SMS service and credit/SMS allowance. Carrier charges apply.

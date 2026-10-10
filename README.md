@@ -13,6 +13,7 @@
 <p align="center">ساخت لینک پرداخت، تشخیص واریز بانکی و دریافت نتیجه در سایت یا ربات.<br>پرداخت کارت‌به‌کارت و ارز دیجیتال، با مدیریت از ربات و پنل وب.</p>
 
 <p align="center">
+  <a href="https://cubevps.ir/panel/help/"><b>مرجع آموزش‌های CubePay</b></a> ·
   <a href="./START-HERE.md"><b>شروع کار</b></a> ·
   <a href="https://github.com/cubepy/cubepay-doc/releases/download/android-latest/CubePay.apk"><b>دانلود اندروید</b></a> ·
   <a href="./integrations/ios-shortcuts-sms-forwarding-guide.md"><b>آموزش آیفون</b></a> ·

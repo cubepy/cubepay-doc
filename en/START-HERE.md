@@ -2,6 +2,8 @@
 
 # 🚦 Start Here
 
+> 📖 **[CubePay help center (Persian)](https://cubevps.ir/panel/help/)** — Searchable, mobile-friendly guides; no sign-in required.
+
 Welcome! This page will guide you to the right place in 4 simple steps.
 
 ## Step 1 — Merchant registration

@@ -2,6 +2,8 @@
 
 # 🔌 CubePay WooCommerce Plugin (Card-to-Card + Crypto)
 
+> 📖 **[CubePay help center (Persian)](https://cubevps.ir/panel/help/)** — Searchable, mobile-friendly guides; no sign-in required.
+
 If your store is built on **WordPress + WooCommerce**, instead of a manual API integration, you can use this ready-made plugin — installation takes a few minutes and requires no coding.
 
 ---

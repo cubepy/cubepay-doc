@@ -13,6 +13,7 @@
 <p align="center">Create payment links, detect bank transfers and receive results in your website or bot.<br>Card-to-card and crypto payments, managed through Telegram and a web panel.</p>
 
 <p align="center">
+  <a href="https://cubevps.ir/panel/help/"><b>Help center (Persian)</b></a> ·
   <a href="./START-HERE.md"><b>Get started</b></a> ·
   <a href="https://github.com/cubepy/cubepay-doc/releases/download/android-latest/CubePay.apk"><b>Download Android</b></a> ·
   <a href="./integrations/ios-shortcuts-sms-forwarding-guide.md"><b>iPhone guide</b></a> ·

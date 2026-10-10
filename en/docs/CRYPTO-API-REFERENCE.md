@@ -2,6 +2,8 @@
 
 # 📚 API Reference — Unified Payments & Crypto
 
+> 📖 **[CubePay help center (Persian)](https://cubevps.ir/panel/help/)** — Searchable, mobile-friendly guides; no sign-in required.
+
 This file complements [`API-REFERENCE.md`](./API-REFERENCE.md) (which only covers card-to-card). Here you'll find the endpoints for **crypto payments** and the **unified router** (card + crypto, chosen by the customer).
 
 > 📌 If you only use WooCommerce, you don't need to read this file — just fill in the "Unified server address" field in the plugin settings too. This documentation is for direct integration (without the plugin) or building a custom connection.
