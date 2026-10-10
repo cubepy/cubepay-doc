@@ -2,6 +2,8 @@
 
 # 🍎 Simple iPhone bank-message setup
 
+> 📖 **[CubePay help center (Persian)](https://cubevps.ir/panel/help/)** — Searchable, mobile-friendly guides; no sign-in required.
+
 **Three steps:** choose a method and prepare its shortcut → enable automatic execution → check receipt.
 
 Both methods are supported. Use Apple's **Shortcuts** app on the iPhone that receives the bank messages.

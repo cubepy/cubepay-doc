@@ -2,6 +2,8 @@
 
 # 🖥 Merchant Web Panel
 
+> 📖 **[CubePay help center (Persian)](https://cubevps.ir/panel/help/)** — Searchable, mobile-friendly guides; no sign-in required.
+
 **<https://cubevps.ir/panel/>**
 
 The bot always works and is enough on its own. The web panel is for when a bigger screen helps — browsing invoices, exporting to Excel, managing payment links.

@@ -1,5 +1,7 @@
 # ❓ FAQ & Troubleshooting
 
+> 📖 **[CubePay help center (Persian)](https://cubevps.ir/panel/help/)** — Searchable, mobile-friendly guides; no sign-in required.
+
 ## General Questions
 
 **Do I need an official payment gateway license?**

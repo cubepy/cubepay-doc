@@ -2,6 +2,8 @@
 
 # 📢 Group alerts
 
+> 📖 **[CubePay help center (Persian)](https://cubevps.ir/panel/help/)** — Searchable, mobile-friendly guides; no sign-in required.
+
 Every confirmed payment is announced in a Telegram group as well, at the same time as your own private message.
 
 **Who is it for?** Anyone with staff. Your employees see incoming payments **without having any access to your account** — not the wallet, not the cards, not the settings. Just the payment alert.

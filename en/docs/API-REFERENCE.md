@@ -2,6 +2,8 @@
 
 # 📚 Full API Reference
 
+> 📖 **[CubePay help center (Persian)](https://cubevps.ir/panel/help/)** — Searchable, mobile-friendly guides; no sign-in required.
+
 This file has the complete technical details of the API (for those working directly with the API, not through an SDK). If you just want to connect quickly, see [`generic-integration-guide.md`](../integrations/generic-integration-guide.md) instead.
 
 ---
