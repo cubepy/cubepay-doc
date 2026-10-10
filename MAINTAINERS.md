@@ -4,17 +4,15 @@ Conventions, structure, and hard-won context for anyone working on this reposito
 
 ## What this repository is
 
-This is a **documentation-only repository** for CubePay, a hosted payment API service (card-to-card / SMS-detected bank transfer plus USDT/TRX/TON crypto payments). There is no application source code, no package manifest, and no build/lint/test tooling here — the "product" of this repo is the Markdown documentation itself, plus a handful of ready-made PHP snippets that merchants drop into their own bots.
+This is a **documentation-only repository** for CubePay, a hosted payment API service (card-to-card / SMS-detected bank transfer plus USDT/TRX/TON crypto payments). There is no application source code, no package manifest, and no app build tooling here; documentation CI checks links, OpenAPI and PHP snippet syntax — the "product" of this repo is the Markdown documentation itself, plus a handful of ready-made PHP snippets that merchants drop into their own bots.
 
 The actual API runs at `https://cubevps.ir` (endpoints like `/smspay/api/create-payment.php`, `/crypto/api/create-crypto-payment.php`, `/pay/create-order.php`). This repo does not contain that service's implementation — never assume you can run or test it locally. Changes here are purely to documentation, examples, and integration snippets consumed by third-party merchants/bot operators.
 
 ## Working in this repo — commands
 
-There is no build, lint, or test suite. The only meaningful verification is manual:
-- Check that Markdown renders correctly (tables, fenced code blocks, the `mermaid` diagram in `README.md`).
-- Check that relative links between docs still resolve after a file move/rename (e.g. `git grep -n "\.md)" -- '*.md'` to spot links, since there's no link checker configured).
-- If editing `docs/openapi.yaml`, keep it valid OpenAPI 3.0.3 (no local linter is set up — validate by eye or with an external tool if needed).
-- If editing PHP snippets under `docs/examples/` or `integrations/*/*.php`, they are illustrative/copy-paste snippets, not a runnable app — there's nothing to `composer install` or execute in this repo.
+Run `python scripts/check_docs_links.py` for relative Markdown links and anchors. GitHub Actions in `.github/workflows/docs-checks.yml` also validates both OpenAPI specifications and syntax-checks PHP snippets. These checks do not test the hosted payment service.
+
+Preview both READMEs on desktop and mobile. Check HTML image/link paths as well as Markdown links, and keep the product images free of customer data. New screenshots must come from the real UI with demo fixtures; do not fabricate payment records or expose tokens. See `assets/product/README.md` for image provenance.
 
 ## Repository structure
 
@@ -56,7 +54,7 @@ cubepay-doc/
 - Amounts in the card-payment API are in **Rial** everywhere except fields explicitly suffixed `_toman` (e.g. `pay_amount_toman`). Don't blur this distinction when editing examples or tables.
 - Endpoints are `.php` paths on `cubevps.ir` (legacy per-flow endpoints under `/smspay/api/` and `/crypto/api/`, plus a newer unified entry point `POST /pay/create-order.php` that auto-selects card vs. crypto vs. a chooser page based on what the merchant enabled). Keep new endpoint documentation consistent with this naming style.
 - Docs are written in an informal, emoji-headed Persian tone (`## 🚀 شروع سریع`, `## 📋 پارامترها`, etc.) with liberal use of tables for parameters/responses and fenced code blocks for requests/responses. Match this style rather than switching to plain prose when adding sections.
-- `README.md` contains a Mermaid flowchart of the payment flow — update it if the flow described changes, don't let prose and diagram drift apart.
+- Both READMEs use `assets/cubepay-banner.svg` and `assets/payment-flow.svg`. Keep the flow, prose and both language versions aligned. These are native SVG assets with no external resources or scripts. Keep download links pointed at the fixed `android-latest` release; do not hardcode another badge version that can go stale.
 - Foxima integration is no longer a drop-in-files pattern. As of Foxima v1.0.0 the gateway is native (`cubepayCreatePayment()` in `re/rx/function/database_helpers_2.php`, settings under "💎 مالی و گزارشات" → the "🟦 کیوب‌پی" row), so `integrations/faoxima-guide.md` documents only token entry. The retired drop-in files — and the hard-won delivery-resilience fixes they carried for busy shared hosts — remain in git history if a similar pattern is ever needed for another platform.
 - Cross-doc linking is relative (`../docs/API-REFERENCE.md#anchor`, `./integrations/...`); anchors reference Persian heading text (with emoji) since headings themselves are in Persian — check anchors still match after renaming a Persian heading.
 

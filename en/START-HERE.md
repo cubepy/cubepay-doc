@@ -1,3 +1,5 @@
+[🇮🇷 فارسی](../START-HERE.md) · 🇬🇧 English
+
 # 🚦 Start Here
 
 Welcome! This page will guide you to the right place in 4 simple steps.
@@ -18,7 +20,7 @@ From inside the bot:
   - [Android guide](./integrations/android-sms-forwarder-guide.md) — CubePay's own app, pre-configured
   - [iPhone guide](./integrations/ios-shortcuts-sms-forwarding-guide.md) — via Shortcuts, no app to install
 
-> ⚠️ The phone running this app must always be connected to the internet; otherwise automatic payment detection will stop.
+> Internet forwarding requires internet. The separate SMS-to-shortcode path can work without internet, but requires cellular coverage, SMS sending capability and a registered sender number. Carrier charges apply. Both paths are explained in the phone guides above.
 
 ## Step 3 — Get your API token
 
@@ -41,8 +43,6 @@ Depending on what you're using, follow one of these guides:
 | Your own site or bot with custom code | [Generic integration guide](./integrations/generic-integration-guide.md) |
 | A bot or service written in **Python** | [Complete Python example](./docs/examples/python-example.py) — one file, create to confirm |
 | **Node.js** or another language | [docs/examples/](./docs/examples/) and [docs/API-REFERENCE.md](./docs/API-REFERENCE.md) |
-| You can't install an SMS Forwarder and want CubePay to collect the money and settle in crypto | [docs/CUBEPAY-VIP-API-REFERENCE.md](./docs/CUBEPAY-VIP-API-REFERENCE.md) |
-| You have a VIP subscription and want to keep using the normal system alongside it | [Running both systems together](./integrations/using-both-systems-guide.md) |
 | Just want to test the API | [docs/API-REFERENCE.md](./docs/API-REFERENCE.md) and [docs/examples/](./docs/examples/) |
 | No website or bot — you just want to send a payment link | [Web panel guide](./docs/WEB-PANEL.md) — create a link, get its QR, send it |
 | You have staff and want them to see payments in a group | [Group alerts guide](./docs/GROUP-ALERTS.md) |

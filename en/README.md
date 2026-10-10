@@ -1,126 +1,83 @@
 <p align="center">
-  <img src="../assets/demo-banner.jpg" alt="CubePay Demo" width="100%">
+  <img src="../assets/cubepay-banner.svg" alt="CubePay — Connect. Collect. Confirm." width="100%">
 </p>
 
 <p align="center">
-  <a href="https://github.com/cubepy/cubepay-doc/releases"><img src="https://img.shields.io/github/v/release/cubepy/cubepay-doc?label=Latest%20Release&color=blue" alt="Latest Release"></a>
-  <a href="https://github.com/cubepy/cubepay-doc/blob/main/LICENSE"><img src="https://img.shields.io/github/license/cubepy/cubepay-doc" alt="License"></a>
-  <a href="https://github.com/cubepy/cubepay-doc/stargazers"><img src="https://img.shields.io/github/stars/cubepy/cubepay-doc?style=social" alt="Stars"></a>
-  <a href="https://github.com/cubepy/cubepay-doc/network/members"><img src="https://img.shields.io/github/forks/cubepy/cubepay-doc?style=social" alt="Forks"></a>
-  <a href="https://github.com/cubepy/cubepay-doc/issues"><img src="https://img.shields.io/github/issues/cubepy/cubepay-doc" alt="Issues"></a>
-  <a href="https://github.com/cubepy/cubepay-doc/pulls"><img src="https://img.shields.io/github/issues-pr/cubepy/cubepay-doc" alt="Pull Requests"></a>
-  <a href="https://github.com/cubepy/cubepay-doc/commits/main"><img src="https://img.shields.io/github/last-commit/cubepy/cubepay-doc" alt="Last Commit"></a>
+  <a href="https://github.com/cubepy/cubepay-doc/actions/workflows/docs-checks.yml"><img src="https://github.com/cubepy/cubepay-doc/actions/workflows/docs-checks.yml/badge.svg?branch=main" alt="Documentation checks"></a>
+  <a href="https://github.com/cubepy/cubepay-doc/releases/tag/android-latest"><img src="https://img.shields.io/badge/Android-Download_APK-35bca5?logo=android&amp;logoColor=white" alt="Official Android download"></a>
+  <a href="../README.md"><img src="https://img.shields.io/badge/docs-فارسی_%2F_English-d2b365" alt="Persian and English documentation"></a>
 </p>
 
-<h1 align="center">💳 CubePay</h1>
+<h1 align="center">Connect customer payments to your store</h1>
+
+<p align="center">Create payment links, detect bank transfers and receive results in your website or bot.<br>Card-to-card and crypto payments, managed through Telegram and a web panel.</p>
 
 <p align="center">
-Every deposit verifies itself — card-to-card and crypto payments, with automatic detection from bank SMS or the blockchain 🚀
+  <a href="./START-HERE.md"><b>Get started</b></a> ·
+  <a href="https://github.com/cubepy/cubepay-doc/releases/download/android-latest/CubePay.apk"><b>Download Android</b></a> ·
+  <a href="./integrations/ios-shortcuts-sms-forwarding-guide.md"><b>iPhone guide</b></a> ·
+  <a href="./docs/API-REFERENCE.md"><b>API reference</b></a> ·
+  <a href="https://t.me/cube_sup"><b>Support</b></a>
 </p>
 
-CubePay is an API service for creating and automatically confirming transactions — whether card-to-card or crypto (USDT / TRX / TON). For card payments, your customer deposits the amount directly to your own card, and the system detects and confirms the payment from the bank SMS in under 30 seconds; for crypto payments, the customer picks their preferred currency themselves, and confirmation happens fully automatically from the blockchain network — no e-commerce trust seal (Enamad), no official bank gateway, and no instant-transfer fees.
+<p align="center"><a href="../README.md">🇮🇷 فارسی</a> · 🇬🇧 English</p>
 
-> 📌 This repo is the documentation for an online API service, not an installable library. To get started you just need an API token from [@cubepy_bot](https://t.me/cubepy_bot).
+## Choose your starting point
 
-**New here? 👉 Start here: [START-HERE.md](./START-HERE.md)**
+| For merchants | For developers |
+|:---|:---|
+| Register with the [CubePay bot](https://t.me/cubepy_bot) and complete account approval. | Read the [integration guide](./integrations/generic-integration-guide.md), API contracts and code examples. |
+| Connect bank SMS using [Android](./integrations/android-sms-forwarder-guide.md) or [iPhone](./integrations/ios-shortcuts-sms-forwarding-guide.md). | [Card payments](./docs/API-REFERENCE.md) · [Crypto and unified routing](./docs/CRYPTO-API-REFERENCE.md) · [OpenAPI](./docs/openapi.yaml) |
+| Create a payment link in the [web panel](./docs/WEB-PANEL.md) or connect your store. | [PHP](./docs/examples/php-example.php) · [Python](./docs/examples/python-example.py) · [Node.js](./docs/examples/node-example.js) |
 
----
+> **SMS forwarding can work without internet:** internet forwarding and SMS-to-shortcode forwarding are separate paths. The SMS path requires cellular coverage, SMS sending capability and a registered sender number. Carrier charges apply. Follow the guide for your phone.
 
-## ✨ Features
+## Inside CubePay
 
-> **Latest update:** [Android 2.6.2 build 63](./integrations/android-sms-forwarder-guide.md) is published. [iPhone setup](./integrations/ios-shortcuts-sms-forwarding-guide.md) covers both internet and SMS forwarding. VIP retirement is scheduled for October 21, 2026, 23:59:59 Tehran; use the standard path for new integrations.
+<table>
+  <tr><th>Android forwarding reports</th><th>Merchant sales reports</th></tr>
+  <tr>
+    <td width="50%"><a href="./integrations/android-sms-forwarder-guide.md"><img src="../assets/product/android-reports.png" alt="Android app showing a connection test and bank-message forwarding report" width="100%"></a></td>
+    <td width="50%"><a href="./docs/WEB-PANEL.md"><img src="../assets/product/merchant-reports.png" alt="Merchant panel with daily, weekly and monthly sales comparisons" width="100%"></a></td>
+  </tr>
+</table>
 
-| | |
-|---|---|
-| ✅ Automatic payment confirmation (under 30 seconds) | ✅ Automatic callback to your server |
-| ✅ Protection against duplicate confirmation (idempotent) | ✅ No official gateway/license required |
-| ✅ Full management via Telegram bot | ✅ Create payment links from the bot and panel |
-| ✅ Wallet and multi-card management | ✅ Complete transaction reports |
-| ✅ Account co-owners (multiple admins) | ✅ Encrypted HTTPS connection |
-| 🆕 Crypto payments (USDT · TRX · TON) | 🆕 One unified endpoint: card or crypto, chosen by the customer |
+Product UI shown with **demo data**. Forwarding reports, payment status and order fulfillment represent different stages.
 
-🔐 **Security:** No buyer card data is stored · Atomic Wallet Lock · Direct support with real responsiveness
+## A payment, end to end
 
----
+![Create an invoice, receive payment, verify the result, then fulfill the order](../assets/payment-flow.svg)
 
-## 🔌 Connecting to Ready-Made Platforms
+1. Your store creates an invoice or payment link.
+2. The customer pays; the bank message or blockchain result is checked.
+3. Your store receives and verifies the result through the API, then fulfills the order.
 
-If you use one of these platforms, you don't need to implement the API from scratch yourself:
+**Payment confirmation alone does not mean the product was delivered.** Your website or bot handles order fulfillment.
 
-| Platform | Guide | Description |
-|---|---|---|
-| 🤖 **Foxima** (v1.0.0 and later) | [Foxima guide](./integrations/faoxima-guide.md) | The gateway ships inside the bot — you only enter your API token |
-| 🌐 **WordPress / WooCommerce** | [WordPress guide](./integrations/wordpress-plugin-guide.md) | Installing CubePay on a WordPress store |
-| ⚙️ **Any other platform** | [Generic integration guide](./integrations/generic-integration-guide.md) | Direct API connection, platform-independent |
+## Connect your tools
 
-🖥 **No website or bot?** Create a payment link in the [web panel](./docs/WEB-PANEL.md) and send that link — or its QR. Not a line of code.
+| Tool | Setup |
+|:---|:---|
+| Foxima | [Configure the gateway](./integrations/faoxima-guide.md) |
+| Mirzabot | [Mirzabot integration guide — Persian](../integrations/mirzabot-ready-files/mirzabot-ready-files-guide.md) |
+| WordPress / WooCommerce | [WordPress guide](./integrations/wordpress-plugin-guide.md) |
+| Custom website or bot | [Direct API integration](./integrations/generic-integration-guide.md) |
+| No website or bot | [Payment links in the web panel](./docs/WEB-PANEL.md) |
 
----
+## Downloads and verifiable information
 
-## 🚀 Quick Start
+- **Official Android app:** [Download APK](https://github.com/cubepy/cubepay-doc/releases/download/android-latest/CubePay.apk) · [Release version and notes](https://github.com/cubepy/cubepay-doc/releases/tag/android-latest) · [Setup and file SHA-256](./integrations/android-sms-forwarder-guide.md).
+- **iPhone:** [Internet and SMS Shortcuts guide](./integrations/ios-shortcuts-sms-forwarding-guide.md).
+- **Documentation:** [Changelog](./CHANGELOG.md) · [FAQ](./docs/FAQ.md) · [Private vulnerability reporting](./SECURITY.md).
+- **This repository:** documentation and integration examples for a hosted service. It does not publish the server or app source. The documentation-check badge is not a live payment-service status indicator.
 
-One endpoint for both payment types — depending on which methods you enabled in the bot, it creates a card invoice, a crypto invoice, or shows the customer a method-selection page:
+<details>
+<summary>Notice for existing VIP subscribers</summary>
 
-```
-POST https://cubevps.ir/pay/create-order.php
-Authorization: Bearer YOUR_API_TOKEN
-```
+VIP service is scheduled to end on **21 October 2026 at 23:59:59, Iran time** (29 Mehr 1405). Use the standard path for new integrations. [Legacy documentation](./docs/CUBEPAY-VIP-API-REFERENCE.md) remains available for existing subscribers.
 
-📘 Parameters, responses and error codes → [`docs/API-REFERENCE.md`](./docs/API-REFERENCE.md)
-💻 Ready-made samples (PHP · Python · Node.js · Laravel · cURL) → [`docs/examples/`](./docs/examples/)
-
----
-
-## 🧭 How the System Works
-
-```mermaid
-flowchart TD
-    A[Your bot / site] -->|"1. create-order"| B[CubePay API]
-    B -->|"2. Payment link"| A
-    A -->|"3. Redirect customer"| C{Card or crypto?}
-    C -->|Card-to-card| D1[Deposit to bank card]
-    C -->|Crypto| D2[Deposit to wallet address]
-    D1 -->|"Automatic detection from bank SMS"| B
-    D2 -->|"Automatic confirmation from the blockchain"| B
-    B -->|"4. Callback"| A
-    A -->|"5. verify-payment"| B
-    B -->|"6. Final confirmation"| E[✅ Order completed]
-```
+</details>
 
 ---
 
-## ⚖️ Comparison With Other Methods
-
-| Feature | CubePay | Official Bank Gateway | Manual Card-to-Card |
-|---|:---:|:---:|:---:|
-| Requires trust seal/gateway registration | ❌ | ✅ | ❌ |
-| Automatic payment confirmation | ✅ | ✅ | ❌ |
-| Instant-transfer fee | ❌ | ✅ | ❌ |
-| Accepts crypto | ✅ | ❌ | ❌ |
-| Automatic callback | ✅ | ✅ | ❌ |
-| Managed via Telegram bot | ✅ | ❌ | ❌ |
-| Setup time | Minutes | Days/weeks | Instant |
-
-> This table is purely a technical feature comparison; check the legal requirements and actual fees of each method yourself.
-
----
-
-## ❓ FAQ & Troubleshooting
-
-The most common questions (PHP/Node/SQLite support, enabling Auto Confirmation, 401 error, webhook not received, SSL error, etc.) in 👉 **[docs/FAQ.md](./docs/FAQ.md)**
-
----
-
-## 🤝 Contributing · 🔒 Security · 📝 Changelog
-
-- Report a bug or open a Pull Request → [CONTRIBUTING.md](./CONTRIBUTING.md)
-- Report a security vulnerability → [SECURITY.md](./SECURITY.md)
-- Version history → [CHANGELOG.md](./CHANGELOG.md)
-- Code of conduct → [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)
-- License → [LICENSE](../LICENSE)
-
-
-## 🔗 Links
-
-🤖 Merchant management bot: [@cubepy_bot](https://t.me/cubepy_bot)
-💬 Support: [cube_sup](https://t.me/cube_sup) · 📧 info@cubevps.ir
+[Merchant bot](https://t.me/cubepy_bot) · [Support](https://t.me/cube_sup) · [Contribute to the docs](./CONTRIBUTING.md) · [Repository license](../LICENSE)

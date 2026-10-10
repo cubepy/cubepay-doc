@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="420" viewBox="0 0 1200 420" role="img" aria-labelledby="title desc">
+<title id="title">CubePay — Connect. Collect. Confirm.</title>
+<desc id="desc">Bank transfers and crypto payments for your store. CubePay connects payment verification to your business.</desc>
+<defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#0b1722"/><stop offset="1" stop-color="#10121d"/></linearGradient><linearGradient id="cube" x2="1" y2="1"><stop stop-color="#39d8c8"/><stop offset="1" stop-color="#318fab"/></linearGradient><radialGradient id="glow"><stop stop-color="#24b3a4" stop-opacity=".16"/><stop offset="1" stop-color="#24b3a4" stop-opacity="0"/></radialGradient></defs>
+<rect width="1200" height="420" rx="24" fill="url(#bg)"/>
+<circle cx="985" cy="150" r="300" fill="url(#glow)"/>
+<path d="M780 0V420M900 0V420M1020 0V420M1140 0V420M720 90H1200M720 210H1200M720 330H1200" stroke="#5cbebc" stroke-opacity=".06"/>
+<g transform="translate(60 55)"><path d="M30 0 58 16V48L30 64 2 48V16Z" fill="none" stroke="url(#cube)" stroke-width="4"/><path d="m2 16 28 16 28-16M30 32V64M16 24V40L30 48 44 40V32" fill="none" stroke="#65e6d2" stroke-width="3"/><text x="80" y="45" font-family="Segoe UI,Arial,sans-serif" font-size="40" font-weight="700" fill="#f1f5fa">CubePay</text></g>
+<g font-family="Segoe UI,Arial,sans-serif"><text x="60" y="204" font-size="54" font-weight="700" fill="#f1f5fa">Connect. Collect.</text><text x="60" y="270" font-size="54" font-weight="700" fill="#4dd8c1">Confirm.</text><text x="63" y="322" font-size="21" fill="#aab9c9">Bank transfers &amp; crypto payments for your store.</text><text x="63" y="375" font-size="13" letter-spacing="2" fill="#d4b362">ANDROID  /  IPHONE SHORTCUTS  /  API</text></g>
+<g fill="none" stroke="#2c6766" stroke-width="2"><path d="M843 125H1015V295H843"/><path d="M843 125V295" stroke-dasharray="5 7"/></g>
+<g font-family="Segoe UI,Arial,sans-serif" text-anchor="middle">
+<rect x="760" y="84" width="166" height="82" rx="18" fill="#122b33" stroke="#326e71"/><text x="843" y="119" font-size="15" fill="#85dccc">01</text><text x="843" y="145" font-size="19" font-weight="600" fill="#edf4f6">Payment</text>
+<rect x="933" y="168" width="166" height="84" rx="18" fill="#1d3c41" stroke="#53cab9"/><text x="1016" y="203" font-size="15" fill="#85dccc">02</text><text x="1016" y="230" font-size="19" font-weight="600" fill="#edf4f6">Verification</text>
+<rect x="760" y="255" width="166" height="82" rx="18" fill="#29271f" stroke="#7e6b3e"/><text x="843" y="287" font-size="15" fill="#dfc37c">03</text><text x="843" y="314" font-size="19" font-weight="600" fill="#edf4f6">Your store</text></g>
+<circle cx="1015" cy="125" r="5" fill="#5cddc7"/><circle cx="1015" cy="295" r="5" fill="#dfc37c"/>
+</svg>
