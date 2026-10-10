@@ -6,6 +6,13 @@ All notable changes to this project are recorded here, in chronological order.
 
 ---
 
+## 2026-10-10 — Product presentation
+
+- Added original branding, product screenshots with demo data, and merchant/developer entry points.
+- Placed downloads, iPhone setup, API documentation and support at the top.
+- Corrected the start guide to preserve internet and SMS forwarding and removed new VIP setup recommendations.
+- Updated both languages and maintainer guidance. This is a documentation update, not a new app release.
+
 ## 2026-10-10 — Android 2.6.2, build 63 published
 
 - Published the official build 63 APK at the stable download URL; retained 2.6.1 as a prior-version asset.

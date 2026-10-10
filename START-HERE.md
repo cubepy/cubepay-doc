@@ -20,7 +20,7 @@
   - [راهنمای اندروید](./integrations/android-sms-forwarder-guide.md) — اپ رسمی CubePay، از قبل تنظیم‌شده
   - [راهنمای آیفون](./integrations/ios-shortcuts-sms-forwarding-guide.md) — با Shortcuts، بدون نصب اپ
 
-> ⚠️ گوشی متصل به این اپلیکیشن باید همیشه به اینترنت وصل باشه؛ در غیر این صورت تشخیص خودکار پرداخت متوقف می‌شه.
+> روش اینترنتی به اینترنت نیاز دارد. روش جداگانهٔ ارسال پیامک به سرشماره بدون اینترنت هم کار می‌کند، اما به آنتن، امکان ارسال SMS و ثبت شمارهٔ فرستنده نیاز دارد و هزینهٔ اپراتور دارد. هر دو مسیر در آموزش گوشی بالا توضیح داده شده‌اند.
 
 🆕 اگه می‌خواید ارز دیجیتال (USDT/TRX/TON) هم قبول کنید، از **«🏪 فروشگاه من → 💳 روش‌های پرداخت»** فعالش کنید و از **«💰 ولت پرداخت کریپتو»** آدرس دریافتی‌تون رو ثبت کنید — کاملاً اختیاریه و کنارِ کارت‌به‌کارت هم قابل‌استفاده‌ست.
 
@@ -46,8 +46,6 @@ Authorization: Bearer YOUR_API_TOKEN
 | ربات یا سرویس با **پایتون** | [نمونه‌ی کامل پایتون](./docs/examples/python-example.py) — یک فایل، از ساخت فاکتور تا تایید |
 | **Node.js** یا زبان دیگر | [docs/examples/](./docs/examples/) و [docs/API-REFERENCE.md](./docs/API-REFERENCE.md) |
 | می‌خواید ارز دیجیتال یا روتر یکپارچه (کارت+کریپتو) رو تست کنید | [docs/CRYPTO-API-REFERENCE.md](./docs/CRYPTO-API-REFERENCE.md) |
-| نمی‌تونید SMS Forwarder نصب کنید و می‌خواید CubePay پول رو جمع کنه و ارزی تسویه کنه | [docs/CUBEPAY-VIP-API-REFERENCE.md](./docs/CUBEPAY-VIP-API-REFERENCE.md) |
-| اشتراک VIP دارید و می‌خواید هم‌زمان از سیستم عادی هم استفاده کنید | [راهنمای هر دو سیستم با هم](./integrations/using-both-systems-guide.md) |
 | فقط می‌خواید API رو تست کنید | [docs/API-REFERENCE.md](./docs/API-REFERENCE.md) و [docs/examples/](./docs/examples/) |
 | سایت و ربات ندارید و فقط می‌خواید لینک پرداخت بفرستید | [راهنمای پنل وب](./docs/WEB-PANEL.md) — لینک بسازید، QR بگیرید، بفرستید |
 | کارمند دارید و می‌خواید واریزها رو در یک گروه ببینن | [راهنمای اعلان گروهی](./docs/GROUP-ALERTS.md) |

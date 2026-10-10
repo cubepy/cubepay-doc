@@ -1,130 +1,87 @@
 <p align="center">
-  <img src="./assets/demo-banner.jpg" alt="CubePay Demo" width="100%">
+  <img src="./assets/cubepay-banner.svg" alt="CubePay — اتصال فروشگاه به تأیید خودکار پرداخت" width="100%">
 </p>
 
 <p align="center">
-  <a href="https://github.com/cubepy/cubepay-doc/releases"><img src="https://img.shields.io/github/v/release/cubepy/cubepay-doc?label=Latest%20Release&color=blue" alt="Latest Release"></a>
-  <a href="https://github.com/cubepy/cubepay-doc/blob/main/LICENSE"><img src="https://img.shields.io/github/license/cubepy/cubepay-doc" alt="License"></a>
-  <a href="https://github.com/cubepy/cubepay-doc/stargazers"><img src="https://img.shields.io/github/stars/cubepy/cubepay-doc?style=social" alt="Stars"></a>
-  <a href="https://github.com/cubepy/cubepay-doc/network/members"><img src="https://img.shields.io/github/forks/cubepy/cubepay-doc?style=social" alt="Forks"></a>
-  <a href="https://github.com/cubepy/cubepay-doc/issues"><img src="https://img.shields.io/github/issues/cubepy/cubepay-doc" alt="Issues"></a>
-  <a href="https://github.com/cubepy/cubepay-doc/pulls"><img src="https://img.shields.io/github/issues-pr/cubepy/cubepay-doc" alt="Pull Requests"></a>
-  <a href="https://github.com/cubepy/cubepay-doc/commits/main"><img src="https://img.shields.io/github/last-commit/cubepy/cubepay-doc" alt="Last Commit"></a>
+  <a href="https://github.com/cubepy/cubepay-doc/actions/workflows/docs-checks.yml"><img src="https://github.com/cubepy/cubepay-doc/actions/workflows/docs-checks.yml/badge.svg?branch=main" alt="وضعیت بررسی مستندات"></a>
+  <a href="https://github.com/cubepy/cubepay-doc/releases/tag/android-latest"><img src="https://img.shields.io/badge/Android-Download_APK-35bca5?logo=android&amp;logoColor=white" alt="دانلود رسمی اندروید"></a>
+  <a href="./en/README.md"><img src="https://img.shields.io/badge/docs-فارسی_%2F_English-d2b365" alt="مستندات فارسی و انگلیسی"></a>
 </p>
 
-<h1 align="center">💳 CubePay</h1>
+<h1 align="center">پرداخت مشتری، متصل به فروشگاه شما</h1>
+
+<p align="center">ساخت لینک پرداخت، تشخیص واریز بانکی و دریافت نتیجه در سایت یا ربات.<br>پرداخت کارت‌به‌کارت و ارز دیجیتال، با مدیریت از ربات و پنل وب.</p>
 
 <p align="center">
-هر واریز، خودش را تأیید می‌کند — پرداخت کارت‌به‌کارت و ارز دیجیتال، با تشخیص خودکار پیامک بانکی یا شبکه‌ی بلاک‌چین 🚀
+  <a href="./START-HERE.md"><b>شروع کار</b></a> ·
+  <a href="https://github.com/cubepy/cubepay-doc/releases/download/android-latest/CubePay.apk"><b>دانلود اندروید</b></a> ·
+  <a href="./integrations/ios-shortcuts-sms-forwarding-guide.md"><b>آموزش آیفون</b></a> ·
+  <a href="./docs/API-REFERENCE.md"><b>مستندات API</b></a> ·
+  <a href="https://t.me/cube_sup"><b>پشتیبانی</b></a>
 </p>
 
-CubePay یک سرویس API برای ساخت و تأیید خودکار تراکنش‌هاست — چه کارت‌به‌کارت، چه ارز دیجیتال (USDT / TRX / TON). برای پرداخت کارتی، مشتری شما مبلغ رو مستقیم به کارت شما واریز می‌کنه و سیستم از روی پیامک بانکی، پرداخت رو در کمتر از ۳۰ ثانیه تشخیص و تأیید می‌کنه؛ برای پرداخت کریپتویی، مشتری خودش ارز دلخواهش رو انتخاب می‌کنه و تاییدش کاملاً خودکار از روی شبکه‌ی بلاک‌چین انجام می‌شه — بدون نیاز به نماد اعتماد الکترونیکی (اینماد)، بدون نیاز به درگاه بانکی رسمی و بدون کارمزد شتاب.
+<p align="center">🇮🇷 فارسی · <a href="./en/README.md">🇬🇧 English</a></p>
 
-> 📌 این ریپو مستندات یک سرویس API آنلاین است، نه یک کتابخانه‌ی قابل نصب. برای شروع فقط به یک توکن API از [@cubepy_bot](https://t.me/cubepy_bot) نیاز دارید.
+<div dir="rtl">
 
-**تازه‌کار هستید؟ 👉 از اینجا شروع کنید: [START-HERE.md](./START-HERE.md)**
+## از کجا شروع کنم؟
 
----
+| فروشنده هستم | توسعه‌دهنده هستم |
+|---:|---:|
+| در [ربات کیوب‌پی](https://t.me/cubepy_bot) ثبت‌نام کنید و مراحل تأیید حساب را انجام دهید. | [راهنمای اتصال](./integrations/generic-integration-guide.md)، قرارداد API و نمونه‌کدها را ببینید. |
+| پیامک بانک را با [اندروید](./integrations/android-sms-forwarder-guide.md) یا [آیفون](./integrations/ios-shortcuts-sms-forwarding-guide.md) وصل کنید. | [کارت‌به‌کارت](./docs/API-REFERENCE.md) · [ارز دیجیتال و مسیر یکپارچه](./docs/CRYPTO-API-REFERENCE.md) · [OpenAPI](./docs/openapi.yaml) |
+| از [پنل وب](./docs/WEB-PANEL.md) لینک پرداخت بسازید یا فروشگاهتان را متصل کنید. | [PHP](./docs/examples/php-example.php) · [Python](./docs/examples/python-example.py) · [Node.js](./docs/examples/node-example.js) |
 
-## ✨ امکانات
+> **بدون اینترنت هم روش پیامکی دارید:** ارسال اینترنتی و ارسال پیامک به سرشماره دو مسیر جدا هستند. روش پیامکی به آنتن، امکان ارسال SMS و ثبت شمارهٔ فرستنده نیاز دارد و هزینهٔ اپراتور دارد. راهنمای گوشی خودتان را دنبال کنید.
 
-> **آخرین به‌روزرسانی:** [اندروید ۲.۶.۲ ساخت ۶۳](./integrations/android-sms-forwarder-guide.md) منتشر شده؛ [آموزش آیفون](./integrations/ios-shortcuts-sms-forwarding-guide.md) هر دو روش اینترنتی و ارسال به سرشماره را پوشش می‌دهد. خدمات VIP تا پایان ۲۹ مهر ۱۴۰۵ برنامه‌ریزی شده است؛ برای اتصال جدید از مسیر عادی استفاده کنید.
+## داخل کیوب‌پی
 
-| | |
-|---|---|
-| ✅ تأیید خودکار پرداخت (زیر ۳۰ ثانیه) | ✅ Callback خودکار به سرور شما |
-| ✅ محافظت در برابر تأیید دوباره (idempotent) | ✅ بدون نیاز به نماد یا درگاه رسمی |
-| ✅ مدیریت کامل از طریق ربات تلگرام | ✅ ساخت لینک پرداخت از ربات و پنل |
-| ✅ کیف پول و مدیریت چند کارت | ✅ گزارش کامل تراکنش‌ها |
-| ✅ همکار حساب (چند مدیر) | ✅ اتصال HTTPS رمزنگاری‌شده |
-| 🆕 پرداخت با ارز دیجیتال (USDT · TRX · TON) | 🆕 یک endpoint یکپارچه: کارت یا کریپتو، انتخاب با مشتری |
+<table>
+  <tr><th>گزارش ارسال پیام بانک در اندروید</th><th>گزارش فروش در پنل فروشنده</th></tr>
+  <tr>
+    <td width="50%"><a href="./integrations/android-sms-forwarder-guide.md"><img src="./assets/product/android-reports.png" alt="اپ اندروید: نتیجهٔ تست اتصال و گزارش ارسال پیام بانک" width="100%"></a></td>
+    <td width="50%"><a href="./docs/WEB-PANEL.md"><img src="./assets/product/merchant-reports.png" alt="پنل فروشنده: مقایسهٔ فروش روزانه، هفتگی و ماهانه" width="100%"></a></td>
+  </tr>
+</table>
 
-🔐 **امنیت:** بدون ذخیره‌سازی اطلاعات کارت خریدار · قفل اتمیک کیف پول (Atomic Wallet Lock) · پشتیبانی مستقیم و پاسخ‌گویی واقعی
+تصاویر رابط محصول با **داده‌های نمایشی** هستند. گزارش ارسال پیام، وضعیت پرداخت و تحویل سفارش هرکدام معنی جداگانه دارند.
 
----
+## مسیر یک پرداخت
 
-## 🔌 اتصال به پلتفرم‌های آماده
+![ساخت فاکتور، پرداخت مشتری، بررسی نتیجه و تحویل سفارش توسط فروشگاه](./assets/payment-flow.svg)
 
-اگه از یکی از این پلتفرم‌ها استفاده می‌کنید، لازم نیست خودتون API رو صفر تا صد پیاده‌سازی کنید:
+1. فروشگاه یک فاکتور یا لینک پرداخت می‌سازد.
+2. مشتری پرداخت می‌کند؛ پیام بانک یا نتیجهٔ شبکهٔ ارز دیجیتال بررسی می‌شود.
+3. فروشگاه نتیجه را دریافت و از طریق API بررسی می‌کند؛ سپس سفارش را تحویل می‌دهد.
 
-| پلتفرم | راهنما | توضیح |
-|---|---|---|
-| 🤖 **Foxima** (نسخه‌ی ۱.۰.۰ به بعد) | [راهنمای Foxima](./integrations/faoxima-guide.md) | درگاه از قبل داخل رباته — فقط توکن API رو وارد می‌کنید |
-| 🤖 **Mirzabot** (و فورک‌هاش) | [الان رسمی تو خودِ ریپو](./integrations/mirzabot-ready-files/mirzabot-ready-files-guide.md) | CubePay رسمی وارد ریپوی اصلی Mirzabot شده — فقط از upstream نصب/آپدیت کنید |
-| 🌐 **وردپرس / ووکامرس** | [راهنمای وردپرس](./integrations/wordpress-plugin-guide.md) | نصب CubePay روی فروشگاه وردپرسی |
-| ⚙️ **هر پلتفرم دیگه** | [راهنمای اتصال عمومی](./integrations/generic-integration-guide.md) | اتصال مستقیم به API، مستقل از پلتفرم |
-| 🔀 **هر دو سیستم با هم** | [راهنمای عادی + VIP](./integrations/using-both-systems-guide.md) | اگه اشتراک VIP دارید و می‌خواید برای هر سفارش انتخاب کنید کدوم مسیر بره |
+**تأیید پرداخت به‌تنهایی به معنی تحویل محصول نیست.** منطق تحویل سفارش در سایت یا ربات فروشنده اجرا می‌شود.
 
-📲 برای پرداخت کارت‌به‌کارت، گوشی‌تون باید پیامک بانکی رو به CubePay بفرسته — [اندروید](./integrations/android-sms-forwarder-guide.md) · [آیفون](./integrations/ios-shortcuts-sms-forwarding-guide.md)
+## اتصال به ابزارهای شما
 
-🖥 **سایت و ربات ندارید؟** از [پنل وب](./docs/WEB-PANEL.md) لینک پرداخت بسازید و همان لینک — یا QRش — رو بفرستید. بدون یک خط کد.
+| ابزار | مسیر راه‌اندازی |
+|---:|---:|
+| Foxima | [تنظیم درگاه در ربات](./integrations/faoxima-guide.md) |
+| Mirzabot | [راهنمای اتصال میرزا](./integrations/mirzabot-ready-files/mirzabot-ready-files-guide.md) |
+| WordPress / WooCommerce | [راهنمای وردپرس](./integrations/wordpress-plugin-guide.md) |
+| سایت یا ربات اختصاصی | [اتصال مستقیم به API](./integrations/generic-integration-guide.md) |
+| بدون سایت و ربات | [ساخت لینک پرداخت در پنل وب](./docs/WEB-PANEL.md) |
 
----
+## دانلود و اطلاعات قابل بررسی
 
-## 🚀 شروع سریع
+- **اپ رسمی اندروید:** [دریافت APK](https://github.com/cubepy/cubepay-doc/releases/download/android-latest/CubePay.apk) · [نسخه و تغییرات انتشار](https://github.com/cubepy/cubepay-doc/releases/tag/android-latest) · [راهنما و SHA-256 فایل](./integrations/android-sms-forwarder-guide.md).
+- **آیفون:** [آموزش Shortcuts اینترنتی و پیامکی](./integrations/ios-shortcuts-sms-forwarding-guide.md).
+- **مستندات:** [تاریخچهٔ تغییرات](./CHANGELOG.md) · [پرسش‌های متداول](./docs/FAQ.md) · [راهنمای گزارش خصوصی آسیب‌پذیری](./SECURITY.md).
+- **این مخزن:** مستندات سرویس میزبانی‌شده و مثال‌های اتصال است؛ سورس سرور یا اپلیکیشن در آن منتشر نشده است. نشان بررسی مستندات، وضعیت زندهٔ سرویس پرداخت را نشان نمی‌دهد.
 
-یک endpoint برای هر دو نوع پرداخت — بسته به روش‌هایی که در ربات فعال کرده‌اید، خودش فاکتور کارتی یا کریپتویی می‌سازد، یا صفحه‌ی انتخاب به مشتری نشان می‌دهد:
+<details>
+<summary>اطلاعیه برای مشترکان قبلی VIP</summary>
 
-```
-POST https://cubevps.ir/pay/create-order.php
-Authorization: Bearer YOUR_API_TOKEN
-```
+پایان خدمات VIP برای **۲۹ مهر ۱۴۰۵، ساعت ۲۳:۵۹:۵۹ به وقت ایران** برنامه‌ریزی شده است. برای اتصال جدید از مسیر عادی استفاده کنید. [مستندات مسیر قبلی](./docs/CUBEPAY-VIP-API-REFERENCE.md) برای مراجعهٔ مشترکان موجود حفظ شده است.
 
-📘 جزئیات پارامترها، پاسخ‌ها و کدهای خطا → [`docs/API-REFERENCE.md`](./docs/API-REFERENCE.md)
-💻 نمونه کد آماده (PHP · Python · Node.js · Laravel · cURL) → [`docs/examples/`](./docs/examples/)
-
----
-
-## 🧭 نحوه‌ی کار سیستم
-
-```mermaid
-flowchart TD
-    A[ربات / سایت شما] -->|"1. create-order"| B[CubePay API]
-    B -->|"2. لینک پرداخت"| A
-    A -->|"3. هدایت مشتری"| C{کارت یا کریپتو؟}
-    C -->|کارت‌به‌کارت| D1[واریز به کارت بانکی]
-    C -->|ارز دیجیتال| D2[واریز به آدرس ولت]
-    D1 -->|"تشخیص خودکار از پیامک بانکی"| B
-    D2 -->|"تایید خودکار از شبکه‌ی بلاک‌چین"| B
-    B -->|"4. Callback"| A
-    A -->|"5. verify-payment"| B
-    B -->|"6. تایید نهایی"| E[✅ سفارش تکمیل شد]
-```
+</details>
 
 ---
 
-## ⚖️ مقایسه با روش‌های دیگر
+[ربات فروشندگان](https://t.me/cubepy_bot) · [پشتیبانی](https://t.me/cube_sup) · [مشارکت در مستندات](./CONTRIBUTING.md) · [مجوز مخزن](./LICENSE)
 
-| ویژگی | CubePay | درگاه بانکی رسمی | کارت‌به‌کارت دستی |
-|---|:---:|:---:|:---:|
-| نیاز به نماد/ثبت درگاه | ❌ | ✅ | ❌ |
-| تأیید خودکار پرداخت | ✅ | ✅ | ❌ |
-| کارمزد شتاب | ❌ | ✅ | ❌ |
-| پذیرش ارز دیجیتال | ✅ | ❌ | ❌ |
-| Callback خودکار | ✅ | ✅ | ❌ |
-| مدیریت از طریق ربات تلگرام | ✅ | ❌ | ❌ |
-| زمان راه‌اندازی | چند دقیقه | چند روز/هفته | فوری |
-
-> این جدول صرفاً مقایسه‌ی فنی امکانات است؛ شرایط قانونی و کارمزد واقعی هر روش رو خودتون بررسی کنید.
-
----
-
-## ❓ سوالات متداول و عیب‌یابی
-
-پرتکرارترین سوالات (پشتیبانی PHP/Node/SQLite، فعال‌سازی Auto Confirmation، خطای 401، Webhook دریافت نمی‌شه، SSL Error و…) در 👉 **[docs/FAQ.md](./docs/FAQ.md)**
-
----
-
-## 🤝 مشارکت · 🔒 امنیت · 📝 تغییرات
-
-- گزارش باگ یا Pull Request → [CONTRIBUTING.md](./CONTRIBUTING.md)
-- گزارش آسیب‌پذیری امنیتی → [SECURITY.md](./SECURITY.md)
-- تاریخچه‌ی نسخه‌ها → [CHANGELOG.md](./CHANGELOG.md)
-- آیین رفتاری → [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)
-- مجوز استفاده → [LICENSE](./LICENSE)
-
-
-## 🔗 لینک‌ها
-
-🤖 ربات مدیریت فروشندگان: [@cubepy_bot](https://t.me/cubepy_bot)
-💬 پشتیبانی: [cube_sup](https://t.me/cube_sup) · 📧 info@cubevps.ir
+</div>
