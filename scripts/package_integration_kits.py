@@ -26,8 +26,15 @@ output = root / 'downloads/CubePay-integration-kits.zip'
 data = buffer.getvalue()
 checksum = hashlib.sha256(data).hexdigest() + '  CubePay-integration-kits.zip\n'
 if '--check' in sys.argv:
-    assert output.read_bytes() == data, 'Run scripts/package_integration_kits.py'
-    assert output.with_suffix('.sha256').read_text() == checksum
+    # Compression bytes can differ by Python/zlib version. Verify every payload,
+    # exact file inventory, CRCs, and the checksum of the actual distributed ZIP.
+    actual = output.read_bytes()
+    with zipfile.ZipFile(io.BytesIO(actual)) as published, zipfile.ZipFile(io.BytesIO(data)) as expected:
+        assert published.testzip() is None, 'Corrupt kit archive'
+        assert published.namelist() == expected.namelist(), 'Archive file list differs from source'
+        for name in expected.namelist():
+            assert published.read(name) == expected.read(name), 'Archive differs from source: ' + name
+    assert output.with_suffix('.sha256').read_text() == hashlib.sha256(actual).hexdigest() + '  CubePay-integration-kits.zip\n'
 else:
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_bytes(data)
