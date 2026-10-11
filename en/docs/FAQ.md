@@ -1,5 +1,7 @@
 # ❓ FAQ & Troubleshooting
 
+> 🧾 **[Late receipts](./LATE-RECEIPTS.md)** — eligible receipt submission and seller decisions within one hour after original expiry; the payment deadline is not extended.
+
 > 📖 **[CubePay help center (Persian)](https://cubevps.ir/panel/help/)** — Searchable, mobile-friendly guides; no sign-in required.
 
 ## General Questions

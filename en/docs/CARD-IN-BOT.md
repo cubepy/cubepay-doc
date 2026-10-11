@@ -4,6 +4,8 @@
 
 # 🤖 Showing the card inside the bot — who has to do what?
 
+> 🧾 **[Late receipts](./LATE-RECEIPTS.md)** — eligible receipt submission and seller decisions within one hour after original expiry; the payment deadline is not extended.
+
 With this feature your customer gets, alongside the payment button, **a message inside Telegram itself** carrying the card number, the card holder, the exact amount and the payment deadline — without ever leaving Telegram.
 
 ```

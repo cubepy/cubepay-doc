@@ -64,3 +64,7 @@ cubepay-doc/
 - Actual CubePay service bugs go to `@cubepy_bot` on Telegram, not this repo.
 - Security vulnerabilities in the API/infrastructure go through private report to `@cubepy_bot`, never as a public issue — see `SECURITY.md` for what counts as a vulnerability vs. a normal validation error.
 - For large changes, open an issue first to coordinate before submitting a PR.
+
+## Integration kits
+
+`integrations/kits/` contains server-side merchant examples for regular card payments, with one implementation per language (shared by both documentation languages). `docs/INTEGRATION-KITS.md` and its English mirror are the entry points. Offline contract tests live in `tests/kits/`; they never contact the hosted service. `scripts/package_integration_kits.py` rebuilds the committed ZIP deterministically; CI checks that the ZIP matches source. No server credentials or private service implementation may be published.

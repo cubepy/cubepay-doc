@@ -23,6 +23,10 @@
 
 <p align="center"><a href="../README.md">🇮🇷 فارسی</a> · 🇬🇧 English</p>
 
+## 📦 Integration kits
+
+[PHP, Python and Node.js: quick start and ZIP download](./docs/INTEGRATION-KITS.md), with persistent orders and duplicate callback handling for regular card payments.
+
 ## Choose your starting point
 
 | For merchants | For developers |

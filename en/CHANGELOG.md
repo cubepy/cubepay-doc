@@ -2,6 +2,14 @@
 
 # 📋 Changelog
 
+## 2026-10-11 — Integration kits and late receipts
+
+- Added PHP, Python and Node.js kits with persistent orders, amount/order checks and duplicate callback handling.
+- Added bilingual quick starts, a ZIP download and offline contract tests.
+- Documented eligible receipt submission and merchant decisions within one hour after original expiry, without extending the payment deadline.
+- Existing integrations and the Android APK are unchanged.
+
+
 All notable changes to this project are recorded here, in chronological order.
 
 ---

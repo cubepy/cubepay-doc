@@ -2,6 +2,8 @@
 
 # 🔌 Guide: Connecting CubePay to Your Own Bot/Site (No Foxima Required)
 
+> 📦 **[PHP, Python and Node.js integration kits](../docs/INTEGRATION-KITS.md)** — quick start, ZIP download and persistent orders for regular card payments. Existing examples remain available.
+
 > 📖 **[CubePay help center (Persian)](https://cubevps.ir/panel/help/)** — Searchable, mobile-friendly guides; no sign-in required.
 
 This guide is for anyone with their own bot or site (anything, not just Foxima) who wants to hook up the CubePay gateway. All you need is **2 pieces of code**.

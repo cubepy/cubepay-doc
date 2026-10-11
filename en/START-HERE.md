@@ -2,6 +2,8 @@
 
 # 🚦 Start Here
 
+> 📦 **[PHP, Python and Node.js integration kits](./docs/INTEGRATION-KITS.md)** — quick start, ZIP download and persistent orders for regular card payments. Existing examples remain available.
+
 > 📖 **[CubePay help center (Persian)](https://cubevps.ir/panel/help/)** — Searchable, mobile-friendly guides; no sign-in required.
 
 Welcome! This page will guide you to the right place in 4 simple steps.
