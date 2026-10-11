@@ -1,0 +1,25 @@
+name: Integration kits
+on:
+  push:
+    branches: [main]
+  pull_request:
+jobs:
+  offline-tests:
+    name: Integration kit contract tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.13.0'
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          extensions: curl, pdo_sqlite
+      - run: python tests/kits/python-kit-test.py
+      - run: node tests/kits/node-kit-test.mjs
+      - run: php tests/kits/php-kit-test.php
+      - run: python scripts/package_integration_kits.py --check

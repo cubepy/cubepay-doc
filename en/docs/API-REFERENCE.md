@@ -2,6 +2,8 @@
 
 # 📚 Full API Reference
 
+> 📦 **[PHP, Python and Node.js integration kits](./INTEGRATION-KITS.md)** — quick start, ZIP download and persistent orders for regular card payments. Existing examples remain available.
+
 > 📖 **[CubePay help center (Persian)](https://cubevps.ir/panel/help/)** — Searchable, mobile-friendly guides; no sign-in required.
 
 This file has the complete technical details of the API (for those working directly with the API, not through an SDK). If you just want to connect quickly, see [`generic-integration-guide.md`](../integrations/generic-integration-guide.md) instead.
@@ -273,3 +275,8 @@ curl -X POST https://cubevps.ir/smspay/api/create-payment.php \
 ## 🔗 Links
 
 🤖 Merchant management bot: [@cubepy_bot](https://t.me/cubepy_bot)
+
+
+## Late receipts
+
+See [late receipt rules](./LATE-RECEIPTS.md). Verify a later manual approval using the original authority; never treat an expired callback as proof of payment.
