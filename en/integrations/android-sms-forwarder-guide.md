@@ -14,7 +14,7 @@ CubePay forwards messages from your selected banks using **internet forwarding**
 
 Requires **Android 5.0+**. Install over the previous official version; do not uninstall it. Build 65 uses the same application ID and signing certificate. This release does not enforce an update.
 
-🔒 **SHA-256:** `fb237d0f4ba26cfffd1ba43cf301cdfda298b67cc3cab1a7b5799952b7f258a9`
+🔒 **SHA-256:** `88be18641892a99db93062a6bd95a846dc6d852ba95d55750379a6675601bbab`
 
 The download URL is stable. The [release page](https://github.com/cubepy/cubepay-doc/releases/tag/android-latest) identifies the public file. See the installed version and build code in app settings.
 
