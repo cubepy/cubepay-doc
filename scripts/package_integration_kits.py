@@ -4,11 +4,12 @@ import io, zipfile, hashlib, sys
 root = Path(__file__).resolve().parents[1]
 buffer = io.BytesIO()
 with zipfile.ZipFile(buffer, 'w', compression=zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
-    for path in sorted((root / 'integrations/kits').rglob('*')):
+    for path in sorted((root / 'integrations/kits').rglob('*'), key=lambda p: p.relative_to(root).as_posix()):
         if not path.is_file() or '__pycache__' in path.parts:
             continue
         name = 'CubePay-integration-kits/' + path.relative_to(root / 'integrations/kits').as_posix()
         info = zipfile.ZipInfo(name, date_time=(2026, 10, 11, 0, 0, 0))
+        info.create_system = 3
         info.compress_type = zipfile.ZIP_DEFLATED
         info.external_attr = 0o100644 << 16
         body = path.read_bytes()
