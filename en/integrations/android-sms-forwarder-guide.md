@@ -4,7 +4,7 @@
 
 > 📖 **[CubePay help center (Persian)](https://cubevps.ir/panel/help/)** — Searchable, mobile-friendly guides; no sign-in required.
 
-Public version: **2.6.2, build 63**. Guide updated October 10, 2026.
+Public version: **2.6.3, build 65**. Guide updated October 11, 2026.
 
 CubePay forwards messages from your selected banks using **internet forwarding** and/or **SMS to the receiving number**. SMS forwarding does not require phone internet, but requires cellular coverage, outgoing SMS service and credit/SMS allowance. Carrier charges apply.
 
@@ -12,7 +12,7 @@ CubePay forwards messages from your selected banks using **internet forwarding**
 
 [Download the official CubePay.apk](https://github.com/cubepy/cubepay-doc/releases/download/android-latest/CubePay.apk)
 
-Requires **Android 5.0+**. Install over the previous official version; do not uninstall it. Build 63 uses the same application ID and signing certificate. This release does not enforce an update.
+Requires **Android 5.0+**. Install over the previous official version; do not uninstall it. Build 65 uses the same application ID and signing certificate. This release does not enforce an update.
 
 🔒 **SHA-256:** `fb237d0f4ba26cfffd1ba43cf301cdfda298b67cc3cab1a7b5799952b7f258a9`
 
@@ -46,6 +46,9 @@ Simultaneous forwarding sends chargeable SMS even when internet is available; it
 - Force-stopping the app or preventing it from running can affect both delivery methods. SMS forwarding still needs the phone and permissions to operate.
 
 ## 📋 Read the statuses correctly
+
+New reports show the filter name and bank sender beside each internet/SMS result, including connection tests. The same identity is included in CSV exports. It is saved at send time, so later renaming or deleting a filter does not alter past reports. Older reports explicitly show that the filter was not recorded; it is not guessed from a shared destination.
+
 
 - **Setup ready:** settings are saved; actual message receipt is not guaranteed.
 - **Internet test successful:** the server responded to the test.
