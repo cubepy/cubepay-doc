@@ -2,6 +2,13 @@
 
 # 📋 Changelog
 
+## 2026-10-11 — Android 2.6.3, build 65
+
+- Each delivery/test result and CSV row now includes the originating filter and bank sender.
+- Existing reports are preserved; missing historical filter identity is explicitly unknown.
+- The same signed build 65 was published with tag v2.6.3 and the stable public link updated. Build 63 is archived.
+- Persian and English Android guides now describe the new report labels.
+
 ## 2026-10-11 — Integration kits and late receipts
 
 - Added PHP, Python and Node.js kits with persistent orders, amount/order checks and duplicate callback handling.
