@@ -280,3 +280,8 @@ curl -X POST https://cubevps.ir/smspay/api/create-payment.php \
 ## Late receipts
 
 See [late receipt rules](./LATE-RECEIPTS.md). Verify a later manual approval using the original authority; never treat an expired callback as proof of payment.
+
+
+---
+
+[Passing buyer identity from your shop](BUYER-IDENTITY.md)

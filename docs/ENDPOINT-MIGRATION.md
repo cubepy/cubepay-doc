@@ -79,3 +79,8 @@ curl -X POST https://cubevps.ir/pay/create-order.php \
 - 👑 مرجع کامل VIP: [`CUBEPAY-VIP-API-REFERENCE.md`](./CUBEPAY-VIP-API-REFERENCE.md)
 - 🔀 هر دو سیستم با هم: [`using-both-systems-guide.md`](../integrations/using-both-systems-guide.md)
 - 🤖 سوال دارید؟ از داخل ربات [@cubepy_bot](https://t.me/cubepy_bot) تیکت بزنید
+
+
+---
+
+[حفظ شناسهٔ خریدار در روتر یکپارچه](BUYER-IDENTITY.md)

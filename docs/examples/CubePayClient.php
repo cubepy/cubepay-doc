@@ -53,6 +53,7 @@ final class CubePayClient
      * @param string      $callbackUrl  آدرسی که بعد از پرداخت موفق بهش خبر داده می‌شه
      * @param string|null $description  توضیح اختیاری
      * @param string|null $customerId   شناسه‌ی اختیاری مشتری شما (مثلاً آیدی تلگرام)
+     * @param string|null $customerUsername نام کاربری اختیاری همان خریدار
      *
      * @return array{
      *   success: bool, message?: string,
@@ -65,7 +66,8 @@ final class CubePayClient
         string $orderId,
         string $callbackUrl,
         ?string $description = null,
-        ?string $customerId = null
+        ?string $customerId = null,
+        ?string $customerUsername = null
     ): array {
         $payload = [
             'amount' => $amountRial,
@@ -78,6 +80,10 @@ final class CubePayClient
         }
         if ($customerId !== null) {
             $payload['customer_user_id'] = $customerId;
+        }
+
+        if ($customerUsername !== null) {
+            $payload['customer_username'] = ltrim($customerUsername, '@');
         }
 
         return $this->request('POST', '/api/create-payment.php', $payload);

@@ -79,3 +79,8 @@ Make the two changes above and it is solved.
 - 👑 Full VIP reference: [`CUBEPAY-VIP-API-REFERENCE.md`](./CUBEPAY-VIP-API-REFERENCE.md)
 - 🔀 Both systems together: [`using-both-systems-guide.md`](../integrations/using-both-systems-guide.md)
 - 🤖 Questions? Open a ticket from inside the bot: [@cubepy_bot](https://t.me/cubepy_bot)
+
+
+---
+
+[Preserving buyer identity through the unified router](BUYER-IDENTITY.md)

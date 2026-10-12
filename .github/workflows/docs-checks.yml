@@ -42,3 +42,6 @@ jobs:
           php-version: "8.2"
       - name: Syntax-check every .php file
         run: find . -name "*.php" -not -path "./.git/*" -print0 | xargs -0 -n1 php -l
+
+      - name: Check buyer identity forwarding without network
+        run: php tests/buyer-identity-test.php

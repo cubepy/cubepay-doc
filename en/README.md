@@ -86,3 +86,8 @@ VIP service is scheduled to end on **21 October 2026 at 23:59:59, Iran time** (2
 ---
 
 [Merchant bot](https://t.me/cubepy_bot) · [Support](https://t.me/cube_sup) · [Contribute to the docs](./CONTRIBUTING.md) · [Repository license](../LICENSE)
+
+
+---
+
+[Buyer identity and Faoxima/Mirzabot fixes](docs/BUYER-IDENTITY.md)

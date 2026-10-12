@@ -90,3 +90,8 @@
 [ربات فروشندگان](https://t.me/cubepy_bot) · [پشتیبانی](https://t.me/cube_sup) · [مشارکت در مستندات](./CONTRIBUTING.md) · [مجوز مخزن](./LICENSE)
 
 </div>
+
+
+---
+
+[راهنمای شناسهٔ خریدار و اصلاح فاکسیما/میرزا](docs/BUYER-IDENTITY.md)

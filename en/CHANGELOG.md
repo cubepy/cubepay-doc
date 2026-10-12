@@ -1,5 +1,10 @@
 ![CubePay](../cubepay-logo.png)
 
+## 2026-10-12 — Buyer identity
+
+Added the guarded Faoxima installer, buyer identity guide, and links to upstream Faoxima/Mirzabot PRs. The custom Mirzabot bridge forwards buyer identity and the PHP example client accepts an optional username. No historical invoices or APK release changed.
+
+
 # 📋 Changelog
 
 ## 2026-10-11 — Android 2.6.3, build 65
