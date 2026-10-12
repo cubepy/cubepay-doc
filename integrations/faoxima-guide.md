@@ -151,3 +151,8 @@
 ---
 
 🤖 سوالی ماند؟ [@cubepy_bot](https://t.me/cubepy_bot)
+
+
+---
+
+[اصلاح شناسهٔ خریدار: دانلود بستهٔ نصب و راهنما](../docs/BUYER-IDENTITY.md)

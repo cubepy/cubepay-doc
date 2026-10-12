@@ -300,3 +300,8 @@ curl -X POST https://cubevps.ir/smspay/api/create-payment.php \
 ## 🧾 رسید دیرهنگام
 
 [قواعد رسید پس از انقضا](./LATE-RECEIPTS.md) را ببینید. تأیید دستی بعدی باید با همان authority استعلام شود؛ انقضای قبلی باعث حذف دائمی سفارش محلی نشود.
+
+
+---
+
+[انتقال شناسهٔ خریدار در اتصال فروشگاه](BUYER-IDENTITY.md)

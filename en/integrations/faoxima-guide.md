@@ -151,3 +151,8 @@ To debug the SMS path, use **"🧪 Connection test"** in `@cubepy_bot`: "🧪 Te
 ---
 
 🤖 Questions? [@cubepy_bot](https://t.me/cubepy_bot)
+
+
+---
+
+[Buyer identity fix and installer](../docs/BUYER-IDENTITY.md)

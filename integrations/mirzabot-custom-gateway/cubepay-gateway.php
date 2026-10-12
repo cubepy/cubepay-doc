@@ -105,6 +105,23 @@ try {
 // ------------------------------------------------------------
 //  ۱) ساختِ فاکتور — ربات این را صدا می‌زند
 // ------------------------------------------------------------
+
+/** Only called after authenticating the shop's create request. */
+function cg_buyer_metadata(array $in): array
+{
+    $value = $in['user_id'] ?? null;
+    $id = (is_string($value) || is_int($value)) ? trim((string) $value) : '';
+    if (!preg_match('/\A[1-9][0-9]{0,15}\z/D', $id)) return [];
+    $metadata = ['customer_user_id' => $id];
+    $value = $in['customer_username'] ?? null;
+    $username = is_string($value) ? ltrim(trim($value), '@') : '';
+    if (preg_match('/\A[A-Za-z0-9_]{1,64}\z/D', $username)
+        && !in_array(strtolower($username), ['none', 'null', 'undefined'], true)) {
+        $metadata['customer_username'] = $username;
+    }
+    return $metadata;
+}
+
 function handle_create(array $in): void
 {
     $apiKey = (string) ($in['api_key'] ?? '');
@@ -128,14 +145,16 @@ function handle_create(array $in): void
     // روترِ یکپارچه: بسته به تنظیماتِ حسابتان در @cubepy_bot خودش تصمیم
     // می‌گیرد کارت‌به‌کارت باشد، کریپتو، یا صفحه‌ی «کارت یا کریپتو؟».
     // مبلغ اینجا تومان است — دقیقاً همان چیزی که ربات فرستاده.
-    $res = cg_post(CUBEPAY_PAY_BASE . '/create-order.php', [
+    $payload = [
         'order_id'     => $orderId,
         'price_amount' => $amount,
         'callback_url' => $callbackUrl,
         // ربات است نه سایت: بعد از پرداخت، مرورگرِ مشتری به دامنه‌ی شما
         // هدایت نشود. نتیجه را خودِ ربات به مشتری می‌گوید.
         'redirect_after_payment' => false,
-    ], CUBEPAY_TOKEN);
+    ];
+    $payload = array_merge($payload, cg_buyer_metadata($in));
+    $res = cg_post(CUBEPAY_PAY_BASE . '/create-order.php', $payload, CUBEPAY_TOKEN);
 
     if (empty($res['success']) || empty($res['pay_page_url'])) {
         cg_log("create failed for {$orderId}: " . json_encode($res, JSON_UNESCAPED_UNICODE));

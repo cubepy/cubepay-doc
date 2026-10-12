@@ -48,3 +48,8 @@ HTTP 409 says verify was already consumed but carries no verified amount; it is 
 Eligible expired regular-card invoices allow receipt submission and the seller's decision within one hour after the original expiry. This does not extend the payment deadline. Keep local expired orders for a possible later verified callback. [Late-receipt rules](./LATE-RECEIPTS.md).
 
 [Full Persian callback example and delivery contract](../../integrations/kits/README-fa.md) · [Card API](./API-REFERENCE.md) · [Crypto/unified API](./CRYPTO-API-REFERENCE.md) · [User help](https://cubevps.ir/panel/help/).
+
+
+---
+
+[Buyer identity in invoices](BUYER-IDENTITY.md)

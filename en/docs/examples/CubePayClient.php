@@ -53,6 +53,7 @@ final class CubePayClient
      * @param string      $callbackUrl  the URL notified after a successful payment
      * @param string|null $description  optional description
      * @param string|null $customerId   optional identifier for your customer (e.g. a Telegram ID)
+     * @param string|null $customerUsername Optional username for the same buyer
      *
      * @return array{
      *   success: bool, message?: string,
@@ -65,7 +66,8 @@ final class CubePayClient
         string $orderId,
         string $callbackUrl,
         ?string $description = null,
-        ?string $customerId = null
+        ?string $customerId = null,
+        ?string $customerUsername = null
     ): array {
         $payload = [
             'amount' => $amountRial,
@@ -78,6 +80,10 @@ final class CubePayClient
         }
         if ($customerId !== null) {
             $payload['customer_user_id'] = $customerId;
+        }
+
+        if ($customerUsername !== null) {
+            $payload['customer_username'] = ltrim($customerUsername, '@');
         }
 
         return $this->request('POST', '/api/create-payment.php', $payload);
