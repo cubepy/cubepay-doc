@@ -1,3 +1,7 @@
+## 2026-10-15 — Mismatch confirmation without a buyer receipt
+
+Documented the bot and Mini App paths, bank/order verification, and retained ambiguity, expiry and duplicate safeguards. Added a help-site content/search update package. [Guide](docs/MISMATCH-CONFIRMATION.md). No APK release or change to late-receipt rules.
+
 ![CubePay](../cubepay-logo.png)
 
 ## 2026-10-12 — Buyer identity
