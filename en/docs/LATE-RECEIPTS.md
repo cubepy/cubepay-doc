@@ -2,6 +2,8 @@
 
 # 🧾 Receipts after invoice expiry
 
+> **Receipt-free mismatch confirmation is a separate route:** see [the mismatch guide](MISMATCH-CONFIRMATION.md) for recorded bank SMS deposits on unexpired invoices. The late-receipt rules below are unchanged.
+
 An eligible regular-card invoice can accept a receipt for an earlier bank transfer until **one hour after its original expiry**, when manual approval is enabled for the merchant. Both receipt submission and the merchant's approval/rejection must fit this same window; submitting near its end does not restart it.
 
 Open the original invoice link to submit the receipt. Its authority, order ID, card and amount remain unchanged. This is not permission to make a fresh payment to an expired invoice. The merchant must verify the actual bank credit and its relation to the order; an image alone is not proof.

@@ -95,3 +95,5 @@
 ---
 
 [راهنمای شناسهٔ خریدار و اصلاح فاکسیما/میرزا](docs/BUYER-IDENTITY.md)
+
+[تأیید مغایرت واریز بدون رسید خریدار](docs/MISMATCH-CONFIRMATION.md)

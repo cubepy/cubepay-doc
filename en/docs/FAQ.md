@@ -1,5 +1,7 @@
 # ❓ FAQ & Troubleshooting
 
+> **Mismatch approval without a receipt:** use the bot notification or the review banner on the Telegram Mini App home screen. [Steps and safeguards](MISMATCH-CONFIRMATION.md).
+
 > 🧾 **[Late receipts](./LATE-RECEIPTS.md)** — eligible receipt submission and seller decisions within one hour after original expiry; the payment deadline is not extended.
 
 > 📖 **[CubePay help center (Persian)](https://cubevps.ir/panel/help/)** — Searchable, mobile-friendly guides; no sign-in required.
