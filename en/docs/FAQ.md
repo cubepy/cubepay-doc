@@ -217,3 +217,5 @@ Yes; as long as your ticket is open, press "🎫 Open a ticket" again — the ne
 ---
 
 Didn't find an answer? [Open a ticket](https://t.me/cubepy_bot) from inside the bot, or ask via [cube_sup](https://t.me/cube_sup).
+
+**Does the bot notification follow Mini App decisions?** New mismatch notifications update automatically after approval or rejection and their buttons are removed. Temporary edit failures are retried without another payment. [Details and older messages](MISMATCH-CONFIRMATION.md).

@@ -36,3 +36,12 @@ This change does not extend the payment deadline. The separate late-receipt rout
 Confirmation records payment on the same invoice and queues the result for the store. It does not itself deliver the product: the store must verify the payment and fulfill the order only once.
 
 [Late receipts](LATE-RECEIPTS.md) · [Online guide (Persian)](https://cubevps.ir/panel/help/panel.html#bank-mismatch-confirmation)
+
+## What happens after a Mini App approval or rejection?
+
+Approving or rejecting a mismatch in the Mini App also updates the original bot notification to approved or rejected and removes its review/decision buttons. Do not submit the decision again in the bot.
+
+If Telegram is temporarily unavailable, the existing callback cron retries the message edit. This is a display update, not another payment or wallet credit. Until the edit succeeds, use the recorded Mini App status.
+
+Automatic synchronization applies to new messages sent after installing the update. Some older notifications have no saved message ID: press their review button once to register and refresh the message. An already paid invoice is not paid again. Deleted or otherwise uneditable messages cannot be updated; the recorded order decision remains valid.
+

@@ -1,3 +1,7 @@
+## 2026-10-15 — Mismatch notification synchronization
+
+Documented automatic bot notification edits after Mini App approval/rejection, button removal, display-only retries and older-message limitations. Updated help content and search. [Guide](docs/MISMATCH-CONFIRMATION.md).
+
 ## 2026-10-15 — Mismatch confirmation without a buyer receipt
 
 Documented the bot and Mini App paths, bank/order verification, and retained ambiguity, expiry and duplicate safeguards. Added a help-site content/search update package. [Guide](docs/MISMATCH-CONFIRMATION.md). No APK release or change to late-receipt rules.

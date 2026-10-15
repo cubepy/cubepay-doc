@@ -130,3 +130,5 @@ Path to add: **[@cubepy_bot](https://t.me/cubepy_bot) ← ⚙️ More settings �
 ## Questions?
 
 [`FAQ.md`](FAQ.md) · direct support: [cube_sup](https://t.me/cube_sup)
+
+**Mismatch message synchronization:** Mini App approval/rejection updates the original bot notification and removes its buttons. [Retry behavior and older messages](MISMATCH-CONFIRMATION.md).
