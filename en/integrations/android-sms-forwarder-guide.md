@@ -4,7 +4,7 @@
 
 > 📖 **[CubePay help center (Persian)](https://cubevps.ir/panel/help/)** — Searchable, mobile-friendly guides; no sign-in required.
 
-Public version: **2.7.1, build 71**. Guide updated October 17, 2026.
+Public version: **2.8.0, build 76**. Guide updated October 17, 2026.
 
 CubePay forwards messages from your selected banks using **internet forwarding** and/or **SMS to the receiving number**. SMS forwarding does not require phone internet, but requires cellular coverage, outgoing SMS service and credit/SMS allowance. Carrier charges apply.
 
@@ -12,9 +12,9 @@ CubePay forwards messages from your selected banks using **internet forwarding**
 
 [Download the official CubePay.apk](https://github.com/cubepy/cubepay-doc/releases/download/android-latest/CubePay.apk)
 
-Requires **Android 5.0+**. Install over the previous official version; do not uninstall it. Build 71 uses the same application ID and signing certificate. This release does not enforce an update.
+Requires **Android 5.0+**. Install over the previous official version; do not uninstall it. Build 76 uses the same application ID and signing certificate. This release does not enforce an update.
 
-🔒 **SHA-256:** `4a497df4e88f81820fe4919dbfac8f71f16546d273b4e2e694359cdde06ee2b4`
+🔒 **SHA-256:** `b164ccc2e3169ba0176e8a97656ceb617bc74904aeb36cbb7296d9307d094ec2`
 
 The download URL is stable. The [release page](https://github.com/cubepy/cubepay-doc/releases/tag/android-latest) identifies the public file. See the installed version and build code in app settings.
 
@@ -29,7 +29,7 @@ Existing connections, notification filters and custom settings remain available 
 
 ## 📨 Forward by SMS without phone internet
 
-1. In the bot's SMS confirmation menu, check the **bank SMS forwarding number**. The SIM receiving and forwarding bank messages must match the registered number.
+1. In the bot's SMS confirmation menu, check the **bank SMS forwarding number**. The number of the SIM that sends the forwarded message to CubePay must match the registered number. The bank sender and receiving SIM are separate filter settings.
 2. Obtain the current destination receiving number from the bot. Do not confuse it with the bank's sender number.
 3. Enable **simultaneous SMS forwarding to CubePay** in bank setup. For an existing connection, check its destination number and sending SIM in advanced settings. Do not create a duplicate filter.
 4. On dual-SIM phones, select the registered SIM. Check SEND_SMS permission, cellular coverage and credit/SMS allowance.
@@ -38,11 +38,21 @@ Simultaneous forwarding sends chargeable SMS even when internet is available; it
 
 **The former per-merchant “second path” reception toggle was removed.** Administrators can still disable either method for the whole service; check its current status in the bot. Internet testing alone does not verify the SIM number or SMS delivery.
 
-## Simple filter check — 2.7.1
+## Simple filter check
 
 Open **Diagnostics → Filter check** in the bottom navigation. Select a filter and an existing bank SMS, or keep the screen open for a new message. A clear result dialog shows whether it matches and why. No sign-in or internet is needed; previous messages are not resent. New real messages continue through normal forwarding.
 
 Connection status and invoice tracking are separate entries in Diagnostics and require account sign-in. [Full filter check guide](./filter-health.md)
+
+## Missed SMS recovery, destination status and widget
+
+With SMS-reading permission, CubePay checks for missed inbox messages after opening and on a scheduled 15-minute interval. Android and battery restrictions can delay this; reopen after a force-stop. Recovery starts after activation or the latest filter edit, and considers messages up to 24 hours old. Earlier inbox history is not resent.
+
+Recovery uses only CubePay's official safe internet endpoint after the server update. Old messages are not resent by SMS or to custom webhooks. Live new messages keep their normal destinations. Recovery does **not** extend an invoice deadline or automatically confirm an expired invoice. Ambiguous, newer or already consumed invoice matches are not guessed.
+
+Reports show each internet/SMS destination separately, with the filter identity, status and original message time. Technical details remain collapsed. Clearing completed reports preserves pending deliveries and the duplicate-prevention ledger.
+
+To add the optional widget, long-press the phone home screen → Widgets → CubePay. It counts locally recognized deposit messages, pending messages and messages needing review for today in Iran time. It is **not** a count of confirmed invoices or delivered orders; one message with multiple destinations counts once. Older reports without a recognized amount are not reconstructed.
 
 ## 🔐 Permissions and background operation
 
