@@ -99,3 +99,5 @@
 [تأیید مغایرت واریز بدون رسید خریدار](docs/MISMATCH-CONFIRMATION.md)
 
 - [تست سادهٔ فیلتر اندروید، بدون ورود و اینترنت](./integrations/filter-health.md)
+
+- [بازیابی پیامک جامانده، وضعیت هر مقصد و ویجت](./integrations/android-sms-forwarder-guide.md#بازیابی-پیامک-جامانده-وضعیت-مقصدها-و-ویجت)
