@@ -4,7 +4,7 @@
 
 > 📖 **[CubePay help center (Persian)](https://cubevps.ir/panel/help/)** — Searchable, mobile-friendly guides; no sign-in required.
 
-Public version: **2.6.3, build 65**. Guide updated October 11, 2026.
+Public version: **2.7.0, build 69**. Guide updated October 17, 2026.
 
 CubePay forwards messages from your selected banks using **internet forwarding** and/or **SMS to the receiving number**. SMS forwarding does not require phone internet, but requires cellular coverage, outgoing SMS service and credit/SMS allowance. Carrier charges apply.
 
@@ -12,9 +12,9 @@ CubePay forwards messages from your selected banks using **internet forwarding**
 
 [Download the official CubePay.apk](https://github.com/cubepy/cubepay-doc/releases/download/android-latest/CubePay.apk)
 
-Requires **Android 5.0+**. Install over the previous official version; do not uninstall it. Build 65 uses the same application ID and signing certificate. This release does not enforce an update.
+Requires **Android 5.0+**. Install over the previous official version; do not uninstall it. Build 69 uses the same application ID and signing certificate. This release does not enforce an update.
 
-🔒 **SHA-256:** `88be18641892a99db93062a6bd95a846dc6d852ba95d55750379a6675601bbab`
+🔒 **SHA-256:** `d8dba1ce4f906419d3a9aaef4e95c9a65b0af210b0a7b517e7544c97941372d4`
 
 The download URL is stable. The [release page](https://github.com/cubepy/cubepay-doc/releases/tag/android-latest) identifies the public file. See the installed version and build code in app settings.
 
@@ -37,6 +37,14 @@ Existing connections, notification filters and custom settings remain available 
 Simultaneous forwarding sends chargeable SMS even when internet is available; it is not SMS-only-on-network-failure fallback. It starts disabled for new account-based setup and is enabled by your choice.
 
 **The former per-merchant “second path” reception toggle was removed.** Administrators can still disable either method for the whole service; check its current status in the bot. Internet testing alone does not verify the SIM number or SMS delivery.
+
+## Filter health test — new in 2.7.0
+
+Open **Merchant → Bank connection → Filter health test**, or find it under **Advanced settings → Filters**. Select the filter, then check an earlier sample locally, test each internet/SMS destination, or prepare a controlled live deposit test.
+
+For a live test, transfer **only the exact displayed amount** to your selected card. This is a real bank transfer, but its diagnostic message cannot confirm an invoice. Internet is needed to prepare the test; afterward the SMS route can run offline and server receipt can be checked once internet returns. Carrier charges apply. The app does not display a transfer amount until the server is ready.
+
+[Full filter health guide](./filter-health.md)
 
 ## 🔐 Permissions and background operation
 

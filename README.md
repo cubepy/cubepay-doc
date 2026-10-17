@@ -97,3 +97,5 @@
 [راهنمای شناسهٔ خریدار و اصلاح فاکسیما/میرزا](docs/BUYER-IDENTITY.md)
 
 [تأیید مغایرت واریز بدون رسید خریدار](docs/MISMATCH-CONFIRMATION.md)
+
+- [تست سلامت فیلتر اندروید: پیامک قبلی، اینترنت و سرشماره](./integrations/filter-health.md)
