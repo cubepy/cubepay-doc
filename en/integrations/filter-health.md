@@ -1,32 +1,15 @@
-# Filter health in CubePay 2.7.0
+# Filter check
 
-Open **Merchant → Bank connection → Filter health test**, or **Advanced settings → Filters → Filter health test**. Select the filter before choosing a check.
+Open **Diagnostics** in the bottom bar, between **Reports** and **Merchant**, then **Filter check**. Select a saved bank filter. No merchant sign-in, internet connection, card selection or test transfer is required.
 
-## Check an earlier sample locally
+Choose an existing bank SMS. A separate dialog shows whether the message matches, the filter and sender, and the reason if it does not. The result stays on the page. The message is checked locally and is not resent. If a specific receiving SIM is configured, select the actual SIM; “I don't know” cannot confirm a full match.
 
-The direct APK can read a selected inbox message with permission. All variants support entering a sample manually. The sender, keywords, AND/OR logic, source and selected receiving SIM are compared on the phone; the sample is not resent or included in the support report. An unknown receiving SIM cannot confirm a SIM-specific filter. A matching sample does not prove background reception or delivery.
+To observe a new message, keep the screen open with the waiting notice visible. If needed, tap **Check new message** and grant receive permissions. The next message of the filter's source is compared, with its sender shown explicitly. Leaving the screen stops observation. No arriving message alone does not establish that the filter is broken.
 
-## Check configured delivery destinations
+**Actual incoming messages continue through normal forwarding and payment processing.** This screen only observes matching; it does not isolate a new bank transfer as a test payment. The check itself makes no network or payment request and cannot consume or resend messages. A match is not proof of server delivery or payment confirmation.
 
-A synthetic message without bank text or a deposit amount is sent to each enabled official CubePay webhook and account-approved SMS destination. Custom destinations can still forward normal messages; only local filter inspection is available for them in diagnostics. A malformed template is rejected before transmission. Redirects are disabled for diagnostic requests.
+Manual text entry is available in the SMS chooser, and is the primary entry method in distributions without inbox-reading permission. Save changes in Settings before checking an edited filter.
 
-Phone-sent status, carrier delivery and CubePay receipt are separate results. Every destination needs its own receipt; HTTP 200 alone does not pass the test. Outgoing SMS incurs carrier charges and uses the selected available SIM. The test does not silently change the selected SIM.
+Connection status and invoice tracking are separate entries in Diagnostics. These two views require merchant sign-in and internet because they read account records. The filter check does not.
 
-## Check a new bank message
-
-1. Sign in, enable the filter and grant its required permissions.
-2. Prepare the live test and select your own card for that bank.
-3. Wait for the app to display the card and **exact test amount**. Transfer only that amount to that card.
-4. The test waits for a new bank message for 20 minutes and reports reception, matching and each destination separately. You may close the page to check background reception and return later.
-
-The bank transfer is real; CubePay does not refund it. Only the message processing is diagnostic. Your bank may not send an SMS for the amount, and an unsupported message format can remain inconclusive. No result alone does not identify which permission, sender, keyword, SIM or transport failed.
-
-Internet is required for initial preparation. After that, the SMS route works without phone internet. Reconnect later and use **Check CubePay receipt**; saved receipt can also be queried after the test ends. Ordinary payments continue on their existing paths.
-
-**Never use the dedicated test amount for a real order.** One globally unique amount per merchant remains reserved, including after test expiry or cancellation, so delayed copies from older phones cannot become payments. Current/historical invoice amounts are excluded when reserving it, and future invoice allocation avoids overlapping tolerance windows. Existing invoice amounts, states, balances and financial history remain unchanged. Tests cannot create a mismatch, settle an invoice, credit a wallet or send a store payment callback.
-
-## Support and limitations
-
-Copy the support report for filter identity, time and stage results. It excludes bank message text, card number, session credentials and connection secrets. Changing a filter invalidates the old result; start a new test. A successful result applies to that message and the settings at the time, not every future message.
-
-Live preparation and server receipt require the accompanying server update installed by the CubePay administrator. Until it is ready, the app does not request a transfer; local sample checking remains available.
+The previous three-part flow with destination tests, card selection and reserved test amounts has been removed from the app UI. No new server installation is needed. Keep previously installed server protections for old reserved amounts and delayed test messages.

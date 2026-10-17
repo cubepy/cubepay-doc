@@ -98,4 +98,4 @@
 
 [تأیید مغایرت واریز بدون رسید خریدار](docs/MISMATCH-CONFIRMATION.md)
 
-- [تست سلامت فیلتر اندروید: پیامک قبلی، اینترنت و سرشماره](./integrations/filter-health.md)
+- [تست سادهٔ فیلتر اندروید، بدون ورود و اینترنت](./integrations/filter-health.md)

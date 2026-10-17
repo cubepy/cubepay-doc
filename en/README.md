@@ -94,4 +94,4 @@ VIP service is scheduled to end on **21 October 2026 at 23:59:59, Iran time** (2
 
 [Confirm a payment mismatch without a buyer receipt](docs/MISMATCH-CONFIRMATION.md)
 
-- [Android filter health: previous samples, internet and SMS](./integrations/filter-health.md)
+- [Simple Android filter check, without sign-in or internet](./integrations/filter-health.md)
