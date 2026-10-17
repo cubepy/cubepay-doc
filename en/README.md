@@ -96,4 +96,4 @@ VIP service is scheduled to end on **21 October 2026 at 23:59:59, Iran time** (2
 
 - [Simple Android filter check, without sign-in or internet](./integrations/filter-health.md)
 
-- [Missed SMS recovery, destination status and widget](./integrations/android-sms-forwarder-guide.md#missed-sms-recovery-destination-status-and-widget)
+- [New message delivery, destination status and widget](./integrations/android-sms-forwarder-guide.md#new-message-delivery-destination-status-and-widget)

@@ -4,7 +4,7 @@
 
 > 📖 **[CubePay help center (Persian)](https://cubevps.ir/panel/help/)** — Searchable, mobile-friendly guides; no sign-in required.
 
-Public version: **2.8.0, build 76**. Guide updated October 17, 2026.
+Public version: **2.8.1, build 78**. Guide updated October 17, 2026.
 
 CubePay forwards messages from your selected banks using **internet forwarding** and/or **SMS to the receiving number**. SMS forwarding does not require phone internet, but requires cellular coverage, outgoing SMS service and credit/SMS allowance. Carrier charges apply.
 
@@ -12,9 +12,9 @@ CubePay forwards messages from your selected banks using **internet forwarding**
 
 [Download the official CubePay.apk](https://github.com/cubepy/cubepay-doc/releases/download/android-latest/CubePay.apk)
 
-Requires **Android 5.0+**. Install over the previous official version; do not uninstall it. Build 76 uses the same application ID and signing certificate. This release does not enforce an update.
+Requires **Android 5.0+**. Install over the previous official version; do not uninstall it. Build 78 uses the same application ID and signing certificate. This release does not enforce an update.
 
-🔒 **SHA-256:** `b164ccc2e3169ba0176e8a97656ceb617bc74904aeb36cbb7296d9307d094ec2`
+🔒 **SHA-256:** `2d9cb99bc6568de6589693efb9f8b764be6a931e18c5bc03ae8ee35ac2df3cce`
 
 The download URL is stable. The [release page](https://github.com/cubepy/cubepay-doc/releases/tag/android-latest) identifies the public file. See the installed version and build code in app settings.
 
@@ -44,15 +44,17 @@ Open **Diagnostics → Filter check** in the bottom navigation. Select a filter 
 
 Connection status and invoice tracking are separate entries in Diagnostics and require account sign-in. [Full filter check guide](./filter-health.md)
 
-## Missed SMS recovery, destination status and widget
+## New message delivery, destination status and widget
 
-With SMS-reading permission, CubePay checks for missed inbox messages after opening and on a scheduled 15-minute interval. Android and battery restrictions can delay this; reopen after a force-stop. Recovery starts after activation or the latest filter edit, and considers messages up to 24 hours old. Earlier inbox history is not resent.
+Starting with **2.8.1**, automatic inbox scanning and missed-message recovery are removed. Turning on the phone or opening the app does not scan or resend inbox history. Scheduled recovery from 2.8.0 is cancelled; unfinished recovered deliveries stop while existing reports remain.
 
-Recovery uses only CubePay's official safe internet endpoint after the server update. Old messages are not resent by SMS or to custom webhooks. Live new messages keep their normal destinations. Recovery does **not** extend an invoice deadline or automatically confirm an expired invoice. Ambiguous, newer or already consumed invoice matches are not guessed.
+New messages already recorded by the live receiver retain their delivery queue and configured retries for transient internet errors. Resuming that queue does not read inbox history. Successful deliveries are not resent, and SMS sends with an uncertain modem outcome are not automatically repeated. Clearing completed reports preserves queued live deliveries and duplicate-prevention identities.
 
-Reports show each internet/SMS destination separately, with the filter identity, status and original message time. Technical details remain collapsed. Clearing completed reports preserves pending deliveries and the duplicate-prevention ledger.
+CubePay retries delayed by at least one minute still use the safe server endpoint from 2.8.0. No new server installation is needed if that update is installed; older installations still need the server update. Invoice deadlines are not extended and expired invoices are not automatically confirmed. There is no fallback to ordinary ingress when safe retry support is unavailable.
 
-To add the optional widget, long-press the phone home screen → Widgets → CubePay. It counts locally recognized deposit messages, pending messages and messages needing review for today in Iran time. It is **not** a count of confirmed invoices or delivered orders; one message with multiple destinations counts once. Older reports without a recognized amount are not reconstructed.
+Reports retain separate internet/SMS destination states and filter names. Transport success alone does not confirm a payment. The optional home-screen widget counts locally recognized deposit messages, pending messages and messages needing review for today in Iran time. It does not count confirmed invoices; one message with several destinations counts once.
+
+Selecting an earlier SMS for the local filter test remains available. The selected message is checked only on the phone and is never resent. SMS-reading permission is used for this explicit selection, not automatic inbox recovery.
 
 ## 🔐 Permissions and background operation
 
