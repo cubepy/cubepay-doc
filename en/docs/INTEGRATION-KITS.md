@@ -2,7 +2,7 @@
 
 # 📦 PHP, Python and Node.js integration kits
 
-These kits connect a custom shop or bot to the **regular card-payment API**. They are server-side examples, not a Telegram plugin or phone application. Existing integrations remain available; crypto and VIP are outside this kit's scope.
+These kits connect a custom shop or bot to the **regular card-payment API**. They are server-side examples, not a Telegram plugin or phone application. Existing integrations remain available; crypto is outside this kit's scope.
 
 **[Download all three kits](https://github.com/cubepy/cubepay-doc/raw/refs/heads/main/downloads/CubePay-integration-kits.zip)** · [Browse source](../../integrations/kits/README.md)
 

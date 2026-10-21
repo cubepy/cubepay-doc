@@ -48,15 +48,15 @@ CubePay's percentage fee is taken from the invoice's **gross** amount. So to pas
 
 | Gateway fee | Setting for full pass-through |
 |---|---|
-| 9% (CubePay VIP — [live rates](https://cubevps.ir/fees.php)) | **9.9** |
+| 9% (calculation example) | **9.9** |
 | 3% (crypto) | **3.1** |
 
 Show this hint in the setting's help text — the Foxima files do exactly that.
 
 ## 🚀 Why this pattern instead of a gateway-side setting?
 
-Because the invoice amount always stays exactly what your code sent — no "magic" number is changed on the gateway side, your existing validation and crediting code is untouched, and the same single implementation works identically for **card-to-card, crypto, and VIP**.
+Because the invoice amount always stays exactly what your code sent — no "magic" number is changed on the gateway side, your existing validation and crediting code is untouched, and the same single implementation works identically for **card-to-card and crypto**.
 
 ---
 
-Technical questions? [@cubepy_bot](https://t.me/cubepy_bot) · full API docs: [API-REFERENCE](../docs/API-REFERENCE.md) and [CUBEPAY-VIP-API-REFERENCE](../docs/CUBEPAY-VIP-API-REFERENCE.md)
+Technical questions? [@cubepy_bot](https://t.me/cubepy_bot) · full API docs: [API-REFERENCE](../docs/API-REFERENCE.md)

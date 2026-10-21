@@ -12,8 +12,6 @@ No files to replace, no code to edit, no ready-made files to download. You enter
 
 ---
 
-## ⚙️ Setup in 3 steps
-
 ### Step 1 — Get your API token
 
 Register in [@cubepy_bot](https://t.me/cubepy_bot) and, once your account is approved, copy your API token from **"🔗 My panel"**.
@@ -145,7 +143,6 @@ To debug the SMS path, use **"🧪 Connection test"** in `@cubepy_bot`: "🧪 Te
 
 - 📚 [Full API reference](../docs/API-REFERENCE.md) — if you want to call the API directly
 - 🪙 [Crypto & unified-router reference](../docs/CRYPTO-API-REFERENCE.md)
-- 👑 [CubePay VIP](../docs/CUBEPAY-VIP-API-REFERENCE.md) — settlement handled by CubePay; just swap in a `vip_…` token, nothing else changes
 - ❓ [FAQ](../docs/FAQ.md)
 
 ---

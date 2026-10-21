@@ -1,86 +1,43 @@
-[🇮🇷 فارسی](../../docs/ENDPOINT-MIGRATION.md) · 🇬🇧 English
+# Migrating from the legacy card API to the unified router
 
-# 🔀 Migrating to the unified router
+The router returns a card payment, a crypto payment, or a method-selection page according to your merchant settings. Obtain your merchant API token from the CubePay bot.
 
-> **If you want CubePay VIP and your current integration is old, do this page first — it takes 5 minutes.**
+## Required changes
 
-## 🧭 Which address are you on right now?
+| Item | Card API | Unified router |
+|---|---|---|
+| Endpoint | `/smspay/api/create-payment.php` | `/pay/create-order.php` |
+| Amount | `amount` in rial | `price_amount` in toman |
 
-| | Address | Amount | Tokens it understands |
-|---|---|---|---|
-| 🕰 Legacy — card | `/smspay/api/create-payment.php` | **rial**, field `amount` | normal only |
-| 🕰 Legacy — crypto | `/crypto/api/create-crypto-payment.php` | toman | normal only |
-| ✅ New — unified router | `/pay/create-order.php` | **toman**, field `price_amount` | **both normal and VIP** |
+For example, `1000000` rial becomes `100000` toman. Do not copy the old amount without conversion. Preserve your order ID and callback URL.
 
-The legacy addresses are not going away, and your current integration keeps working with a normal token. However:
+## PHP request
 
-- A `vip_` token is only valid on the unified router — on a legacy address you get a guidance error.
-- On the router, **both tokens work on one address** and you can switch between them at any time ([running both systems together](../integrations/using-both-systems-guide.md)).
-
-## 🛠 The migration — exactly two changes
-
-### 1) The address
-
-```diff
-- https://cubevps.ir/smspay/api/create-payment.php
-+ https://cubevps.ir/pay/create-order.php
+```php
+$payload = [
+    'order_id' => $orderId,
+    'price_amount' => $amountRial / 10,
+    'callback_url' => $callbackUrl,
+];
+$ch = curl_init('https://cubevps.ir/pay/create-order.php');
+curl_setopt_array($ch, [
+    CURLOPT_POST => true,
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_HTTPHEADER => ['Authorization: Bearer ' . $apiToken, 'Content-Type: application/json'],
+    CURLOPT_POSTFIELDS => json_encode($payload),
+]);
+$response = json_decode(curl_exec($ch), true);
+curl_close($ch);
 ```
 
-### 2) The amount unit and field name
+Keep the API token on your own server. A successful response supplies `pay_page_url`; direct the customer there. Creating a link does not prove payment.
 
-```diff
-- "amount": 500000        ← rial (50,000 toman)
-+ "price_amount": 50000   ← toman (the same 50,000 toman)
-```
+## Verify the result
 
-⚠️ **Don't miss this one** — if you change the address but keep sending rial, every invoice you create will be 10× the real price.
+For a card response containing `authority`, follow the existing `verify-payment.php` contract. For method selection or crypto, follow the status checks documented for that flow. A success page does not replace server-side verification.
 
-The other fields (`order_id`, `callback_url`) stay the same.
+Card confirmation requires forwarding the merchant's bank message to CubePay. For crypto, register the appropriate wallet and enable crypto in the merchant settings.
 
-## ✅ Before and after — one complete example
-
-Before (legacy):
-
-```bash
-curl -X POST https://cubevps.ir/smspay/api/create-payment.php \
-  -H "Authorization: Bearer YOUR_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"amount": 500000, "order_id": "ORD-1", "callback_url": "https://yoursite.com/cb.php"}'
-```
-
-After (unified router):
-
-```bash
-curl -X POST https://cubevps.ir/pay/create-order.php \
-  -H "Authorization: Bearer YOUR_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"price_amount": 50000, "order_id": "ORD-1", "callback_url": "https://yoursite.com/cb.php"}'
-```
-
-The response still carries `authority`, so your existing `verify-payment.php` code works **unchanged**. (Only VIP invoices get an `invoice_uid` instead of `authority`, with their status read from `check-order-status.php` — [details](./CUBEPAY-VIP-API-REFERENCE.md).)
-
-## 🤖 Using the ready-made files?
-
-- **Foxima:** v1.0.0 and later are already on the router — nothing to do ([guide](../integrations/faoxima-guide.md)).
-- **WordPress / generic guide / official Mirzabot:** these have been on the router from the start — nothing to do.
-
-## ❓ How do I know this is my problem?
-
-If your `vip_` token gets this message, you are exactly here:
-
-```
-This is a CubePay VIP token and does not work on this address (the legacy card-to-card API)...
-```
-
-Make the two changes above and it is solved.
-
----
-
-- 👑 Full VIP reference: [`CUBEPAY-VIP-API-REFERENCE.md`](./CUBEPAY-VIP-API-REFERENCE.md)
-- 🔀 Both systems together: [`using-both-systems-guide.md`](../integrations/using-both-systems-guide.md)
-- 🤖 Questions? Open a ticket from inside the bot: [@cubepy_bot](https://t.me/cubepy_bot)
-
-
----
-
-[Preserving buyer identity through the unified router](BUYER-IDENTITY.md)
+- [Card API reference](./API-REFERENCE.md)
+- [Crypto and unified API](./CRYPTO-API-REFERENCE.md)
+- [Foxima integration](../integrations/faoxima-guide.md)

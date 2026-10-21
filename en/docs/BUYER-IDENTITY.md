@@ -10,7 +10,7 @@ Send `customer_user_id` as a string from the authenticated buyer record when cre
 {"customer_user_id":"7000000123","customer_username":"buyer_name"}
 ```
 
-The card API `/smspay/api/create-payment.php` uses `amount` in rial; the unified `/pay/create-order.php` uses `price_amount` in toman. Adding metadata does not change amount units, fees, expiry, callbacks or payment verification. Identity must be preserved through the unified router's card and method-selection paths; this guide does not promise display for every crypto or VIP path. The [integration kits](INTEGRATION-KITS.md) already accept both fields.
+The card API `/smspay/api/create-payment.php` uses `amount` in rial; the unified `/pay/create-order.php` uses `price_amount` in toman. Adding metadata does not change amount units, fees, expiry, callbacks or payment verification. Identity must be preserved through the unified router's card and method-selection paths; this guide does not promise display for every crypto path. The [integration kits](INTEGRATION-KITS.md) already accept both fields.
 
 Create a new invoice after installation and inspect its buyer identity; payment is unnecessary for this check. Existing invoices with no identity cannot be retroactively attributed. Opening a normal payment link in Telegram or sending `/start` alone does not identify the original invoice buyer.
 
