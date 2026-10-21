@@ -1,3 +1,7 @@
+## 2026-10-21 — Retired-service cleanup and Android 2.8.2
+
+Removed discontinued-service instructions from the current documentation. App 2.8.2 build 80 removes the old transaction badge and unused resources while preserving settings, reports and the sending queue. [Official app](https://github.com/cubepy/cubepay-doc/releases/tag/android-latest).
+
 ## 2026-10-15 — Mismatch notification synchronization
 
 Documented automatic bot notification edits after Mini App approval/rejection, button removal, display-only retries and older-message limitations. Updated help content and search. [Guide](docs/MISMATCH-CONFIRMATION.md).
@@ -12,8 +16,6 @@ Documented the bot and Mini App paths, bank/order verification, and retained amb
 
 Added the guarded Faoxima installer, buyer identity guide, and links to upstream Faoxima/Mirzabot PRs. The custom Mirzabot bridge forwards buyer identity and the PHP example client accepts an optional username. No historical invoices or APK release changed.
 
-
-# 📋 Changelog
 
 ## 2026-10-11 — Android 2.6.3, build 65
 
@@ -38,7 +40,6 @@ All notable changes to this project are recorded here, in chronological order.
 
 - Added original branding, product screenshots with demo data, and merchant/developer entry points.
 - Placed downloads, iPhone setup, API documentation and support at the top.
-- Corrected the start guide to preserve internet and SMS forwarding and removed new VIP setup recommendations.
 - Updated both languages and maintainer guidance. This is a documentation update, not a new app release.
 
 ## 2026-10-10 — Android 2.6.2, build 63 published
@@ -48,7 +49,6 @@ All notable changes to this project are recorded here, in chronological order.
 - Corrected the obsolete second-path toggle and explained connection tests versus payment confirmation and fulfillment.
 - iPhone instructions continue to support both internet and SMS forwarding.
 - Documented optional buyer usernames and the limits of identity on historical invoices.
-- Added the scheduled VIP retirement date to relevant guides and the main page.
 
 ## 2026-10-09 — Restore both iPhone forwarding methods
 
@@ -96,8 +96,6 @@ A merchant said the docs were complicated. They were right — but the problem w
 
 ---
 
-## [2.9.0] — A complete Python example, and a clearer path for non-PHP code
-
 ### Changed
 - **[`docs/examples/python-example.py`](docs/examples/python-example.py) was rewritten.** The old version only showed the legacy card endpoint. It now covers the whole flow in one file: creating the order through the unified router, building the payment message (including the in-bot card when `show_card_in_bot` is on), confirming with `verify-payment`, and checking the crypto callback signature.
 
@@ -107,14 +105,10 @@ A merchant said the docs were complicated. They were right — but the problem w
 
 ---
 
-## [2.8.1] — Corrected the "payment methods" menu path
-
 ### Fixed
 - Five places in the docs still gave the old path "⚙️ More Settings → 💳 Payment Methods". That button has lived under "🏪 My Store" for a while now. Fixed in `START-HERE.md`, `docs/FAQ.md`, both languages of `CRYPTO-API-REFERENCE.md`, and `generic-integration-guide.md`.
 
 ---
-
-## [2.8.0] — Foxima v1.0.1 is out, with both features in it
 
 ### Changed
 - **[PR #17](https://github.com/Mmd-Amir/Faoxima/pull/17) and [PR #23](https://github.com/Mmd-Amir/Faoxima/pull/23) were merged and shipped in `v1.0.1`.** Both "show the card inside the bot" and "pass the fee to the customer" are now native to Foxima.
@@ -124,15 +118,11 @@ A merchant said the docs were complicated. They were right — but the problem w
 
 ---
 
-## [2.7.0] — the in-bot card display landed in Foxima
-
 ### Changed
 - **Foxima now has this feature** — [PR #17](https://github.com/Mmd-Amir/Faoxima/pull/17) was merged. The Foxima guide and [`docs/CARD-IN-BOT.md`](docs/CARD-IN-BOT.md) changed from "pending review" to instructions for enabling it.
 - Both docs now say explicitly that the change is **on `main` but not yet in the `v1.0.0` release** — anyone who installed from the release has to update the bot first, or flipping the toggle does nothing.
 
 ---
-
-## [2.6.0] — Foxima v1.0.0: the gateway went native, the ready files are retired
 
 ### Changed
 - **The Foxima guide was rewritten from scratch** → [`integrations/faoxima-guide.md`](../integrations/faoxima-guide.md). As of Foxima v1.0.0 the CubePay gateway ships inside the bot itself, so setup is three steps: get your token, enter it under "💎 Finance & reports → 🟦 CubePay → ⚙️ Settings → 🔑 Set API token", and switch the gateway on.
@@ -140,21 +130,16 @@ A merchant said the docs were complicated. They were right — but the problem w
 
 ### Removed
 - **`integrations/faoxima-ready-files/`** (eleven PHP files plus its guide) and **`integrations/faoxima-integration-guide.md`** (the manual-edit guide) are gone — the native gateway makes them unnecessary. Their code remains in git history.
-- Every reference in `README`, `START-HERE`, `FAQ`, `ENDPOINT-MIGRATION`, the VIP reference, the fee pass-through guide and `MAINTAINERS` now points at the new guide.
 
 ### Added
 - An English version of [`docs/CARD-IN-BOT.md`](docs/CARD-IN-BOT.md), which until now existed only in Persian.
 
 ---
 
-## [2.5.2] — Troubleshooting "the toggle is on but no message arrives"
-
 ### Added
 - A troubleshooting section in [`docs/CARD-IN-BOT.md`](docs/CARD-IN-BOT.md): when no card is registered under "💳 Manage cards", the API returns an empty card and no in-bot message is sent — while the web payment page still shows a card, which makes the cause easy to miss.
 
 ---
-
-## [2.5.1] — Clarified: flipping the toggle is not enough on its own
 
 ### Added
 - **[`docs/CARD-IN-BOT.md`](docs/CARD-IN-BOT.md)** — one page that says, for each kind of integration (Foxima ready files, the Mirzabot custom-gateway bridge, free Mirzabot, your own code, WooCommerce), exactly what is needed to use "show card in bot".
@@ -165,8 +150,6 @@ A merchant said the docs were complicated. They were right — but the problem w
 - The Mirzabot bridge README was rewritten from "only one thing is needed" into three explicit steps (update the file → bot token → toggle).
 
 ---
-
-## [2.5.0] — "Show card in bot" became a button, not a line of code
 
 ### Added
 
@@ -181,8 +164,6 @@ A merchant said the docs were complicated. They were right — but the problem w
 
 ---
 
-## [2.4.1] — A "show the card inside the bot" switch in the Foxima ready files and the Mirzabot bridge
-
 ### Added
 
 - A `CUBEPAY_SHOW_CARD_IN_BOT` constant in `business_logic_1.php`. It defaults to `false`, so no merchant sees any change; set it to `true` and a second message goes to the customer alongside the payment link, carrying the card number, holder, exact amount and deadline.
@@ -190,8 +171,6 @@ A merchant said the docs were complicated. They were right — but the problem w
 - The same switch was added to the [Mirzabot bridge](../integrations/mirzabot-custom-gateway/) (`SHOW_CARD_IN_BOT` + `TELEGRAM_BOT_TOKEN`). There the bridge only hands a link back to the bot, so sending a message needs the merchant's own Telegram bot token; leave it empty and the feature stays quietly off.
 
 ---
-
-## [2.4.0] — The payment can now be shown inside the bot itself
 
 ### Added
 
@@ -209,8 +188,6 @@ A merchant said the docs were complicated. They were right — but the problem w
 
 ---
 
-## [2.3.0] — "Manual invoice" is now "Payment link", and testing is a separate thing
-
 ### Changed
 
 - **"🧾 Create manual invoice" is now "🔗 Payment link".** The feature was already what merchants were asking for — your own amount and validity window, a unique link with its own unique amount — but its name and wording ("this is a test environment…") made it read as a toy rather than something to hand a customer. No logic changed, only labels and copy; the old button still works (Telegram caches keyboards on some phones).
@@ -223,8 +200,6 @@ A merchant said the docs were complicated. They were right — but the problem w
 
 ---
 
-## [2.2.0] — The post-payment redirect is now the merchant's call
-
 ### Added
 
 - **A "🔀 Redirect after payment" toggle** under "🏪 My Store → 💳 Payment methods". Turning the redirect off used to require editing the bot's or site's code; it is now a button. An explicit `redirect_after_payment` in the API request still wins over it.
@@ -234,17 +209,13 @@ A merchant said the docs were complicated. They were right — but the problem w
 ### Fixed
 
 - **The "choose a method" path ignored `redirect_after_payment` entirely.** Whenever both card and crypto were enabled, the card invoice was created without the flag, so the customer was always redirected regardless of the setting. The value is now resolved before the paths branch and stored on the order.
-- **The VIP path returned no payment URL for a duplicate open invoice** (only `invoice_uid`). The merchant got `success: true` with nowhere to send the customer, and that order could not be paid until the invoice expired. It now returns the existing invoice's link, like the normal path does.
 
 ### Changed
 
 - **New accounts start with the redirect off** (most integrations are bot-driven). Existing accounts were left on, unchanged.
-- **WooCommerce plugin 1.2.1:** it now sends `redirect_after_payment: true` explicitly (a web shop must always return to its order page, whatever the account setting says), gains a separate "CubePay VIP token" field, and correctly verifies callbacks for VIP invoices — those are signed with the `vip_` token and were previously checked against the normal token only, and rejected.
 - **The Foxima ready files** send the parameter explicitly as `false`; the same change was submitted upstream for Mirzabot as a pull request.
 
 ---
-
-## [2.1.14] — The webhook secret moved out of the URL
 
 ### Added
 
@@ -261,8 +232,6 @@ A merchant said the docs were complicated. They were right — but the problem w
 
 ---
 
-## [2.1.13] — Clearing up how the webhook and the "second path" relate
-
 ### Changed
 
 - **The Android and iOS guides no longer present the webhook as a "method you choose".** The webhook is always on and there is no button to switch it off — the "Prerequisite" section used to say "select the Webhook method", which led merchants to believe that turning on MeliPayamak forwarding would cut their webhook off.
@@ -275,8 +244,6 @@ A merchant said the docs were complicated. They were right — but the problem w
 
 ---
 
-## [2.1.12] — Foxima ready files: delivery that survives an unstable host
-
 ### Fixed
 
 - **The post-payment chain no longer gets lost when the process dies.** On a real install (a crowded shared host) the process was sometimes killed midway after payment: the service got created, but the delivery message, the buyer's wallet deduction, and the channel report never happened. The ready-file set now makes the wallet deduction **atomic and at-most-once** (transaction + marker), **auto-rescues** any half-finished order on the next callback (missed deduction + a compensating channel report), and speeds up an image-processing hotspot (22 Gaussian blurs for the QR background) ~40× — the main thing getting the process killed.
@@ -288,45 +255,15 @@ A merchant said the docs were complicated. They were right — but the problem w
 
 ---
 
-## [2.1.11] — WooCommerce plugin: "invalid signature" on VIP payments
-
-### Fixed
-
-- **WooCommerce plugin 1.2.1:** the callback signature is now checked against the token that created the order — the `vip_` token for VIP orders. Version 1.2.0 always checked against the normal token, so after the server-side fix in 2.1.9 it rejected VIP payments with an "invalid signature" error. **If you use VIP together with the plugin, update it.** The normal token is still accepted as well, so older invoices keep verifying.
-
----
-
-## [2.1.10] — Customer fee pass-through (percent or fixed) in the ready-made files
-
 ### Added
 
-- **The "fee" setting in the Foxima ready files is now dual-mode:** a value of 0–100 = a **percentage** fee (decimals allowed, e.g. `9.9`), above 100 = a **fixed toman** amount — same field, no new buttons. After saving, the bot echoes the interpretation back with a worked example. Fee application also moved into `business_logic_1.php` (at order-creation time), so it works identically for card-to-card, crypto, and VIP, and the customer's wallet is still credited only with the requested amount.
 - **New guide for bot platforms:** ["Passing the fee on to the customer"](integrations/customer-fee-passthrough-guide.md) — the spec of this pattern plus reference code, for any platform (Mirzabot, Seamless, Zitac, …) that wants to offer the same capability. (Persian + English)
 
 ---
 
-## [2.1.9] — VIP callback signing key fixed + live fee reference
-
-### Fixed
-
-- **The VIP callback signing key is fixed — `sig` is now built with your `vip_` token**, the same token you created the order with (not your normal token). Single-token integrations — including the ready-made bot files — that used to hit "this callback's signature is invalid" when the customer returned now work without any change. The simple rule: every callback is signed with the token that created its order.
-
-### Added
-
-- **🌐 Live fee reference: [cubevps.ir/fees.php](https://cubevps.ir/fees.php).** Fees and conditions for both merchant types (normal and VIP) on one page, read straight from the platform's live settings — always current, no manual doc edits needed. The bot's new "📊 تعرفه‌ها و شرایط" (fees & conditions) menu button shows the same comparison with live numbers.
-
-### Docs
-
-- The default VIP fee in the docs was updated from 10% to **9%** (the rate really was lowered). The "using both systems" guide was corrected regarding the callback signing key.
-
----
-
-## [2.1.8] — Support tickets + several improvements and fixes
-
 ### Added
 
 - **🎫 Support tickets inside the bot.** From "📢 News & support → 🎫 Open a ticket", describe your problem; a numbered ticket is created and the support reply arrives in the same bot. "📋 My tickets" shows each ticket's status. Escalation from the AI assistant now feeds the same ticket system.
-- **📬 Telegram notifications for VIP merchants.** The review outcome of your payout address (approved/rejected) and the final outcome of every withdrawal (crypto delivered, or amount returned) are now sent to you automatically by the bot — no more polling the dashboard.
 
 ### Changed
 
@@ -336,15 +273,8 @@ A merchant said the docs were complicated. They were right — but the problem w
 ### Fixed
 
 - **A duplicated bank SMS no longer produces duplicated messages.** If the same bank SMS reaches the system more than once (forwarder retry, or two channels at once), only the first delivery is processed — one deposit, one message, one decision.
-- **Two VIP money paths are now strictly all-or-nothing.** Crediting a customer payment and activating a subscription are now atomic; even if the server dies at the worst possible moment, a paid invoice can no longer end up uncredited, nor a paid subscription without service.
-
-### Docs
-
-- New FAQ entry for the most common VIP migration mistake: if your `vip_` token gets an "invalid token" error, your code is calling the legacy endpoint — the URL must be `POST /pay/create-order.php` with the amount in toman via `price_amount`.
 
 ---
-
-## [2.1.7] — A permanent download link for the SMS Forwarder app
 
 ### Changed
 
@@ -364,27 +294,6 @@ A merchant said the docs were complicated. They were right — but the problem w
 
 ---
 
-## [2.1.6] — VIP intake capacity + running both systems together
-
-### Added
-
-- **[A guide to running both systems together](./integrations/using-both-systems-guide.md)** — if you have a VIP subscription you don't have to choose one. Both tokens are valid at the same time and you can decide **per order** which path it takes: normal for ordinary orders (no fee, money straight to your own card), VIP when the forwarder phone is off or you want the income in crypto.
-- A **👑 CubePay VIP questions** section in [`docs/FAQ.md`](./docs/FAQ.md).
-
-### Changed
-
-- **VIP intake is now capped.** Because this service involves holding funds in custody, the number of merchants is controlled. When capacity is full, activation requests are refused and **no payment link is created** — the purchase button is hidden in the panel rather than letting you fail on click.
-
-### 📌 Three rules worth knowing
-
-- **If you are already a VIP merchant, your renewal is never blocked.** The cap applies only to new merchants — someone who has been a customer for months should not lose their place to a newcomer.
-- **A payment link you receive holds a slot for up to 2 hours.** There is a gap between getting the link and paying; this stops several people buying the same last remaining slot at once.
-- **If your payment is confirmed, the service is activated regardless.** Money is never taken without the service being provided.
-
----
-
-## [2.1.5] — More reliable exchange rate for withdrawals
-
 ### Changed
 
 - **The toman-to-crypto rate now comes from several independent sources.** Previously, if the single rate source was unreachable the system silently fell back to a fixed number — and if that number had drifted from the market, withdrawals used the wrong rate with nobody aware. Now if one source is down, the next is tried.
@@ -394,8 +303,6 @@ A merchant said the docs were complicated. They were right — but the problem w
 > The rate is still **locked at the moment you submit a withdrawal request**, so later market movement does not affect it.
 
 ---
-
-## [2.1.4] — Fixed an accounting issue in withdrawals
 
 ### Fixed
 
@@ -407,73 +314,16 @@ A merchant said the docs were complicated. They were right — but the problem w
 
 ---
 
-## [2.1.3] — Admin panel fix
-
 ### Fixed
 
 - The settings button in the admin panel's merchant list did not open.
 
 ### Security
 
-- **Sensitive values are no longer included in admin panel responses or stored in the change history.** Merchant tokens were being surfaced and retained in places that had no need for them. The VIP token is now shown only at the moment it is explicitly requested.
 
 > These changes affect only the admin panel (which was already restricted to the bot owner) and change nothing in the merchant-facing API.
 
 ---
-
-## [2.1.2] — Monthly cap for VIP merchants
-
-### Added
-
-- **A default monthly cap of 100,000,000 toman.** Until now the monthly cap applied only when an admin had set it for that specific merchant; it now applies to everyone, like the daily cap.
-
-### 📌 Note
-
-Your account's caps are always visible in the panel under **📖 Fees & limits**. If an admin has not set a specific cap for your account, the general default applies — and if that default later changes, your account follows it immediately. For larger businesses, caps can be raised individually.
-
----
-
-## [2.1.1] — Migrating to VIP without code changes
-
-### Added
-
-- **Now you only need to swap the token.** If you use the unified router (`POST /pay/create-order.php`) — that is, a Foxima bot, the WooCommerce plugin, or your own code — moving to VIP requires **no code changes at all**. Put the `vip_` token where the old one was, and that's it. Same URL, same fields, same response.
-- So that your existing code keeps working exactly as before, the VIP path accepts the same amount field name and returns the same `method` key in its response.
-
-### 📌 For normal merchants
-
-Nothing changes. A normal token never starts with `vip_`, so the existing path is untouched.
-
----
-
-## [2.1.0] — 👑 CubePay VIP: settlement handled by CubePay (no SMS Forwarder needed)
-
-An entirely **optional, parallel** capability alongside the existing system — it replaces nothing. It is for merchants who cannot install an SMS Forwarder: the money is collected on a CubePay treasury card, the fee is deducted, and the merchant withdraws in crypto whenever they want. A merchant who does not enable it sees no difference at all.
-
-### Added
-
-- **A monthly VIP subscription** — activated with a crypto payment link. Once paid, the account is enabled automatically, and a renewal warning is sent 3 days before expiry.
-- **A dedicated VIP token** (plus a sandbox variant), separate from your normal API token. When the subscription expires, only that token stops working **for creating invoices** — the dashboard, your balance and **withdrawals** keep working.
-- **Your balance moves through four stages** — "pending" → "available" → "settling" → "settled". Every toman is traceable and no figure is ever edited by hand.
-- **Automated crypto withdrawals** — the rate is locked when you submit the request, payouts only go to an admin-approved address, and on failure the amount returns **exactly once**.
-- **Caps are enforced on the server** — per invoice, per day and per month; not only in the panel.
-- **Duplicate invoice detection** — based on merchant + amount + customer + time window, not amount alone, so two genuine orders of the same value are not blocked by mistake.
-- **A dedicated panel** — a VIP tab in the merchant panel: dashboard, invoices, wallet, withdrawals, and a **📖 Fees & limits** tab showing every critical number in one place.
-- **Documentation** — [`docs/CUBEPAY-VIP-API-REFERENCE.md`](./docs/CUBEPAY-VIP-API-REFERENCE.md).
-
-### Changed
-
-- **Manual invoice creation is impossible in this system** — not from the merchant panel, not from the bot, not even by an admin. The only way is an API call from your own site or bot.
-- **`order_id` is unique forever** — unlike the existing card path, it cannot be reused even after an invoice is cancelled.
-- All amounts in this system are in **toman** (not rial).
-
-### 🔒 Fully separate from the existing paths
-
-The card-to-card SMS Forwarder path and the normal merchants' 3% crypto gateway are **unchanged**. Accounts, fees and tokens are entirely separate, and the fee wallet is never checked on the VIP path.
-
----
-
-## [2.0.1] — Fix: crypto payment callbacks were never actually sent
 
 ### Fixed
 
@@ -500,7 +350,6 @@ This is the largest update to CubePay so far — it effectively turns the gatewa
 - **Sandbox mode** — every merchant gets a test token (`test_...`) separate from the real one; invoices created with it neither deduct a real fee nor need a real card, and the payment page shows "simulate success/failure" buttons instead of a card number. For testing an integration before going live.
 - **Developer portal** — full documentation plus a live API explorer; you can create and simulate an invoice directly with the test token, without writing any code.
 - **API versioning** — all the main endpoints are now also available under `/api/v1/` (the old paths keep working unchanged), so future updates never break existing merchants.
-- **Settlement engine for the crypto wallet** — on-demand withdrawal requests (not only scheduled ones); VIP merchants get an immediate real settlement, everyone else goes through admin approval.
 - **SMS processing queue optimisation** — the SMS webhook now answers the forwarder app immediately after recording the payment, and performs the slow network work (Telegram, merchant webhook) afterwards — to avoid timeouts and pointless retries under load.
 
 ### Fixed
@@ -530,8 +379,6 @@ Even though this bug is fixed, we still recommend also running a periodic check 
 
 ---
 
-## [1.13.0] — Security, multi-wallet support, and crypto callbacks to the merchant's site
-
 ### Added
 
 - **Crypto payment callback to the merchant's site** — until now, only card payments notified the merchant's `callback_url`; now crypto payments do too (via a new `callback_url` parameter in `create-crypto-payment.php` and the unified router), signed with HMAC-SHA256 (key = the merchant's API token) to prevent forgery.
@@ -553,8 +400,6 @@ Even though this bug is fixed, we still recommend also running a periodic check 
 - Direct web access to logs/configs/local databases blocked
 
 ---
-
-## [1.12.0] — Crypto payments + unified card/crypto integration
 
 ### Added
 
@@ -585,8 +430,6 @@ Even though this bug is fixed, we still recommend also running a periodic check 
 
 ---
 
-## [1.11.0] — Interactive merchant web panel + SMS connection test
-
 ### Added
 
 - **The merchant web panel is now complete** — in addition to earlier features (wallet, transactions, discrepancies), you can now do the following right from the Mini App: fully manage cards (add/remove/enable/rotation mode), change the fee-compensation percentage, create manual invoices, choose and test the bank-SMS receiving method (webhook/MeliPayamak), view referral info, and export to Excel.
@@ -606,8 +449,6 @@ Even though this bug is fixed, we still recommend also running a periodic check 
 - A temporary issue that caused the merchant web panel to sometimes get stuck on "Loading" was fixed.
 
 ---
-
-## [1.10.0] — Second SMS confirmation method (MeliPayamak) + menu reorganization
 
 ### Added
 
@@ -633,8 +474,6 @@ Even though this bug is fixed, we still recommend also running a periodic check 
 
 ---
 
-## [1.9.1] — Payment UX fixes + security
-
 ### Fixed
 
 Misleading "already charged" message on the wallet top-up result page — now a success message with the real balance is shown in this case too
@@ -651,8 +490,6 @@ Detection of mismatched deposit amounts (less/more than the invoice amount) + no
 
 ---
 
-## [1.9.0] — Security and documentation
-
 ### Added
 
 - **Mandatory initial top-up** — a new merchant must deposit a test amount (default 40,000 Toman) before their token/webhook is activated; enforced both in the bot and in the API itself
@@ -665,8 +502,6 @@ Detection of mismatched deposit amounts (less/more than the invoice amount) + no
 - Ability to set a custom expiry time for each manual invoice (5 to 1440 minutes)
 
 ---
-
-## [1.8.0] — Important fee bug fix + referral program
 
 ### Fixed
 
@@ -681,8 +516,6 @@ Detection of mismatched deposit amounts (less/more than the invoice amount) + no
 
 ---
 
-## [1.7.0] — UX and branding
-
 ### Added
 
 - Invoice messages (wallet top-up / manual invoice) are now **automatically edited** after payment — no more leftover unusable buttons
@@ -691,16 +524,12 @@ Detection of mismatched deposit amounts (less/more than the invoice amount) + no
 
 ---
 
-## [1.6.0] — Bonuses and wallet safety
-
 ### Added
 
 - Tiered wallet top-up bonus (5% to 20% depending on the amount)
 - A complete, documented review of the financial path: atomic locking, blocking transactions when balance is insufficient, direct notification to the merchant when balance runs low
 
 ---
-
-## [1.5.0] — Multi-card support and more security
 
 ### Added
 
@@ -711,8 +540,6 @@ Detection of mismatched deposit amounts (less/more than the invoice amount) + no
 
 ---
 
-## [1.4.0] — Transparency and reporting
-
 ### Added
 
 - Terms-and-conditions confirmation during merchant registration
@@ -720,8 +547,6 @@ Detection of mismatched deposit amounts (less/more than the invoice amount) + no
 - Official FAQ and Changelog documentation
 
 ---
-
-## [1.3.0] — Authentication and stability
 
 ### Added
 
@@ -736,8 +561,6 @@ Detection of mismatched deposit amounts (less/more than the invoice amount) + no
 - The "Manage Merchants" section was showing/editing an old, unused column for the card
 
 ---
-
-## [1.2.0] — Full multi-merchant support
 
 ### Added
 
@@ -760,8 +583,6 @@ Detection of mismatched deposit amounts (less/more than the invoice amount) + no
 
 ---
 
-## [1.1.0] — Becoming a platform
-
 ### Added
 
 - Converted from a single-user system into a multi-merchant platform
@@ -769,8 +590,6 @@ Detection of mismatched deposit amounts (less/more than the invoice amount) + no
 - Official PHP SDK (`CubePayClient.php`)
 
 ---
-
-## [1.0.0] — Initial release
 
 ### Added
 

@@ -33,7 +33,6 @@ cubepay-doc/
 │   ├── wordpress-plugin-guide.md
 │   ├── ios-shortcuts-sms-forwarding-guide.md
 │   ├── android-sms-forwarder-guide.md          ← CubePay's own dedicated Android SMS-forwarding app. The APK is a release asset on THIS repo under the fixed tag `android-latest` (permanent URL `releases/download/android-latest/CubePay.apk`; the app's private source repo republishes it there on every release). `.github/workflows/update-apk-checksum.yml` re-syncs the SHA-256 printed in both language versions of the guide daily — don't hand-edit those hashes.
-│   ├── using-both-systems-guide.md             ← running the normal and VIP paths side by side (one endpoint, two tokens)
 │   ├── faoxima-guide.md                       ← CubePay is native in Foxima from v1.0.0 (Mmd-Amir/Faoxima); the guide is now just "enter your API token". The old drop-in PHP files and manual-edit guide were removed — they live in git history only
 │   └── mirzabot-ready-files/                  ← CubePay is now merged upstream into Mirzabot's official repo (mahdiMGF2/mirzabot PR #75); this dir just holds a short pointer doc, no more drop-in files
 └── en/                                         ← English mirror (see "Localization" below)
@@ -42,8 +41,7 @@ cubepay-doc/
 ## Localization: fa is canonical, en is a partial, hand-maintained mirror
 
 - **Persian (root-level files) is the source of truth.** New features/fixes are written in Persian first.
-- `en/` mirrors nearly all root docs: `README.md`, `START-HERE.md`, `CONTRIBUTING.md`, `SECURITY.md`, `CODE_OF_CONDUCT.md`, `CHANGELOG.md`, `docs/API-REFERENCE.md`, `docs/CRYPTO-API-REFERENCE.md`, `docs/CUBEPAY-VIP-API-REFERENCE.md`, `docs/FAQ.md`, `docs/openapi.yaml`, `docs/examples/`, and the Foxima/generic/WordPress/Android-SMS/iOS-Shortcuts/using-both-systems integration guides.
-- `en/` still has **no** English counterpart for: `docs/MANAGED-SETTLEMENT-ARCHITECTURE.md` (internal design rationale — the English VIP reference links to the Persian original and says so) and `integrations/mirzabot-ready-files/`.
+- `en/` mirrors nearly all root docs: `README.md`, `START-HERE.md`, `CONTRIBUTING.md`, `SECURITY.md`, `CODE_OF_CONDUCT.md`, `CHANGELOG.md`, `docs/API-REFERENCE.md`, `docs/CRYPTO-API-REFERENCE.md`, `docs/FAQ.md`, `docs/openapi.yaml`, `docs/examples/`, and the Foxima/generic/WordPress/Android-SMS/iOS-Shortcuts integration guides.
 - **There is exactly one English changelog: `en/CHANGELOG.md`.** A second, diverging copy used to sit at the repo root (`CHANGELOG.en.md`); it was consolidated into `en/CHANGELOG.md` and the leftover stub has since been deleted. Add English changelog entries only to `en/CHANGELOG.md`, and don't recreate a root-level one.
 - English pages are translations maintained **by hand** and can lag behind the Persian originals. The two changelogs also diverge in numbering — the Persian `2.0.1` and the English `1.13.1` describe the same fix, for example. When translating an update, match entries by content, not by version tag.
 - Every doc that has a translation links to its counterpart at the top (`🇮🇷 فارسی · [🇬🇧 English](...)`). When adding a new doc that should be bilingual, add this header to both sides and place the English file at the mirrored path under `en/`.

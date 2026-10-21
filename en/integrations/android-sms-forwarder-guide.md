@@ -4,7 +4,7 @@
 
 > 📖 **[CubePay help center (Persian)](https://cubevps.ir/panel/help/)** — Searchable, mobile-friendly guides; no sign-in required.
 
-Public version: **2.8.1, build 78**. Guide updated October 17, 2026.
+Public version: **2.8.2, build 80**. Guide updated October 21, 2026.
 
 CubePay forwards messages from your selected banks using **internet forwarding** and/or **SMS to the receiving number**. SMS forwarding does not require phone internet, but requires cellular coverage, outgoing SMS service and credit/SMS allowance. Carrier charges apply.
 
@@ -12,9 +12,9 @@ CubePay forwards messages from your selected banks using **internet forwarding**
 
 [Download the official CubePay.apk](https://github.com/cubepy/cubepay-doc/releases/download/android-latest/CubePay.apk)
 
-Requires **Android 5.0+**. Install over the previous official version; do not uninstall it. Build 78 uses the same application ID and signing certificate. This release does not enforce an update.
+Requires **Android 5.0+**. Install over the previous official version; do not uninstall it. Build 80 uses the same application ID and signing certificate. This release does not enforce an update.
 
-🔒 **SHA-256:** `2d9cb99bc6568de6589693efb9f8b764be6a931e18c5bc03ae8ee35ac2df3cce`
+🔒 **SHA-256:** `0caf63778146faa8ecdfc8854147cb1b700967988461e8e553d172b520d4ace2`
 
 The download URL is stable. The [release page](https://github.com/cubepy/cubepay-doc/releases/tag/android-latest) identifies the public file. See the installed version and build code in app settings.
 
@@ -99,7 +99,7 @@ Keep working custom templates unchanged unless necessary. Existing `?secret=...`
 
 ## ✨ Changes in 2.6.2
 
-Refined UI, active login-code recovery, corrected system-bar spacing on health screens, permission guidance, green successful test results and removal of the VIP section. These UI changes preserve bank-message reception/forwarding logic and existing settings formats.
+Refined UI, active login-code recovery, corrected system-bar spacing on health screens, permission guidance, green successful test results. These UI changes preserve bank-message reception/forwarding logic and existing settings formats.
 
 Builds, unit tests and upgrade signing identity were checked. This does not claim testing every physical phone, carrier or VPN.
 

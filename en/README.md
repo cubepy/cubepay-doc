@@ -76,13 +76,6 @@ Product UI shown with **demo data**. Forwarding reports, payment status and orde
 - **Documentation:** [Changelog](./CHANGELOG.md) · [FAQ](./docs/FAQ.md) · [Private vulnerability reporting](./SECURITY.md).
 - **This repository:** documentation and integration examples for a hosted service. It does not publish the server or app source. The documentation-check badge is not a live payment-service status indicator.
 
-<details>
-<summary>Notice for existing VIP subscribers</summary>
-
-VIP service is scheduled to end on **21 October 2026 at 23:59:59, Iran time** (29 Mehr 1405). Use the standard path for new integrations. [Legacy documentation](./docs/CUBEPAY-VIP-API-REFERENCE.md) remains available for existing subscribers.
-
-</details>
-
 ---
 
 [Merchant bot](https://t.me/cubepy_bot) · [Support](https://t.me/cube_sup) · [Contribute to the docs](./CONTRIBUTING.md) · [Repository license](../LICENSE)

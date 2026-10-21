@@ -1,86 +1,47 @@
-🇮🇷 فارسی · [🇬🇧 English](../en/docs/ENDPOINT-MIGRATION.md)
+<div dir="rtl">
 
-# 🔀 راهنمای مهاجرت به روتر یکپارچه
+# مهاجرت از API کارتی قدیمی به روتر یکپارچه
 
-> **اگر می‌خواهید CubePay VIP بگیرید و اتصال فعلی‌تان قدیمی است، اول این صفحه را انجام دهید — ۵ دقیقه کار است.**
+روتر یکپارچه بر اساس روش‌های فعال حساب شما، پرداخت کارتی، کریپتو یا صفحهٔ انتخاب روش را برمی‌گرداند. کلید API حساب فروشندگی خودتان را از ربات CubePay بگیرید.
 
-## 🧭 الان روی کدام آدرس هستید؟
+## دو تفاوت لازم
 
-| | آدرس | مبلغ | چه توکنی را می‌فهمد |
-|---|---|---|---|
-| 🕰 قدیمی — کارتی | `/smspay/api/create-payment.php` | **ریال**، فیلد `amount` | فقط عادی |
-| 🕰 قدیمی — کریپتو | `/crypto/api/create-crypto-payment.php` | تومان | فقط عادی |
-| ✅ جدید — روتر یکپارچه | `/pay/create-order.php` | **تومان**، فیلد `price_amount` | **عادی و VIP هر دو** |
+| مورد | API کارتی | روتر یکپارچه |
+|---|---|---|
+| نشانی | `/smspay/api/create-payment.php` | `/pay/create-order.php` |
+| مبلغ | `amount` به ریال | `price_amount` به تومان |
 
-آدرس‌های قدیمی حذف نمی‌شوند و اتصال فعلی‌تان با توکن عادی همچنان کار می‌کند. ولی:
+برای مثال، مبلغ `1000000` ریال در API قدیمی، برابر `100000` تومان در روتر است. مبلغ قبلی را بدون تبدیل کپی نکنید. شمارهٔ سفارش و نشانی کال‌بک فروشگاه را حفظ کنید.
 
-- توکن `vip_` فقط روی روتر یکپارچه معتبر است — روی آدرس قدیمی خطای راهنما می‌گیرید.
-- روی روتر، **هر دو توکن روی یک آدرس** کار می‌کنند و می‌توانید هر لحظه بینشان جابه‌جا شوید ([راهنمای هر دو سیستم با هم](../integrations/using-both-systems-guide.md)).
+## نمونهٔ درخواست PHP
 
-## 🛠 مهاجرت — دقیقاً دو تغییر
-
-### ۱) آدرس
-
-```diff
-- https://cubevps.ir/smspay/api/create-payment.php
-+ https://cubevps.ir/pay/create-order.php
+```php
+$payload = [
+    'order_id' => $orderId,
+    'price_amount' => $amountRial / 10,
+    'callback_url' => $callbackUrl,
+];
+$ch = curl_init('https://cubevps.ir/pay/create-order.php');
+curl_setopt_array($ch, [
+    CURLOPT_POST => true,
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_HTTPHEADER => ['Authorization: Bearer ' . $apiToken, 'Content-Type: application/json'],
+    CURLOPT_POSTFIELDS => json_encode($payload),
+]);
+$response = json_decode(curl_exec($ch), true);
+curl_close($ch);
 ```
 
-### ۲) واحد و نام فیلد مبلغ
+کلید API فقط در سرور خودتان نگه داشته شود. پاسخ موفق، `pay_page_url` دارد؛ مشتری را به همان آدرس هدایت کنید. دریافت لینک، اثبات پرداخت نیست.
 
-```diff
-- "amount": 500000        ← ریال (۵۰ هزار تومان)
-+ "price_amount": 50000   ← تومان (همان ۵۰ هزار تومان)
-```
+## بررسی نتیجه
 
-⚠️ **این را جا نیندازید** — اگر آدرس را عوض کنید ولی همچنان ریال بفرستید، همه‌ی فاکتورهایتان ۱۰ برابرِ قیمت واقعی ساخته می‌شوند.
+در مسیر کارتی، اگر پاسخ `authority` دارد، همان قرارداد `verify-payment.php` را رعایت کنید. در مسیر انتخاب روش یا کریپتو، وضعیت سفارش را طبق مستندات همان مسیر بررسی کنید. مشاهدهٔ صفحهٔ موفقیت به‌تنهایی جای تأیید سرور به سرور را نمی‌گیرد.
 
-بقیه‌ی فیلدها (`order_id`، `callback_url`) همان قبلی‌اند.
+اگر فقط کارت فعال است، پیام بانک باید از گوشی فروشنده به CubePay برسد. برای کریپتو، ولت مربوط را ثبت و روش کریپتو را در تنظیمات حساب فعال کنید.
 
-## ✅ قبل و بعد — یک نمونه‌ی کامل
+- [مرجع API کارتی](./API-REFERENCE.md)
+- [مرجع کریپتو و روتر یکپارچه](./CRYPTO-API-REFERENCE.md)
+- [اتصال آمادهٔ Foxima](../integrations/faoxima-guide.md)
 
-قبل (قدیمی):
-
-```bash
-curl -X POST https://cubevps.ir/smspay/api/create-payment.php \
-  -H "Authorization: Bearer YOUR_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"amount": 500000, "order_id": "ORD-1", "callback_url": "https://yoursite.com/cb.php"}'
-```
-
-بعد (روتر یکپارچه):
-
-```bash
-curl -X POST https://cubevps.ir/pay/create-order.php \
-  -H "Authorization: Bearer YOUR_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"price_amount": 50000, "order_id": "ORD-1", "callback_url": "https://yoursite.com/cb.php"}'
-```
-
-پاسخ همچنان `authority` دارد، پس کد `verify-payment.php` فعلی‌تان **بدون تغییر** کار می‌کند. (فقط فاکتورهای VIP به‌جای `authority`، فیلد `invoice_uid` می‌گیرند و وضعیتشان از `check-order-status.php` خوانده می‌شود — [جزئیات](./CUBEPAY-VIP-API-REFERENCE.md).)
-
-## 🤖 از فایل‌های آماده استفاده می‌کنید؟
-
-- **Foxima:** نسخه‌ی ۱.۰.۰ به بعد از قبل روی روتر است — کاری لازم نیست ([راهنما](../integrations/faoxima-guide.md)).
-- **وردپرس / راهنمای عمومی / Mirzabot رسمی:** از اول روی روتر بوده‌اند — کاری ندارید.
-
-## ❓ از کجا بفهمم مشکلم همین است؟
-
-اگر با توکن `vip_` این پیام را می‌گیرید، دقیقاً همین‌جایید:
-
-```
-این یک توکن CubePay VIP است و روی این آدرس (API قدیمی کارت‌به‌کارت) کار نمی‌کند...
-```
-
-دو تغییر بالا را انجام دهید، حل می‌شود.
-
----
-
-- 👑 مرجع کامل VIP: [`CUBEPAY-VIP-API-REFERENCE.md`](./CUBEPAY-VIP-API-REFERENCE.md)
-- 🔀 هر دو سیستم با هم: [`using-both-systems-guide.md`](../integrations/using-both-systems-guide.md)
-- 🤖 سوال دارید؟ از داخل ربات [@cubepy_bot](https://t.me/cubepy_bot) تیکت بزنید
-
-
----
-
-[حفظ شناسهٔ خریدار در روتر یکپارچه](BUYER-IDENTITY.md)
+</div>

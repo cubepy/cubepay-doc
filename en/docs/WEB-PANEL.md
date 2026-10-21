@@ -64,11 +64,8 @@ Each link has two buttons:
 
 The QR is generated **in your own browser**. No server — ours or anyone else's — sees your link. The image is vector (SVG), so it stays sharp at any size, including large print.
 
-> 👑 This section is closed for VIP accounts. The panel explains why in place.
 
 ---
-
-## ⚙️ Settings — what lives where
 
 ### Tokens
 
