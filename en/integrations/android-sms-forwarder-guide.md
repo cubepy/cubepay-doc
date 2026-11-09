@@ -4,7 +4,7 @@
 
 > 📖 **[CubePay help center (Persian)](https://cubevps.ir/panel/help/)** — Searchable, mobile-friendly guides; no sign-in required.
 
-Public version: **2.9.0, build 84**. Guide updated November 9, 2026.
+Public version: **2.8.2, build 80**. Guide updated October 21, 2026.
 
 CubePay forwards messages from your selected banks using **internet forwarding** and/or **SMS to the receiving number**. SMS forwarding does not require phone internet, but requires cellular coverage, outgoing SMS service and credit/SMS allowance. Carrier charges apply.
 
@@ -12,9 +12,9 @@ CubePay forwards messages from your selected banks using **internet forwarding**
 
 [Download the official CubePay.apk](https://github.com/cubepy/cubepay-doc/releases/download/android-latest/CubePay.apk)
 
-Requires **Android 5.0+**. Install over the previous official version; do not uninstall it. Build 84 uses the same application ID and signing certificate. This release does not enforce an update.
+Requires **Android 5.0+**. Install over the previous official version; do not uninstall it. Build 80 uses the same application ID and signing certificate. This release does not enforce an update.
 
-🔒 **SHA-256:** `1f9625774642a26e99d0a93ce533d6e0a42e1f35ab9ba11e6c1eb7908d7173dd`
+🔒 **SHA-256:** `0caf63778146faa8ecdfc8854147cb1b700967988461e8e553d172b520d4ace2`
 
 The download URL is stable. The [release page](https://github.com/cubepy/cubepay-doc/releases/tag/android-latest) identifies the public file. See the installed version and build code in app settings.
 
@@ -37,16 +37,6 @@ Existing connections, notification filters and custom settings remain available 
 Simultaneous forwarding sends chargeable SMS even when internet is available; it is not SMS-only-on-network-failure fallback. It starts disabled for new account-based setup and is enabled by your choice.
 
 **The former per-merchant “second path” reception toggle was removed.** Administrators can still disable either method for the whole service; check its current status in the bot. Internet testing alone does not verify the SIM number or SMS delivery.
-
-## Device status, message details and support reports
-
-Open **Diagnostics → Device and message status**. Status shows required permissions, standard background restrictions, pending destinations and the latest recorded message. It reads local records and does not test live connectivity or require account sign-in.
-
-Messages shows up to 100 recent records, with reception time, filter outcome, each destination's result, HTTP code and attempt count. Successful HTTP or SMS transport does not confirm an invoice. Unrecorded per-stage timestamps are not invented.
-
-Support previews a report of the latest 15 records before copying or sharing. Individual message reports are also available. Reports exclude bank text, amounts, numbers, filter names, URLs and tokens. Nothing is automatically sent to support.
-
-These screens do not resend past messages. Existing delivery/retry behavior, settings, filters and previous pages are preserved. No new server patch is required for these features.
 
 ## Simple filter check
 
