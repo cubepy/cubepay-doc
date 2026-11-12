@@ -4,11 +4,11 @@
 
 > 📖 **[CubePay help center (Persian)](https://cubevps.ir/panel/help/)** — Searchable, mobile-friendly guides; no sign-in required.
 
-Public version: **2.9.1, build 87**. Guide updated November 12, 2026.
+Public version: **2.9.2, build 90**. Guide updated November 12, 2026.
 
-This version improves filter learning from Saderat messages containing positive amount signs, unusual spacing and invisible formatting characters. Original message text is preserved.
+This release improves permission explanations in the filter editor, confines automatic device identity to CubePay, blocks cross-origin forwarding and removes unnecessary Analytics while retaining Messaging.
 
-Manual installation with Play Protect enabled on POCO / Android 16 has not yet been verified. If installation is blocked, retain the previous version and report the error to support.
+A customer reported “Harmful app blocked” for 2.9.1. Play Protect acceptance of 2.9.2 on a physical phone has not been verified. If installation is blocked, keep the previous installed version and report the warning; do not disable Play Protect.
 
 CubePay forwards messages from your selected banks using **internet forwarding** and/or **SMS to the receiving number**. SMS forwarding does not require phone internet, but requires cellular coverage, outgoing SMS service and credit/SMS allowance. Carrier charges apply.
 
@@ -16,9 +16,9 @@ CubePay forwards messages from your selected banks using **internet forwarding**
 
 [Download the official CubePay.apk](https://github.com/cubepy/cubepay-doc/releases/download/android-latest/CubePay.apk)
 
-Requires **Android 5.0+**. Install over the previous official version; do not uninstall it. Build 87 uses the same application ID and signing certificate. This release does not enforce an update.
+Requires **Android 5.0+**. Install over the previous official version; do not uninstall it. Build 90 uses the same application ID and signing certificate. This release does not enforce an update.
 
-🔒 **SHA-256:** `6d949b8a89bae0cd0811a2e3cec8250beb329565699228c3dce3d165a23dc29b`
+🔒 **SHA-256:** `b81107114f01f119a96343ff788c8ae91c124c04a3519e5fc71457ba4fcd0012`
 
 The download URL is stable. The [release page](https://github.com/cubepy/cubepay-doc/releases/tag/android-latest) identifies the public file. See the installed version and build code in app settings.
 
