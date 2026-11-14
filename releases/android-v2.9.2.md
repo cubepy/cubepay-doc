@@ -17,13 +17,13 @@
 
 ## فایل رسمی و ارتقا
 
-- نسخه: `2.9.2`؛ ساخت: `89`؛ بسته: `ir.cubepay.app`؛ minSdk: `21`؛ targetSdk: `35`.
+- نسخه: `2.9.2`؛ ساخت: `90`؛ بسته: `ir.cubepay.app`؛ minSdk: `21`؛ targetSdk: `35`.
 - SHA-256: `b81107114f01f119a96343ff788c8ae91c124c04a3519e5fc71457ba4fcd0012`.
 - گواهی امضا: `cf48f69cebc075f356680ade77a482571c8a5ab4bfb8532b5b9b72c859be4d10`.
 - منبع APK: `af45c30d56bc0b4f1b6e0b5f680265d6b348f25c`؛ CI: [ساخت رسمی ۹۰](https://github.com/cubepy/cubepay-android/actions/runs/43274761070).
 - [ریلیز رسمی](https://github.com/cubepy/cubepay-android/releases/tag/v2.9.2) · [دانلود عمومی](https://github.com/cubepy/cubepay-doc/releases/download/android-latest/CubePay.apk).
 
-فایل را روی نسخهٔ رسمی قبلی نصب و یک بار باز کنید؛ برنامه یا داده‌هایش را حذف نکنید. نصب بستهٔ جدید روی سرور لازم نیست. ثبت نسخه در منوی مدیریت ربات با همین APK و کپشن انجام می‌شود؛ پس از بارگذاری، `latest_version=2.9.2` و `latest_version_code=89` در `app_update` بررسی شوند. GitHub تنظیمات ربات را خودکار تغییر نمی‌دهد. برای این نسخه replay پیام یا بازاجرای عملیات مالی لازم نیست.
+فایل را روی نسخهٔ رسمی قبلی نصب و یک بار باز کنید؛ برنامه یا داده‌هایش را حذف نکنید. نصب بستهٔ جدید روی سرور لازم نیست. ثبت نسخه در منوی مدیریت ربات با همین APK و کپشن انجام می‌شود؛ پس از بارگذاری، `latest_version=2.9.2` و `latest_version_code=90` در `app_update` بررسی شوند. GitHub تنظیمات ربات را خودکار تغییر نمی‌دهد. برای این نسخه replay پیام یا بازاجرای عملیات مالی لازم نیست.
 
 ## کپشن آمادهٔ ربات
 
