@@ -4,11 +4,11 @@
 
 > 📖 **[CubePay help center (Persian)](https://cubevps.ir/panel/help/)** — Searchable, mobile-friendly guides; no sign-in required.
 
-Public version: **2.9.4, build 92**. Guide updated November 14, 2026.
+Public version: **2.9.5, build 93**. Guide updated November 14, 2026.
 
-This release shortens the connection form, shows errors next to the relevant field, and improves touch targets and large-text readability. Existing matching, forwarding, settings and queues remain compatible.
+Diagnostics now shows local readiness, queue counts and the latest message directly. Message stages expand in place; account history and invoice tracing move to Merchant. Existing matching, forwarding, settings and queues remain compatible.
 
-A customer reported “Harmful app blocked” for 2.9.1. Play Protect acceptance of 2.9.4 on a physical phone has not been verified. If installation is blocked, keep the previous installed version and report the warning; do not disable Play Protect.
+A customer reported “Harmful app blocked” for 2.9.1 and 2.9.4. Play Protect acceptance of 2.9.5 on a physical phone has not been verified. If installation is blocked, keep the previous installed version and report the warning; do not disable Play Protect.
 
 CubePay forwards messages from your selected banks using **internet forwarding** and/or **SMS to the receiving number**. SMS forwarding does not require phone internet, but requires cellular coverage, outgoing SMS service and credit/SMS allowance. Carrier charges apply.
 
@@ -16,9 +16,9 @@ CubePay forwards messages from your selected banks using **internet forwarding**
 
 [Download the official CubePay.apk](https://github.com/cubepy/cubepay-doc/releases/download/android-latest/CubePay.apk)
 
-Requires **Android 5.0+**. Install over the previous official version; do not uninstall it. Build 92 uses the same application ID and signing certificate. This release does not enforce an update.
+Requires **Android 5.0+**. Install over the previous official version; do not uninstall it. Build 93 uses the same application ID and signing certificate. This release does not enforce an update.
 
-🔒 **SHA-256:** `d1c622fa474dc293222b0d7900e2b2bed757d380b78ff71fcca9545fc4026b6e`
+🔒 **SHA-256:** `0dbaa00d6f2ad82e90666e4b85b46bc2be0a6792f6ab6c460845287fdae710e4`
 
 The download URL is stable. The [release page](https://github.com/cubepy/cubepay-doc/releases/tag/android-latest) identifies the public file. See the installed version and build code in app settings.
 
@@ -30,7 +30,7 @@ Filter edits, toggles and deletion remain drafts until **Save and apply**. The f
 
 **Test send…** shows destinations from enabled filters. Select recipients, then confirm the synthetic test message. Carrier charges apply to SMS. Testing does not save settings or replay old bank messages. Back navigation warns about unsaved changes; recreation restores drafts without activating them.
 
-[2.9.4 release details (Persian)](../../releases/android-v2.9.4.md)
+[2.9.5 release details (Persian)](../../releases/android-v2.9.5.md)
 
 ## 🏦 Easy bank setup
 
@@ -54,19 +54,19 @@ Simultaneous forwarding sends chargeable SMS even when internet is available; it
 
 ## Device status, message details and support reports
 
-Open **Diagnostics → Device and message status**. Status shows required permissions, standard background restrictions, pending destinations and the latest recorded message. It reads local records and does not test live connectivity or require account sign-in.
+**Diagnostics** immediately shows required permissions, filters, queue counts and the latest recorded message without sign-in. Expand device and battery details in place. These are local records, not a live connectivity test or payment confirmation.
 
-Messages shows up to 100 recent records, with reception time, filter outcome, each destination's result, HTTP code and attempt count. Successful HTTP or SMS transport does not confirm an invoice. Unrecorded per-stage timestamps are not invented.
+Expand the latest message to see recognition and individual destination results, HTTP codes and attempts. Open **All messages in Reports** for full history. Successful transport alone does not confirm an invoice.
 
-Support previews a report of the latest 15 records before copying or sharing. Individual message reports are also available. Reports exclude bank text, amounts, numbers, filter names, URLs and tokens. Nothing is automatically sent to support.
+The small **Support report** action previews the latest 15 records before explicit copy or sharing. Reports exclude message text, amounts, numbers, filter names, URLs and tokens. A report for the latest message is also available within its stages. Nothing is automatically sent to support.
 
-These screens do not resend past messages. Existing delivery/retry behavior, settings, filters and previous pages are preserved. No new server patch is required for these features.
+Opening or refreshing diagnostics does not replay messages. Normal new-message forwarding and configured retries remain unchanged. No new server patch is required.
 
 ## Simple filter check
 
-Open **Diagnostics → Filter check** in the bottom navigation. Select a filter and an existing bank SMS, or keep the screen open for a new message. A clear result dialog shows whether it matches and why. No sign-in or internet is needed; previous messages are not resent. New real messages continue through normal forwarding.
+Open **Diagnostics → Check bank-message recognition** in the bottom navigation. Select a filter and an existing bank SMS, or keep the screen open for a new message. A clear result dialog shows whether it matches and why. No sign-in or internet is needed; previous messages are not resent. New real messages continue through normal forwarding.
 
-Connection status and invoice tracking are separate entries in Diagnostics and require account sign-in. [Full filter check guide](./filter-health.md)
+Account history and invoice tracking are entries in Merchant and require account sign-in. [Full filter check guide](./filter-health.md)
 
 ## New message delivery, destination status and widget
 
