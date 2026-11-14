@@ -4,11 +4,11 @@
 
 > 📖 **[CubePay help center (Persian)](https://cubevps.ir/panel/help/)** — Searchable, mobile-friendly guides; no sign-in required.
 
-Public version: **2.9.3, build 91**. Guide updated November 14, 2026.
+Public version: **2.9.4, build 92**. Guide updated November 14, 2026.
 
-This release clarifies saving, requires destination selection and confirmation before manual test sends, and preserves unfinished edits across recreation. Existing matching, forwarding, settings and queues remain compatible.
+This release shortens the connection form, shows errors next to the relevant field, and improves touch targets and large-text readability. Existing matching, forwarding, settings and queues remain compatible.
 
-A customer reported “Harmful app blocked” for 2.9.1. Play Protect acceptance of 2.9.3 on a physical phone has not been verified. If installation is blocked, keep the previous installed version and report the warning; do not disable Play Protect.
+A customer reported “Harmful app blocked” for 2.9.1. Play Protect acceptance of 2.9.4 on a physical phone has not been verified. If installation is blocked, keep the previous installed version and report the warning; do not disable Play Protect.
 
 CubePay forwards messages from your selected banks using **internet forwarding** and/or **SMS to the receiving number**. SMS forwarding does not require phone internet, but requires cellular coverage, outgoing SMS service and credit/SMS allowance. Carrier charges apply.
 
@@ -16,19 +16,21 @@ CubePay forwards messages from your selected banks using **internet forwarding**
 
 [Download the official CubePay.apk](https://github.com/cubepy/cubepay-doc/releases/download/android-latest/CubePay.apk)
 
-Requires **Android 5.0+**. Install over the previous official version; do not uninstall it. Build 91 uses the same application ID and signing certificate. This release does not enforce an update.
+Requires **Android 5.0+**. Install over the previous official version; do not uninstall it. Build 92 uses the same application ID and signing certificate. This release does not enforce an update.
 
-🔒 **SHA-256:** `9037f42ea738d5fbbc575555070f4773959f70f1a7e2b7690ba7a72caeb864a5`
+🔒 **SHA-256:** `d1c622fa474dc293222b0d7900e2b2bed757d380b78ff71fcca9545fc4026b6e`
 
 The download URL is stable. The [release page](https://github.com/cubepy/cubepay-doc/releases/tag/android-latest) identifies the public file. See the installed version and build code in app settings.
 
-## Saving and testing in advanced settings
+## Connection form, saving and testing
+
+HTTP method, headers and request body live under the per-destination advanced connection section. Expanding or collapsing it retains existing values. Validation focuses and scrolls to the relevant field.
 
 Filter edits, toggles and deletion remain drafts until **Save and apply**. The final action stays at the bottom of the settings screen. Registering an editor change returns to that step.
 
 **Test send…** shows destinations from enabled filters. Select recipients, then confirm the synthetic test message. Carrier charges apply to SMS. Testing does not save settings or replay old bank messages. Back navigation warns about unsaved changes; recreation restores drafts without activating them.
 
-[2.9.3 release details (Persian)](../../releases/android-v2.9.3.md)
+[2.9.4 release details (Persian)](../../releases/android-v2.9.4.md)
 
 ## 🏦 Easy bank setup
 
