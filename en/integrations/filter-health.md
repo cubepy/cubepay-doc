@@ -1,6 +1,6 @@
 # Filter check
 
-Open **Diagnostics** in the bottom bar, between **Reports** and **Merchant**, then **Check bank-message recognition**. Select a saved bank filter. No merchant sign-in, internet connection, card selection or test transfer is required.
+Open **Diagnostics** in the bottom bar, between **Reports** and **Merchant**, then **Check bank-message recognition**. Select a saved bank filter. No merchant sign-in, internet connection, card selection or test transfer is required. If you edited the filter, select **Register filter changes (ثبت تغییرات فیلتر)**, then **Save and apply (ذخیره و اعمال)** in Settings.
 
 Choose an existing bank SMS. A separate dialog shows whether the message matches, the filter and sender, and the reason if it does not. The result stays on the page. The message is checked locally and is not resent. If a specific receiving SIM is configured, select the actual SIM; “I don't know” cannot confirm a full match.
 
