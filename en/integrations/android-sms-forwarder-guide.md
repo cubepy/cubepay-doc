@@ -4,13 +4,13 @@
 
 > 📖 **[CubePay help center (Persian)](https://cubevps.ir/panel/help/)** — Searchable, mobile-friendly guides; no sign-in required.
 
-Public version: **3.0.1, build 98**. Guide updated November 21, 2026.
+Public version: **3.0.2, build 100**. Guide updated November 23, 2026.
 
-Version 3 refreshes the interface with consistent slate/gold surfaces, clearer controls and readable light/dark palettes. From right to left the bottom tabs are Merchant, Diagnostics, Reports and Settings. Existing settings, recognition and forwarding behavior are preserved.
+Version 3 refreshes the interface with consistent slate/gold surfaces, clearer controls and readable light/dark palettes. From right to left the bottom tabs are Merchant, Diagnostics, Reports and Bank settings. Existing settings, recognition and forwarding behavior are preserved.
 
 Diagnostics shows local readiness, queue counts and the latest message directly. Message stages expand in place; account history and invoice tracing remain in Merchant.
 
-A customer reported “Harmful app blocked” for 2.9.1 and 2.9.4. Play Protect acceptance of 3.0.1 on a physical phone has not been verified. If installation is blocked, keep the previous installed version and report the warning; do not disable Play Protect.
+A customer reported “Harmful app blocked” for 2.9.1 and 2.9.4. Play Protect acceptance of 3.0.2 on a physical phone has not been verified. If installation is blocked, keep the previous installed version and report the warning; do not disable Play Protect.
 
 CubePay forwards messages from your selected banks using **internet forwarding** and/or **SMS to the receiving number**. SMS forwarding does not require phone internet, but requires cellular coverage, outgoing SMS service and credit/SMS allowance. Carrier charges apply.
 
@@ -18,9 +18,9 @@ CubePay forwards messages from your selected banks using **internet forwarding**
 
 [Download the official CubePay.apk](https://github.com/cubepy/cubepay-doc/releases/download/android-latest/CubePay.apk)
 
-Requires **Android 5.0+**. Install over the previous official version; do not uninstall it. Build 98 uses the same application ID and signing certificate. This release does not enforce an update.
+Requires **Android 5.0+**. Install over the previous official version; do not uninstall it. Build 100 uses the same application ID and signing certificate. This release does not enforce an update.
 
-🔒 **SHA-256:** `9667547283a95c835f37d9e9f4566ecd3ecbbbe6b5b64e69a884e539676ff786`
+🔒 **SHA-256:** `8dd35d646963482687ed1018885c32f7192057633dc60fa03870e6838e1c10e8`
 
 The download URL is stable. The [release page](https://github.com/cubepy/cubepay-doc/releases/tag/android-latest) identifies the public file. See the installed version and build code in app settings.
 
@@ -30,11 +30,13 @@ HTTP method, headers and request body live under the per-destination advanced co
 
 Filter edits, toggles and deletion remain drafts until **Save and apply**. The final action stays at the bottom of the settings screen. Registering an editor change returns to that step.
 
-**Test send…** is on the Settings screen, outside Advanced settings. Select one saved enabled filter, then confirm a synthetic message to all its active destinations. Carrier charges apply to SMS. Unsaved edits are neither used nor saved; old bank messages are not replayed.
+**Test send…** is on the **Bank settings** screen, outside Advanced settings. Select one saved enabled filter and confirm a synthetic message to all its active destinations. SMS carrier charges apply. Unsaved edits are neither used nor saved, and old bank messages are not replayed.
+
+**Reception succeeds only with the matching message and destination receipt stored at CubePay.** Carrier SENT/DELIVERED or HTTP 200 alone is insufficient. Receipt lookup needs merchant login and internet; without evidence, reception stays unconfirmed. Recheck reads the same receipt without sending another message. Normal SMS forwarding still works without internet.
 
 The exact test report automatically scrolls into view with details expanded. “SMS: not selected in this test” describes only that report, not the filter’s saved switch. Back navigation warns about unsaved changes; recreation restores drafts without activating them.
 
-[3.0.1 release details (Persian)](../../releases/android-v3.0.1.md)
+[3.0.2 release details (Persian)](../../releases/android-v3.0.2.md)
 
 ## 🏦 Easy bank setup
 
