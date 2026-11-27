@@ -10,7 +10,7 @@ Version 3 refreshes the interface with consistent slate/gold surfaces, clearer c
 
 Diagnostics shows local readiness, queue counts and the latest message directly. Message stages expand in place; account history and invoice tracing remain in Merchant.
 
-A customer reported “Harmful app blocked” for 2.9.1 and 2.9.4. Play Protect acceptance of 3.0.2 on a physical phone has not been verified. If installation is blocked, keep the previous installed version and report the warning; do not disable Play Protect.
+When installing an APK, Play Protect may ask to scan the app. Run the scan and continue installing if Google approves it. “Harmful app blocked” is different from a scan request: do not continue installation or disable Play Protect in that case.
 
 CubePay forwards messages from your selected banks using **internet forwarding** and/or **SMS to the receiving number**. SMS forwarding does not require phone internet, but requires cellular coverage, outgoing SMS service and credit/SMS allowance. Carrier charges apply.
 
